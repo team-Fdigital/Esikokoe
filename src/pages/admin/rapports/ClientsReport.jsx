@@ -1,0 +1,122 @@
+import { Users, ArrowLeft, Download } from "lucide-react";
+import { Link } from "react-router-dom";
+
+export default function ClientsReport() {
+  const topClients = [
+    { rank: 1, name: "Restaurant Le Palmier", orders: "12 commandes", amount: "1250 000 FCFA", average: "104 166.667 FCFA/commande" },
+    { rank: 2, name: "Hôtel Ivoire", orders: "8 commandes", amount: "895 000 FCFA", average: "111 875 FCFA/commande" },
+    { rank: 3, name: "Épicerie Moderne", orders: "15 commandes", amount: "672 000 FCFA", average: "44 800 FCFA/commande" },
+    { rank: 4, name: "Café Central", orders: "10 commandes", amount: "445 000 FCFA", average: "44 500 FCFA/commande" },
+  ];
+
+  const kpis = [
+    { label: "Nouveaux clients", value: "23", subtext: "Ce mois", color: "text-blue-600" },
+    { label: "Taux de fidélité", value: "78%", subtext: "Clients récurrents", color: "text-green-600" },
+    { label: "Satisfaction", value: "4.6/5", subtext: "Note moyenne", color: "text-orange-500" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* HEADER */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-4">
+              <Link
+                to="/admin"
+                className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
+              >
+                <ArrowLeft size={16} />
+                Retour
+              </Link>
+
+              <Users className="text-orange-500" size={24} />
+
+              <h1 className="text-xl font-semibold text-gray-900">
+                Rapports et Analyses
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <select className="border rounded-md px-3 py-2 text-sm">
+                <option>Ce mois</option>
+              </select>
+              <button className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm hover:bg-gray-50">
+                <Download size={16} />
+                Exporter PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* CONTENT */}
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        {/* TABS */}
+        <div className="flex gap-1 border-b">
+          <Link
+            to="/admin/rapports/sales"
+            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+          >
+            Ventes
+          </Link>
+          <Link
+            to="/admin/rapports/products"
+            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+          >
+            Produits
+          </Link>
+          <Link
+            to="/admin/rapports/clients"
+            className="px-4 py-2 text-sm font-medium border-b-2 border-white hover:bg-gray-50"
+          >
+            Clients
+          </Link>
+          <Link
+            to="/admin/rapports/financial"
+            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+          >
+            Financier
+          </Link>
+        </div>
+
+        {/* MEILLEURS CLIENTS */}
+        <div className="bg-white rounded-lg shadow-sm border">
+          <div className="p-6 border-b">
+            <h2 className="text-xl font-semibold">Meilleurs clients</h2>
+            <p className="text-sm text-gray-500 mt-1">Top 4 des clients les plus fidèles</p>
+          </div>
+
+          <div className="p-6 space-y-4">
+            {topClients.map((client, idx) => (
+              <div key={idx} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="font-bold text-green-600">{client.rank}</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900">{client.name}</h3>
+                  <p className="text-xs text-gray-500">{client.orders}</p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="font-bold text-gray-900">{client.amount}</p>
+                  <p className="text-xs text-gray-500">{client.average}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* KPI CARDS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {kpis.map((kpi, idx) => (
+            <div key={idx} className="bg-white rounded-lg shadow-sm border p-8 text-center">
+              <p className="text-sm text-gray-600 mb-2">{kpi.label}</p>
+              <p className={`text-4xl font-bold ${kpi.color}`}>{kpi.value}</p>
+              <p className="text-sm text-gray-500 mt-3">{kpi.subtext}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

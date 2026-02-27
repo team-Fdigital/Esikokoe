@@ -3,12 +3,16 @@ import {
   ChartColumn,
   Download,
   Plus,
+  Clock,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-export default function Transactions() {
+export default function Rapports() {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     type: "Recette",
@@ -28,7 +32,6 @@ export default function Transactions() {
       alert("Veuillez remplir tous les champs obligatoires");
       return;
     }
-    // Handle form submission
     console.log("Nouvelle transaction:", formData);
     setShowModal(false);
     setFormData({
@@ -39,49 +42,6 @@ export default function Transactions() {
       reference: "",
     });
   };
-  const transactions = [
-    {
-      date: "15/01/2024",
-      type: "Recette",
-      categorie: "Ventes",
-      description: "Vente Restaurant Le Palmier",
-      reference: "F-2024-089",
-      montant: "+125 000",
-    },
-    {
-      date: "15/01/2024",
-      type: "Recette",
-      categorie: "Ventes",
-      description: "Vente Hôtel Ivoire",
-      reference: "F-2024-088",
-      montant: "+89 500",
-    },
-    {
-      date: "14/01/2024",
-      type: "Dépense",
-      categorie: "Approvisionnement",
-      description: "Achat stock Aqua Source",
-      reference: "BON-2024-012",
-      montant: "-450 000",
-    },
-    {
-      date: "14/01/2024",
-      type: "Dépense",
-      categorie: "Transport",
-      description: "Livraison marchandises",
-      reference: "-",
-      montant: "-25 000",
-    },
-    {
-      date: "13/01/2024",
-      type: "Dépense",
-      categorie: "Salaires",
-      description: "Salaire équipe janvier",
-      reference: "-",
-      montant: "-180 000",
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -130,16 +90,19 @@ export default function Transactions() {
             label="Recettes totales"
             value="214 500 FCFA"
             color="green"
+            icon={<TrendingUp className="text-green-600" />}
           />
           <Stat
             label="Dépenses totales"
             value="655 000 FCFA"
             color="red"
+            icon={<TrendingDown className="text-red-600" />}
           />
           <Stat
             label="Bénéfice net"
             value="-440 500 FCFA"
             color="red"
+            icon={<DollarSign className="text-red-600" />}
           />
         </div>
 
@@ -147,13 +110,13 @@ export default function Transactions() {
         <div className="flex gap-2 bg-gray-100 p-1 rounded-md w-fit">
           <Link
             to="/admin/comptabilite/transactions"
-            className="px-3 py-1.5 bg-white rounded-md shadow text-sm font-semibold"
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Transactions
           </Link>
           <Link
             to="/admin/comptabilite/rapports"
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-3 py-1.5 bg-white rounded-md shadow text-sm font-semibold"
           >
             Rapports
           </Link>
@@ -171,64 +134,37 @@ export default function Transactions() {
           </Link>
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">
-              Journal des transactions
-            </h2>
-            <p className="text-sm text-gray-500">
-              Historique de toutes les entrées et sorties d'argent
-            </p>
+        {/* REPORT CARDS */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* RECETTES */}
+          <div className="bg-white rounded-lg border p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <Clock size={18} />
+              <h2 className="text-lg font-semibold">
+                Répartition des recettes
+              </h2>
+            </div>
+
+            <div className="flex justify-between text-sm">
+              <span>Ventes</span>
+              <span className="text-green-600 font-medium">
+                214 500 FCFA
+              </span>
+            </div>
           </div>
 
-          <div className="p-6 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="border-b text-gray-500">
-                <tr>
-                  <th className="text-left py-3">Date</th>
-                  <th className="text-left">Type</th>
-                  <th className="text-left">Catégorie</th>
-                  <th className="text-left">Description</th>
-                  <th className="text-left">Référence</th>
-                  <th className="text-right">Montant</th>
-                </tr>
-              </thead>
+          {/* DEPENSES */}
+          <div className="bg-white rounded-lg border p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <Clock size={18} />
+              <h2 className="text-lg font-semibold">
+                Répartition des dépenses
+              </h2>
+            </div>
 
-              <tbody>
-                {transactions.map((t, i) => (
-                  <tr key={i} className="border-b hover:bg-gray-50">
-                    <td className="py-3">{t.date}</td>
-
-                    <td>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          t.type === "Recette"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {t.type}
-                      </span>
-                    </td>
-
-                    <td>{t.categorie}</td>
-                    <td>{t.description}</td>
-                    <td>{t.reference}</td>
-
-                    <td
-                      className={`text-right font-semibold ${
-                        t.type === "Recette"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {t.montant} FCFA
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Row label="Approvisionnement" value="450 000 FCFA" />
+            <Row label="Transport" value="25 000 FCFA" />
+            <Row label="Salaires" value="180 000 FCFA" />
           </div>
         </div>
       </div>
@@ -263,7 +199,7 @@ export default function Transactions() {
                 <select
                   value={formData.type}
                   onChange={(e) => {
-                    setFormData({ ...formData, type: e.target.value, categorie: "" });
+                    setFormData({ ...formData, type: e.target.value, categorie: '' });
                   }}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                 >
@@ -361,17 +297,29 @@ export default function Transactions() {
 
 /* ---------- SMALL COMPONENTS ---------- */
 
-function Stat({ label, value, color }) {
+function Stat({ label, value, color, icon }) {
   return (
-    <div className="bg-white rounded-lg border p-6">
-      <p className="text-sm text-gray-600">{label}</p>
-      <p
-        className={`text-2xl font-bold ${
-          color === "green" ? "text-green-600" : "text-red-600"
-        }`}
-      >
-        {value}
-      </p>
+    <div className="bg-white rounded-lg border p-6 flex justify-between items-center">
+      <div>
+        <p className="text-sm text-gray-600">{label}</p>
+        <p
+          className={`text-2xl font-bold ${
+            color === "green" ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {value}
+        </p>
+      </div>
+      {icon}
+    </div>
+  );
+}
+
+function Row({ label, value }) {
+  return (
+    <div className="flex justify-between text-sm">
+      <span>{label}</span>
+      <span className="text-red-600 font-medium">{value}</span>
     </div>
   );
 }
