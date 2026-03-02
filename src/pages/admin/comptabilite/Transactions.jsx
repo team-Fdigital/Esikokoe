@@ -6,7 +6,8 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getTransactions } from "../../../apiClient";
 
 export default function Transactions() {
   const [showModal, setShowModal] = useState(false);
@@ -17,19 +18,32 @@ export default function Transactions() {
     montant: "",
     reference: "",
   });
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const categoriesByType = {
     Recette: ["Ventes", "Services", "Autres revenue"],
     Dépense: ["Approvisionnement", "Transport", "Salaires", "Loyer", "Utilities", "Autre"],
   };
 
+  useEffect(() => {
+    getTransactions()
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setTransactions(res.data);
+        } else {
+          setTransactions([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   const handleAddTransaction = () => {
     if (!formData.categorie || !formData.description || !formData.montant) {
       alert("Veuillez remplir tous les champs obligatoires");
       return;
     }
-    // Handle form submission
-    console.log("Nouvelle transaction:", formData);
+    // TODO: Envoyer la transaction à l'API (createTransaction)
     setShowModal(false);
     setFormData({
       type: "Recette",
@@ -39,48 +53,7 @@ export default function Transactions() {
       reference: "",
     });
   };
-  const transactions = [
-    {
-      date: "15/01/2024",
-      type: "Recette",
-      categorie: "Ventes",
-      description: "Vente Restaurant Le Palmier",
-      reference: "F-2024-089",
-      montant: "+125 000",
-    },
-    {
-      date: "15/01/2024",
-      type: "Recette",
-      categorie: "Ventes",
-      description: "Vente Hôtel Ivoire",
-      reference: "F-2024-088",
-      montant: "+89 500",
-    },
-    {
-      date: "14/01/2024",
-      type: "Dépense",
-      categorie: "Approvisionnement",
-      description: "Achat stock Aqua Source",
-      reference: "BON-2024-012",
-      montant: "-450 000",
-    },
-    {
-      date: "14/01/2024",
-      type: "Dépense",
-      categorie: "Transport",
-      description: "Livraison marchandises",
-      reference: "-",
-      montant: "-25 000",
-    },
-    {
-      date: "13/01/2024",
-      type: "Dépense",
-      categorie: "Salaires",
-      description: "Salaire équipe janvier",
-      reference: "-",
-      montant: "-180 000",
-    },
-  ];
+
 
   return (
     <div className="min-h-screen bg-gray-50">

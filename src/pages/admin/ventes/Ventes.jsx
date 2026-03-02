@@ -10,7 +10,8 @@ import {
   CreditCard,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllVentes, createVente } from "../../../apiClient";
 
 export default function Ventes() {
   const [showModal, setShowModal] = useState(false);
@@ -34,24 +35,21 @@ export default function Ventes() {
     { id: 4, nom: "Services de livraison" },
   ];
 
-  const ventes = [
-    {
-      id: "F-2024-089",
-      date: "15/01/2024 14:30",
-      client: "Restaurant Le Palmier",
-      montant: "11 800",
-      paiement: "Espèces",
-      statut: "Payée",
-    },
-    {
-      id: "F-2024-088",
-      date: "15/01/2024 10:15",
-      client: "Hôtel Ivoire",
-      montant: "23 600",
-      paiement: "Mobile Money",
-      statut: "Payée",
-    },
-  ];
+  const [ventes, setVentes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllVentes()
+      .then((res) => {
+        // Le backend retourne { ventes: [...] }
+        if (res.data && Array.isArray(res.data.ventes)) {
+          setVentes(res.data.ventes);
+        } else {
+          setVentes([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const sousTotal = produits.reduce(
     (sum, p) => sum + p.quantite * p.prixUnitaire,
@@ -95,6 +93,11 @@ export default function Ventes() {
 
       {/* TABLE */}
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        {loading && (
+          <div className="flex justify-center py-10">
+            <span>Chargement des ventes...</span>
+          </div>
+        )}
         {/* TABS */}
         <div className="flex gap-1 border-b">
           <Link
@@ -165,38 +168,40 @@ export default function Ventes() {
               </thead>
 
               <tbody>
-                {ventes.map((v) => (
-                  <tr key={v.id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 font-medium">{v.id}</td>
-                    <td>{v.date}</td>
-                    <td>{v.client}</td>
-                    <td className="font-semibold">{v.montant} FCFA</td>
-
-                    <td>
-                      <div className="flex items-center gap-2">
-                        <CreditCard size={16} className="text-gray-400" />
-                        {v.paiement}
-                      </div>
-                    </td>
-
-                    <td>
-                      <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
-                        {v.statut}
-                      </span>
-                    </td>
-
-                    <td>
-                      <div className="flex gap-2">
-                        <button className="border p-2 rounded-md hover:bg-gray-50">
-                          <Eye size={16} />
-                        </button>
-                        <button className="border p-2 rounded-md hover:bg-gray-50">
-                          <Printer size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {ventes.map((v) => {
+                  const dateObj = v.date ? new Date(v.date) : null;
+                  const dateStr = dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-';
+                  const montantStr = v.montant ? v.montant.toLocaleString('fr-FR') + ' FCFA' : '-';
+                  return (
+                    <tr key={v.id} className="border-b hover:bg-gray-50">
+                      <td className="py-3 font-medium">{v.numeroFacture || v.id}</td>
+                      <td>{dateStr}</td>
+                      <td>{v.client}</td>
+                      <td className="font-semibold">{montantStr}</td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          <CreditCard size={16} className="text-gray-400" />
+                          {v.modePaiement || v.paiement || '-'}
+                        </div>
+                      </td>
+                      <td>
+                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                          {v.statut || 'Payée'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="flex gap-2">
+                          <button className="border p-2 rounded-md hover:bg-gray-50">
+                            <Eye size={16} />
+                          </button>
+                          <button className="border p-2 rounded-md hover:bg-gray-50">
+                            <Printer size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
 
@@ -381,9 +386,30 @@ export default function Ventes() {
             <div className="flex gap-3 p-4 border-t">
 
               <button
-                onClick={() => {
-                  console.log({ clientInfo, produits, modePaiement });
-                  setShowModal(false);
+                onClick={async () => {
+                  const venteData = {
+                    nomClient: clientInfo.nom,
+                    telephone: clientInfo.telephone,
+                    adresse: clientInfo.adresse,
+                    modePaiement,
+                    produits: produits.map((p) => ({
+                      codeProduit: p.produit,
+                      quantite: p.quantite,
+                      prixUnitaire: p.prixUnitaire,
+                    })),
+                    montantTotal: produits.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0) * 1.18,
+                    dateVente: new Date().toISOString(),
+                  };
+                  try {
+                    await createVente(venteData);
+                    setShowModal(false);
+                    setLoading(true);
+                    getAllVentes()
+                      .then((res) => setVentes(res.data))
+                      .finally(() => setLoading(false));
+                  } catch (err) {
+                    alert("Erreur lors de la création de la vente");
+                  }
                 }}
                 className="flex-1 bg-black text-white rounded-lg py-2"
               >

@@ -1,17 +1,23 @@
 import { Package, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getCriticalStocks } from "../../../apiClient";
 
 export default function Alertes() {
-  const alertes = [
-    {
-      code: "P002",
-      nom: "Eau Pure",
-      format: "Bouteille 1.5L",
-      stock: 45,
-      min: 50,
-      fournisseur: "Aqua Source",
-    },
-  ];
+  const [alertes, setAlertes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getCriticalStocks()
+      .then((res) => {
+        if (res.data && Array.isArray(res.data)) {
+          setAlertes(res.data);
+        } else {
+          setAlertes([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -90,14 +96,12 @@ export default function Alertes() {
 
               <tbody>
                 {alertes.map((p) => (
-                  <tr key={p.code} className="border-b hover:bg-gray-50">
-                    <td className="py-3 font-medium">{p.code}</td>
-                    <td>{p.nom}</td>
+                  <tr key={p.codeProduit} className="border-b hover:bg-gray-50">
+                    <td className="py-3 font-medium">{p.codeProduit}</td>
+                    <td>{p.nomProduit}</td>
                     <td>{p.format}</td>
-                    <td className="font-semibold text-red-600">
-                      {p.stock}
-                    </td>
-                    <td>{p.min}</td>
+                    <td className="font-semibold text-red-600">{p.stock}</td>
+                    <td>{p.stockMinimum}</td>
                     <td>{p.fournisseur}</td>
                     <td>
                       <span className="flex items-center gap-1 bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium w-fit">

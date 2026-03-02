@@ -1,36 +1,23 @@
 import { Package, ArrowLeft, ArrowDown, ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getStockHistory } from "../../../apiClient";
 
 export default function Mouvements() {
-  const mouvements = [
-    {
-      id: 1,
-      produit: "Eau Pure",
-      format: "Sachet 500ml",
-      type: "entrée",
-      quantite: 500,
-      date: "2026-02-15",
-      utilisateur: "Admin",
-    },
-    {
-      id: 2,
-      produit: "Eau Pure",
-      format: "Bouteille 1.5L",
-      type: "sortie",
-      quantite: 30,
-      date: "2026-02-16",
-      utilisateur: "Admin",
-    },
-    {
-      id: 3,
-      produit: "Eau Minérale",
-      format: "Bouteille 500ml",
-      type: "entrée",
-      quantite: 200,
-      date: "2026-02-17",
-      utilisateur: "Admin",
-    },
-  ];
+  const [mouvements, setMouvements] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getStockHistory(100)
+      .then((res) => {
+        if (res.data && Array.isArray(res.data.mouvements)) {
+          setMouvements(res.data.mouvements);
+        } else {
+          setMouvements([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -110,10 +97,9 @@ export default function Mouvements() {
                 {mouvements.map((m) => (
                   <tr key={m.id} className="border-b hover:bg-gray-50">
                     <td className="py-3 font-medium">{m.produit}</td>
-                    <td>{m.format}</td>
-
+                    <td></td>
                     <td>
-                      {m.type === "entrée" ? (
+                      {m.typeLabel === "ENTREE" ? (
                         <span className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium w-fit">
                           <ArrowDown size={14} />
                           Entrée
@@ -125,10 +111,9 @@ export default function Mouvements() {
                         </span>
                       )}
                     </td>
-
                     <td className="font-semibold">{m.quantite}</td>
-                    <td>{m.date}</td>
-                    <td>{m.utilisateur}</td>
+                    <td>{m.date ? new Date(m.date).toLocaleDateString() : ''}</td>
+                    <td>{m.utilisateur || ''}</td>
                   </tr>
                 ))}
               </tbody>

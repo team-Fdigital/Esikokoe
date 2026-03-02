@@ -10,7 +10,9 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getRapports } from "../../../apiClient";
+import { getDistribution } from "../../../apiClient";
 
 export default function Rapports() {
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +23,27 @@ export default function Rapports() {
     montant: "",
     reference: "",
   });
+  const [rapports, setRapports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [distribution, setDistribution] = useState(null);
+
+  useEffect(() => {
+    getDistribution()
+      .then((res) => setDistribution(res.data))
+      .catch(() => setDistribution(null));
+  }, []);
+
+  useEffect(() => {
+    getRapports()
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setRapports(res.data);
+        } else {
+          setRapports([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const categoriesByType = {
     Recette: ["Ventes", "Services", "Autres revenue"],
@@ -140,31 +163,28 @@ export default function Rapports() {
           <div className="bg-white rounded-lg border p-6 space-y-4">
             <div className="flex items-center gap-2">
               <Clock size={18} />
-              <h2 className="text-lg font-semibold">
-                Répartition des recettes
-              </h2>
+              <h2 className="text-lg font-semibold">Répartition des recettes</h2>
             </div>
-
-            <div className="flex justify-between text-sm">
-              <span>Ventes</span>
-              <span className="text-green-600 font-medium">
-                214 500 FCFA
-              </span>
-            </div>
+            {distribution?.recettes && Array.isArray(distribution.recettes)
+              ? distribution.recettes.map((item) => (
+                  <div key={item.categorie} className="flex justify-between text-sm">
+                    <span>{item.categorie}</span>
+                    <span className="text-green-600 font-medium">{item.montant} FCFA</span>
+                  </div>
+                ))
+              : <div className="text-gray-400 text-sm">Aucune donnée</div>}
           </div>
-
           {/* DEPENSES */}
           <div className="bg-white rounded-lg border p-6 space-y-4">
             <div className="flex items-center gap-2">
               <Clock size={18} />
-              <h2 className="text-lg font-semibold">
-                Répartition des dépenses
-              </h2>
+              <h2 className="text-lg font-semibold">Répartition des dépenses</h2>
             </div>
-
-            <Row label="Approvisionnement" value="450 000 FCFA" />
-            <Row label="Transport" value="25 000 FCFA" />
-            <Row label="Salaires" value="180 000 FCFA" />
+            {distribution?.depenses && Array.isArray(distribution.depenses)
+              ? distribution.depenses.map((item) => (
+                  <Row key={item.categorie} label={item.categorie} value={item.montant + ' FCFA'} />
+                ))
+              : <div className="text-gray-400 text-sm">Aucune donnée</div>}
           </div>
         </div>
       </div>

@@ -1,24 +1,21 @@
 import { Package, ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getProduitsRapport } from "../../../apiClient";
 
 export default function ProductsReport() {
-  const topProducts = [
-    { rank: 1, name: "Eau Pure - Sachet 500ml", units: "5350 unités vendues", amount: "401 000 FCFA", percentage: "27.7% du CA" },
-    { rank: 2, name: "Eau Pure - Bouteille 1.5L", units: "2340 unités vendues", amount: "351 000 FCFA", percentage: "25.2% du CA" },
-    { rank: 3, name: "Eau Minérale - Bouteille 500ml", units: "3200 unités vendues", amount: "320 000 FCFA", percentage: "23.0% du CA" },
-    { rank: 4, name: "Eau Gazeuse - Bouteille 330ml", units: "1180 unités vendues", amount: "236 000 FCFA", percentage: "16.9% du CA" },
-  ];
+  const [classement, setClassement] = useState([]);
+  const [performanceCategorie, setPerformanceCategorie] = useState({});
+  const [rotationStock, setRotationStock] = useState({});
 
-  const categories = [
-    { name: "Sachets", percentage: 65 },
-    { name: "Bouteilles", percentage: 35 },
-  ];
-
-  const stockRotation = [
-    { label: "Rotation moyenne", value: "8.5 fois/mois" },
-    { label: "Produit le plus rapide", value: "Sachets 500ml" },
-    { label: "Stock dormant", value: "2.3%", color: "text-red-600" },
-  ];
+  useEffect(() => {
+    getProduitsRapport().then(res => {
+      const data = res.data;
+      setClassement(data.classement || []);
+      setPerformanceCategorie(data.performanceCategorie || {});
+      setRotationStock(data.rotationStock || {});
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -93,18 +90,18 @@ export default function ProductsReport() {
           </div>
 
           <div className="p-6 space-y-4">
-            {topProducts.map((product, idx) => (
+            {classement.slice(0, 4).map((product, idx) => (
               <div key={idx} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="font-bold text-blue-600">{product.rank}</span>
+                  <span className="font-bold text-blue-600">{idx + 1}</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                  <p className="text-xs text-gray-500">{product.units}</p>
+                  <h3 className="font-semibold text-gray-900">{product.nom}</h3>
+                  <p className="text-xs text-gray-500">{product.quantite} unités vendues</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-gray-900">{product.amount}</p>
-                  <p className="text-xs text-gray-500">{product.percentage}</p>
+                  <p className="font-bold text-gray-900">{product.ca?.toLocaleString()} FCFA</p>
+                  <p className="text-xs text-gray-500">{product.pourcentageCA}% du CA</p>
                 </div>
               </div>
             ))}
@@ -117,16 +114,16 @@ export default function ProductsReport() {
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold mb-6">Performance par catégorie</h3>
             <div className="space-y-6">
-              {categories.map((cat, idx) => (
-                <div key={idx}>
+              {Object.entries(performanceCategorie).map(([cat, percent], idx) => (
+                <div key={cat}>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-900">{cat.name}</span>
-                    <span className="text-sm font-bold text-gray-900">{cat.percentage}%</span>
+                    <span className="text-sm font-medium text-gray-900">{cat}</span>
+                    <span className="text-sm font-bold text-gray-900">{percent}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
                       className={`h-2 rounded-full ${idx === 0 ? "bg-blue-600" : "bg-green-600"}`}
-                      style={{ width: `${cat.percentage}%` }}
+                      style={{ width: `${percent}%` }}
                     ></div>
                   </div>
                 </div>
@@ -138,12 +135,18 @@ export default function ProductsReport() {
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold mb-6">Rotation des stocks</h3>
             <div className="space-y-6">
-              {stockRotation.map((item, idx) => (
-                <div key={idx}>
-                  <p className="text-sm text-gray-600 mb-2">{item.label}</p>
-                  <p className={`text-2xl font-bold ${item.color || "text-gray-900"}`}>{item.value}</p>
-                </div>
-              ))}
+              <div>
+                <p className="text-sm text-gray-600 mb-2">Rotation moyenne</p>
+                <p className="text-2xl font-bold text-gray-900">{rotationStock.moyenne ?? '-'} fois/mois</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 mb-2">Produit le plus rapide</p>
+                <p className="text-2xl font-bold text-gray-900">{rotationStock.produitRapide ?? '-'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 mb-2">Stock dormant</p>
+                <p className="text-2xl font-bold text-red-600">{rotationStock.stockDormant ? 'Oui' : 'Non'}</p>
+              </div>
             </div>
           </div>
         </div>
