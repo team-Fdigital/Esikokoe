@@ -152,7 +152,20 @@ button:focus-visible {
     background-color: #1a1a1a;
   }
 }
+.mobile-link {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  color: #1f2937;
+}
 
+.mobile-link:hover {
+  background: #f3f4f6;
+}
+
+.mobile-link.active {
+  background: #0284c7;
+  color: white;
+}
 /* footer */
 .site-footer { background: #07122a; color: #c7d2fe }
 .site-footer a { color: #a5b4fc }
