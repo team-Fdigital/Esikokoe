@@ -20,7 +20,7 @@ export default function NavBar() {
   return (
     <header className="site-header fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b">
       <div className="container-wide h-14 flex items-center justify-between">
-        
+
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src="/logo.svg" alt="Logo" className="h-10 w-10 object-contain" />
@@ -50,44 +50,92 @@ export default function NavBar() {
             Admin
           </Link>
 
-          {/* Burger */}
+          {/* Burger Button */}
           <button
             onClick={toggleMenu}
-            className="md:hidden p-2 rounded-md hover:bg-gray-100"
+            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors z-50 text-gray-700 dark:text-gray-200"
             aria-label="Menu"
           >
-            {isOpen ? <X size={22} /> : <Menu size={22} />}
+            <Menu size={28} />
           </button>
         </div>
       </div>
 
-      {/* Overlay */}
-      {isOpen && (
+      {/* Mobile Menu Side Drawer */}
+      <div
+        className={`fixed inset-0 z-[60] md:hidden transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+      >
+        {/* Backdrop overlay */}
         <div
-          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           onClick={closeMenu}
         />
-      )}
 
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden fixed top-14 inset-x-0 bg-white border-b shadow-lg z-50 transform transition-all duration-200 ${
-          isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
-        }`}
-      >
-        <nav className="container-wide py-4 flex flex-col gap-2 text-sm">
-          <Link to="/" className={`mobile-link ${active("/")}`}>Accueil</Link>
-          <Link to="/about" className={`mobile-link ${active("/about")}`}>À propos</Link>
-          <Link to="/products" className={`mobile-link ${active("/products")}`}>Produits</Link>
-          <Link to="/contact" className={`mobile-link ${active("/contact")}`}>Contact</Link>
+        {/* Drawer Content */}
+        <div
+          className={`absolute top-0 left-0 h-full w-[80%] max-w-sm bg-white dark:bg-gray-900 shadow-2xl transition-transform duration-300 ease-in-out transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+        >
+          {/* Drawer Header */}
+          <div className="flex items-center justify-between p-4 border-b dark:border-gray-800">
+            <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
+              <img src="/logo.svg" alt="Logo" className="h-8 w-8 object-contain" />
+              <span className="font-bold text-xs text-gray-800 dark:text-white uppercase tracking-tight">
+                EAU CONTINENTALE
+              </span>
+            </Link>
+            <button
+              onClick={closeMenu}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+            >
+              <X size={24} className="text-gray-500" />
+            </button>
+          </div>
 
-          <Link
-            to="/admin/login"
-            className="mt-2 border border-blue-600 text-blue-600 text-center py-2 rounded-md font-medium"
-          >
-            Admin Connexion
-          </Link>
-        </nav>
+          {/* Links */}
+          <nav className="flex flex-col p-4 gap-1">
+            <Link
+              to="/"
+              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 dark:text-gray-200 ${pathname === "/" ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+              onClick={closeMenu}
+            >
+              Accueil
+            </Link>
+            <Link
+              to="/about"
+              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 dark:text-gray-200 ${pathname === "/about" ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+              onClick={closeMenu}
+            >
+              À propos
+            </Link>
+            <Link
+              to="/products"
+              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 dark:text-gray-200 ${pathname === "/products" ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+              onClick={closeMenu}
+            >
+              Produits
+            </Link>
+            <Link
+              to="/contact"
+              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 dark:text-gray-200 ${pathname === "/contact" ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+              onClick={closeMenu}
+            >
+              Contact
+            </Link>
+
+            <div className="h-px bg-gray-100 dark:bg-gray-800 my-4 mx-4"></div>
+
+            <Link
+              to="/admin/login"
+              onClick={closeMenu}
+              className="flex items-center justify-center gap-2 m-4 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30"
+            >
+              <LogIn size={20} />
+              Connexion Admin
+            </Link>
+          </nav>
+        </div>
       </div>
     </header>
   );

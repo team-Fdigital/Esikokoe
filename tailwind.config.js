@@ -1,3 +1,5 @@
+import defaultTheme from 'tailwindcss/defaultTheme'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -6,6 +8,10 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '475px',
+        ...defaultTheme.screens,
+      },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui'],
         display: ['Poppins', 'Inter']
