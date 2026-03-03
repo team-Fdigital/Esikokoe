@@ -7,19 +7,38 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getTransactions } from "../../../apiClient";
+import { getTransactions, createTransaction, getAllVentes, getAllFactures, getFactureById } from "../../../apiClient";
 
 export default function Transactions() {
   const [showModal, setShowModal] = useState(false);
+  const [ventes, setVentes] = useState([]);
+  const [factures, setFactures] = useState([]);
+  const [factureVenteId, setFactureVenteId] = useState("");
   const [formData, setFormData] = useState({
     type: "Recette",
     categorie: "",
     description: "",
     montant: "",
     reference: "",
+    venteId: "",
   });
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Quand la référence change, si une facture est sélectionnée, récupérer la vente liée
+  useEffect(() => {
+    if (formData.reference) {
+      const facture = factures.find(f => f.id === formData.reference);
+      if (facture && facture.venteId) {
+        setFactureVenteId(facture.venteId);
+        setFormData(fd => ({ ...fd, venteId: facture.venteId }));
+      } else {
+        setFactureVenteId("");
+      }
+    } else {
+      setFactureVenteId("");
+    }
+  }, [formData.reference, factures]);
 
   const categoriesByType = {
     Recette: ["Ventes", "Services", "Autres revenue"],
@@ -36,22 +55,68 @@ export default function Transactions() {
         }
       })
       .finally(() => setLoading(false));
+
+    getAllVentes()
+      .then((res) => {
+        if (Array.isArray(res.data.ventes)) {
+          setVentes(res.data.ventes);
+        } else {
+          setVentes([]);
+        }
+      })
+      .catch(() => setVentes([]));
+
+    getAllFactures()
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setFactures(res.data);
+        } else if (Array.isArray(res.data.factures)) {
+          setFactures(res.data.factures);
+        } else {
+          setFactures([]);
+        }
+      })
+      .catch(() => setFactures([]));
   }, []);
 
-  const handleAddTransaction = () => {
+  const handleAddTransaction = async () => {
     if (!formData.categorie || !formData.description || !formData.montant) {
       alert("Veuillez remplir tous les champs obligatoires");
       return;
     }
-    // TODO: Envoyer la transaction à l'API (createTransaction)
-    setShowModal(false);
-    setFormData({
-      type: "Recette",
-      categorie: "",
-      description: "",
-      montant: "",
-      reference: "",
-    });
+    try {
+      // Conversion du type pour l'API
+      const typeTransaction = formData.type === "Recette" ? "RECETTE" : "DEPENSE";
+      await createTransaction({
+        typeTransaction,
+        categorie: formData.categorie,
+        description: formData.description,
+        montant: Number(formData.montant),
+        reference: formData.reference,
+        venteId: formData.venteId,
+      });
+      setShowModal(false);
+      setFormData({
+        type: "Recette",
+        categorie: "",
+        description: "",
+        montant: "",
+        reference: "",
+        venteId: "",
+      });
+      setLoading(true);
+      getTransactions()
+        .then((res) => {
+          if (Array.isArray(res.data)) {
+            setTransactions(res.data);
+          } else {
+            setTransactions([]);
+          }
+        })
+        .finally(() => setLoading(false));
+    } catch (err) {
+      alert("Erreur lors de l'ajout de la transaction" + (err?.response?.data?.message ? (": " + err.response.data.message) : ""));
+    }
   };
 
 
@@ -97,22 +162,37 @@ export default function Transactions() {
 
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
-        {/* STATS */}
+        {/* STATS dynamiques */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Stat
             label="Recettes totales"
-            value="214 500 FCFA"
+            value={(() => {
+              const recettes = transactions.filter(t => t.typeTransaction === "RECETTE").reduce((sum, t) => sum + Number(t.montant), 0);
+              return recettes.toLocaleString() + ' FCFA';
+            })()}
             color="green"
           />
           <Stat
             label="Dépenses totales"
-            value="655 000 FCFA"
+            value={(() => {
+              const depenses = transactions.filter(t => t.typeTransaction === "DEPENSE").reduce((sum, t) => sum + Number(t.montant), 0);
+              return depenses.toLocaleString() + ' FCFA';
+            })()}
             color="red"
           />
           <Stat
             label="Bénéfice net"
-            value="-440 500 FCFA"
-            color="red"
+            value={(() => {
+              const recettes = transactions.filter(t => t.typeTransaction === "RECETTE").reduce((sum, t) => sum + Number(t.montant), 0);
+              const depenses = transactions.filter(t => t.typeTransaction === "DEPENSE").reduce((sum, t) => sum + Number(t.montant), 0);
+              const benefice = recettes - depenses;
+              return benefice.toLocaleString() + ' FCFA';
+            })()}
+            color={(() => {
+              const recettes = transactions.filter(t => t.typeTransaction === "RECETTE").reduce((sum, t) => sum + Number(t.montant), 0);
+              const depenses = transactions.filter(t => t.typeTransaction === "DEPENSE").reduce((sum, t) => sum + Number(t.montant), 0);
+              return recettes - depenses >= 0 ? "green" : "red";
+            })()}
           />
         </div>
 
@@ -171,17 +251,17 @@ export default function Transactions() {
               <tbody>
                 {transactions.map((t, i) => (
                   <tr key={i} className="border-b hover:bg-gray-50">
-                    <td className="py-3">{t.date}</td>
+                    <td className="py-3">{t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ""}</td>
 
                     <td>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          t.type === "Recette"
+                          t.typeTransaction === "RECETTE"
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {t.type}
+                        {t.typeTransaction === "RECETTE" ? "Recette" : "Dépense"}
                       </span>
                     </td>
 
@@ -191,7 +271,7 @@ export default function Transactions() {
 
                     <td
                       className={`text-right font-semibold ${
-                        t.type === "Recette"
+                        t.typeTransaction === "RECETTE"
                           ? "text-green-600"
                           : "text-red-600"
                       }`}
@@ -298,20 +378,40 @@ export default function Transactions() {
                 />
               </div>
 
-              {/* Référence */}
+              {/* Sélection vente (affichée uniquement si aucune facture n'est sélectionnée et aucune facture n'existe) */}
+              {!formData.reference && factures.length === 0 && (
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5">Vente liée (optionnel)</label>
+                  <select
+                    value={formData.venteId}
+                    onChange={(e) => setFormData({ ...formData, venteId: e.target.value })}
+                    className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
+                  >
+                    <option value="">Sélectionner une vente</option>
+                    {ventes.map((v) => (
+                      <option key={v.idVente || v.id} value={v.idVente || v.id}>
+                        {v.numeroFacture ? `${v.numeroFacture} - ${v.nomClient}` : v.idVente || v.id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Sélection référence facture (optionnelle, uniquement liste déroulante) */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5">
-                  Référence (optionnel)
-                </label>
-                <input
-                  type="text"
+                <label className="block text-xs font-semibold mb-1.5">Référence facture (optionnel)</label>
+                <select
                   value={formData.reference}
-                  onChange={(e) =>
-                    setFormData({ ...formData, reference: e.target.value })
-                  }
-                  placeholder="Ex: F-2024-001, BON-2024-012"
+                  onChange={(e) => setFormData({ ...formData, reference: e.target.value })}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
-                />
+                >
+                  <option value="">Aucune</option>
+                  {factures.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.numeroFacture ? f.numeroFacture : f.id}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

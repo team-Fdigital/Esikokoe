@@ -32,12 +32,33 @@ export default function Produits() {
   }, []);
 
   const handleAddProduct = async () => {
-    if (!formData.nomProduit || !formData.format || !formData.categorie || !formData.stockInitial || !formData.prixUnitaire) {
-      alert("Veuillez remplir tous les champs obligatoires");
+    // Conversion des champs numériques
+    const stockInitial = Number(formData.stockInitial);
+    const stockMinimum = Number(formData.stockMinimum);
+    const prixUnitaire = Number(formData.prixUnitaire);
+
+    // Validation détaillée
+    let errorMsg = "";
+    if (!formData.nomProduit.trim()) errorMsg += "Nom du produit\n";
+    if (!formData.format.trim()) errorMsg += "Format\n";
+    if (!formData.categorie.trim()) errorMsg += "Catégorie\n";
+    if (formData.stockInitial === "" || isNaN(stockInitial)) errorMsg += "Stock initial (nombre)\n";
+    if (formData.prixUnitaire === "" || isNaN(prixUnitaire)) errorMsg += "Prix unitaire (nombre)\n";
+
+    if (errorMsg) {
+      alert("Veuillez remplir correctement les champs suivants :\n" + errorMsg);
       return;
     }
+
+    // Préparer les données à envoyer
+    const dataToSend = {
+      ...formData,
+      stockInitial,
+      stockMinimum,
+      prixUnitaire,
+    };
     try {
-      await createProduit(formData);
+      await createProduit(dataToSend);
       setShowModal(false);
       setFormData({
         nomProduit: "",
@@ -59,7 +80,13 @@ export default function Produits() {
         })
         .finally(() => setLoading(false));
     } catch (err) {
-      alert("Erreur lors de la création du produit");
+      let msg = "Erreur lors de la création du produit";
+      if (err?.response?.data?.message) {
+        msg += " : " + err.response.data.message;
+      } else if (err?.message) {
+        msg += " : " + err.message;
+      }
+      alert(msg);
     }
   };
 
@@ -226,7 +253,7 @@ export default function Produits() {
 
       {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4 max-h-[90vh] overflow-y-auto">
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
@@ -254,9 +281,9 @@ export default function Produits() {
                   </label>
                   <input
                     type="text"
-                    value={formData.nom}
+                    value={formData.nomProduit}
                     onChange={(e) =>
-                      setFormData({ ...formData, nom: e.target.value })
+                      setFormData({ ...formData, nomProduit: e.target.value })
                     }
                     placeholder="Ex: Eau Pure"
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
@@ -369,7 +396,7 @@ export default function Produits() {
             
               <button
                 onClick={handleAddProduct}
-                className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
+                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm border border-blue-600"
               >
                 Ajouter le produit
               </button>
