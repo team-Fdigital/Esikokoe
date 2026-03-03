@@ -100,8 +100,8 @@ export default function About() {
   return (
     <div className="min-h-screen">
       {/* Carousel Section */}
-      <div className="min-h-screen">
-        <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className="h-[70vh] md:min-h-screen min-h-[500px]">
+        <div className="relative h-full md:min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50">
           {/* Floating Particles */}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(20)].map((_, i) => (
@@ -118,23 +118,22 @@ export default function About() {
             ))}
           </div>
 
-          <div className="relative min-h-screen">
+          <div className="relative h-full">
             {/* Slides */}
             {slides.map((slide, index) => {
               const IconComponent = slide.icon
               return (
                 <div
                   key={slide.id}
-                  className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-                    index === currentSlide
-                      ? 'opacity-100 translate-y-0'
-                      : 'opacity-0 translate-y-full'
-                  }`}
+                  className={`absolute inset-0 transition-all duration-1000 ease-in-out ${index === currentSlide
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-full'
+                    }`}
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${slide.bgGradient} opacity-10`} />
-                  <div className="relative z-10 min-h-screen flex items-center py-20">
+                  <div className="relative z-10 h-full flex items-center py-12 lg:py-20">
                     <div className="container mx-auto px-4">
-                      <div className="grid lg:grid-cols-2 gap-16 items-center">
+                      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
                         {/* Left Content */}
                         <div className="space-y-8">
                           <div className="flex items-center space-x-4">
@@ -146,11 +145,11 @@ export default function About() {
                             </div>
                           </div>
 
-                          <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4 text-center lg:text-left">
                             {slide.title}
                           </h2>
 
-                          <p className="text-xl text-gray-600 leading-relaxed">
+                          <p className="text-lg lg:text-xl text-gray-600 leading-relaxed text-center lg:text-left">
                             {slide.description}
                           </p>
 
@@ -174,11 +173,11 @@ export default function About() {
 
                         {/* Right Image */}
                         <div className="relative">
-                          <div className="rounded-lg border bg-card text-card-foreground overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
+                          <div className="rounded-lg border bg-card text-card-foreground overflow-hidden shadow-2xl transform hover:scale-105 transition-all duration-500">
                             <img
                               src={slide.image}
                               alt={slide.title}
-                              className="w-full h-[500px] object-cover"
+                              className="w-full h-48 sm:h-64 lg:h-[500px] object-cover"
                             />
                           </div>
                           <div className={`absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-r ${slide.gradient} rounded-full opacity-20 animate-pulse`} />
@@ -206,11 +205,10 @@ export default function About() {
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentSlide
-                        ? 'bg-blue-600 scale-125'
-                        : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
+                      ? 'bg-blue-600 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
                   />
                 ))}
               </div>
