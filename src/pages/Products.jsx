@@ -124,31 +124,30 @@ export default function Products() {
   return (
     <div className="w-full pb-20">
       {/* Carousel Section */}
-      <div className="h-screen">
-        <div className="relative h-screen overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="h-[650px] md:h-screen">
+        <div className="relative h-full overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z%22 fill=%22%23000%22 fillOpacity=%220.1%22 fillRule=%22evenodd%22/%3E%3C/svg%3E')]"></div>
           </div>
 
-          <div className="relative h-screen">
+          <div className="relative h-full">
             {/* Slides */}
             {slides.map((slide, index) => {
               const IconComponent = slide.icon
               return (
                 <div
                   key={slide.id}
-                  className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-                    index === currentSlide
-                      ? 'opacity-100 scale-100 pointer-events-auto'
-                      : 'opacity-0 scale-95 pointer-events-none'
-                  }`}
+                  className={`absolute inset-0 transition-all duration-1000 ease-in-out ${index === currentSlide
+                    ? 'opacity-100 scale-100 pointer-events-auto'
+                    : 'opacity-0 scale-95 pointer-events-none'
+                    }`}
                 >
-                  <div className="relative z-10 h-screen flex items-center justify-center py-8">
+                  <div className="relative z-10 h-auto md:h-full flex items-center justify-center py-4 md:py-8">
                     <div className="container mx-auto px-4 max-w-7xl">
                       <div className="grid lg:grid-cols-2 gap-8 items-center h-full">
-                        {/* Left Product Card */}
-                        <div className="relative hidden lg:block">
+                        {/* Product Card */}
+                        <div className="relative block lg:block mb-8 lg:mb-0">
                           <div className="rounded-lg bg-card text-card-foreground overflow-hidden shadow-2xl transform hover:scale-105 transition-all duration-500 border-0">
                             <div className={`absolute inset-0 bg-gradient-to-br ${slide.bgGradient} opacity-10`}></div>
 
@@ -167,12 +166,12 @@ export default function Products() {
                                 <img
                                   src={slide.image}
                                   alt={slide.title}
-                                  className="w-full h-64 object-cover"
+                                  className="w-full h-32 sm:h-64 object-cover"
                                 />
                                 <div className={`absolute inset-0 bg-gradient-to-t ${slide.gradient} opacity-20`}></div>
                               </div>
 
-                              <div className="p-6 space-y-4">
+                              <div className="p-4 md:p-6 space-y-3 md:space-y-4">
                                 {/* Product Header */}
                                 <div className="flex items-center space-x-4">
                                   <div className={`p-3 rounded-xl bg-gradient-to-r ${slide.gradient}`}>
@@ -194,8 +193,8 @@ export default function Products() {
                                   )}
                                 </div>
 
-                                {/* Features */}
-                                <div className="grid grid-cols-2 gap-3">
+                                {/* Features - Caché sur mobile pour gagner de l'espace */}
+                                <div className="hidden md:grid grid-cols-2 gap-3">
                                   {slide.features.map((feature, idx) => (
                                     <div key={idx} className="flex items-center space-x-2">
                                       <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${slide.gradient}`}></div>
@@ -211,7 +210,7 @@ export default function Products() {
                                 </div>
 
                                 {/* CTA Button */}
-                                <button className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-11 rounded-md px-8 w-full bg-gradient-to-r ${slide.gradient} hover:opacity-90 text-white text-lg py-4 font-bold`}>
+                                <button className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 md:h-11 rounded-md px-6 md:px-8 w-full bg-gradient-to-r ${slide.gradient} hover:opacity-90 text-white text-base md:text-lg py-2 md:py-4 font-bold`}>
                                   <ShoppingCart className="w-5 h-5 mr-2" />
                                   Commander Maintenant
                                 </button>
@@ -226,10 +225,10 @@ export default function Products() {
                             <div className="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-lg px-4 py-2 mb-4">
                               {slide.format}
                             </div>
-                            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4">
+                            <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 leading-tight text-center lg:text-left">
                               {slide.title}
                             </h2>
-                            <p className="text-lg text-gray-600 leading-relaxed">
+                            <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center lg:text-left">
                               {slide.description}
                             </p>
                           </div>
@@ -276,11 +275,10 @@ export default function Products() {
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentSlide
-                        ? 'bg-blue-600 scale-125'
-                        : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
+                      ? 'bg-blue-600 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
                   />
                 ))}
               </div>
@@ -368,7 +366,7 @@ export default function Products() {
                     </div>
                   </div>
                   <div className="text-sm text-gray-500 mb-4">
-                    • Remise dégressive à partir de 50 sachets<br/>
+                    • Remise dégressive à partir de 50 sachets<br />
                     • Livraison gratuite dès 100 sachets
                   </div>
                 </div>
@@ -440,7 +438,7 @@ export default function Products() {
                     </div>
                   </div>
                   <div className="text-sm text-gray-500 mb-4">
-                    • Consigne bonbonne: 2,000 FCFA (remboursable)<br/>
+                    • Consigne bonbonne: 2,000 FCFA (remboursable)<br />
                     • Livraison gratuite dès 5 bonbonnes
                   </div>
                 </div>

@@ -129,9 +129,8 @@ const ContactSlider = () => {
 
   const renderTestimonials = (temoignages) => {
     return temoignages.map((testimonial, index) => (
-      <div key={index} className={`rounded-lg border bg-card text-card-foreground p-6 transition-all duration-500 ${
-        index === 0 ? 'opacity-100 scale-100 shadow-lg' : 'opacity-50 scale-95'
-      }`}>
+      <div key={index} className={`rounded-lg border bg-card text-card-foreground p-6 transition-all duration-500 ${index === 0 ? 'opacity-100 scale-100 shadow-lg' : 'opacity-50 scale-95'
+        }`}>
         <div className="flex items-center space-x-2 mb-3">
           {[...Array(testimonial.etoiles)].map((_, i) => (
             <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -145,7 +144,7 @@ const ContactSlider = () => {
 
   return (
     <div className="w-full pb-20">
-      <div className="relative h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-slate-100">
+      <div className="relative h-[70vh] md:h-screen min-h-[500px] overflow-hidden bg-gradient-to-br from-gray-50 to-slate-100">
         {/* Particules */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
@@ -155,42 +154,41 @@ const ContactSlider = () => {
         </div>
 
         {/* Slides */}
-        <div className="relative h-screen">
+        <div className="relative h-full">
           {slides.map((slide, index) => {
             const IconComponent = slide.icone;
             const isTestimonial = index === 2;
             return (
               <div
                 key={slide.id}
-                className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-                  index === currentSlide
-                    ? 'opacity-100 translate-x-0'
-                    : index < currentSlide
+                className={`absolute inset-0 transition-all duration-1000 ease-in-out ${index === currentSlide
+                  ? 'opacity-100 translate-x-0'
+                  : index < currentSlide
                     ? 'opacity-0 -translate-x-full'
                     : 'opacity-0 translate-x-full'
-                }`}
+                  }`}
               >
-                <div className="relative z-10 h-screen flex items-center justify-center py-8">
+                <div className="relative z-10 h-full flex items-center justify-center py-8">
                   <div className="container mx-auto px-4 max-w-7xl">
                     <div className="grid lg:grid-cols-2 gap-8 items-center h-full">
                       <div className="space-y-4">
                         <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-2xl bg-gradient-to-r ${slide.degrade}`}>
+                          <div className={`p-3 rounded-2xl bg-gradient-to-r ${slide.degrade} mx-auto lg:mx-0`}>
                             <IconComponent className="w-6 h-6 text-white" />
                           </div>
-                          <div className="inline-flex items-center rounded-full border font-semibold px-4 py-2 bg-secondary text-secondary-foreground">
+                          <div className="inline-flex items-center rounded-full border font-semibold px-4 py-2 bg-secondary text-secondary-foreground mx-auto lg:mx-0">
                             {slide.badge}
                           </div>
                         </div>
-                        <h2 className="text-2xl lg:text-4xl font-bold text-gray-900 leading-tight">{slide.titre}</h2>
-                        <p className="text-base text-gray-600 leading-relaxed">{slide.description}</p>
-                        
+                        <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 leading-tight text-center lg:text-left">{slide.titre}</h2>
+                        <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center lg:text-left">{slide.description}</p>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {isTestimonial ? renderTestimonials(slide.temoignages) : renderContactCards(slide.contacts || [])}
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                          <a 
+                          <a
                             href={`tel:+228${getPhoneNumber(slide)}`}
                             className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 rounded-md bg-gradient-to-r ${slide.degrade} hover:opacity-90 text-white text-base px-6 py-3`}
                           >
@@ -210,8 +208,8 @@ const ContactSlider = () => {
                       {/* 🎨 ZONE IMAGE EN GRAND FORMAT ✅ */}
                       <div className="relative hidden lg:block h-[500px] w-full"> {/* ← HAUTEUR AUGMENTÉE */}
                         <div className="w-full h-full rounded-2xl border bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-500">
-                          <img 
-                            src={slide.image} 
+                          <img
+                            src={slide.image}
                             alt={slide.altImage}
                             className="w-full h-full object-cover" // ← object-cover + h-full
                             onError={(e) => {
@@ -220,7 +218,7 @@ const ContactSlider = () => {
                           />
                           <div className={`absolute inset-0 bg-gradient-to-t ${slide.degrade} opacity-20`}></div>
                         </div>
-                        
+
                         {/* Bouton flottant image */}
                         <div className="absolute -bottom-6 -right-6 bg-white rounded-3xl shadow-2xl p-3 animate-bounce lg:w-40">
                           <div className="flex items-center space-x-2">
@@ -238,8 +236,8 @@ const ContactSlider = () => {
                       {/* 📱 VERSION MOBILE - Image en grand */}
                       <div className="lg:hidden w-full mt-8">
                         <div className="w-full h-64 rounded-2xl border bg-card overflow-hidden shadow-2xl">
-                          <img 
-                            src={slide.image} 
+                          <img
+                            src={slide.image}
                             alt={slide.altImage}
                             className="w-full h-full object-cover"
                           />
@@ -277,7 +275,7 @@ const ContactSlider = () => {
           </button>
         </div>
 
-       
+
       </div>
     </div>
   );
