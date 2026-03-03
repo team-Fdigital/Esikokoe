@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getAllVentes, createVente } from "../../../apiClient";
+import { getAllVentes, createVente, getAllProduits } from "../../../apiClient";
 
 export default function Ventes() {
   const [showModal, setShowModal] = useState(false);
@@ -28,12 +28,7 @@ export default function Ventes() {
 
   const [modePaiement, setModePaiement] = useState("");
 
-  const listeProduits = [
-    { id: 1, nom: "Eau minérale 1L" },
-    { id: 2, nom: "Eau minérale 5L" },
-    { id: 3, nom: "Eau en vrac" },
-    { id: 4, nom: "Services de livraison" },
-  ];
+  const [listeProduits, setListeProduits] = useState([]);
 
   const [ventes, setVentes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +44,19 @@ export default function Ventes() {
         }
       })
       .finally(() => setLoading(false));
+
+    // Récupérer les produits depuis l'API
+    getAllProduits()
+      .then((res) => {
+        if (res.data && Array.isArray(res.data.produits)) {
+          setListeProduits(res.data.produits);
+        } else if (Array.isArray(res.data)) {
+          setListeProduits(res.data);
+        } else {
+          setListeProduits([]);
+        }
+      })
+      .catch(() => setListeProduits([]));
   }, []);
 
   const sousTotal = produits.reduce(
@@ -300,52 +308,64 @@ export default function Ventes() {
                 </div>
 
                 <div className="space-y-2">
-                  {produits.map((p, i) => (
-                    <div key={p.id} className="grid grid-cols-4 gap-2">
-                      <select
-                        value={p.produit}
-                        onChange={(e) => {
-                          const copy = [...produits];
-                          copy[i].produit = e.target.value;
-                          setProduits(copy);
-                        }}
-                        className="border rounded px-2 py-1 text-sm"
-                      >
-                        <option value="">Produit</option>
-                        {listeProduits.map((lp) => (
-                          <option key={lp.id}>{lp.nom}</option>
-                        ))}
-                      </select>
+                  {produits.map((p, i) => {
+                    // Trouver le produit sélectionné pour afficher le prix par défaut si besoin
+                    const produitObj = listeProduits.find(lp => lp.codeProduit === p.produit);
+                    return (
+                      <div key={p.id} className="grid grid-cols-4 gap-2">
+                        <select
+                          value={p.produit}
+                          onChange={(e) => {
+                            const codeProduit = e.target.value;
+                            const produitTrouve = listeProduits.find(lp => lp.codeProduit === codeProduit);
+                            const copy = [...produits];
+                            copy[i].produit = codeProduit;
+                            // Toujours mettre à jour le prix unitaire selon le produit sélectionné
+                            if (produitTrouve) {
+                              copy[i].prixUnitaire = produitTrouve.prixUnitaire;
+                            } else {
+                              copy[i].prixUnitaire = 0;
+                            }
+                            setProduits(copy);
+                          }}
+                          className="border rounded px-2 py-1 text-sm"
+                        >
+                          <option value="">Produit</option>
+                          {listeProduits.map((lp) => (
+                            <option key={lp.codeProduit} value={lp.codeProduit}>{lp.nomProduit}</option>
+                          ))}
+                        </select>
 
-                      <input
-                        type="number"
-                        placeholder="Qté"
-                        value={p.quantite}
-                        onChange={(e) => {
-                          const copy = [...produits];
-                          copy[i].quantite = +e.target.value;
-                          setProduits(copy);
-                        }}
-                        className="border rounded px-2 py-1 text-sm"
-                      />
+                        <input
+                          type="number"
+                          placeholder="Qté"
+                          value={p.quantite}
+                          onChange={(e) => {
+                            const copy = [...produits];
+                            copy[i].quantite = +e.target.value;
+                            setProduits(copy);
+                          }}
+                          className="border rounded px-2 py-1 text-sm"
+                        />
 
-                      <input
-                        type="number"
-                        placeholder="Prix"
-                        value={p.prixUnitaire}
-                        onChange={(e) => {
-                          const copy = [...produits];
-                          copy[i].prixUnitaire = +e.target.value;
-                          setProduits(copy);
-                        }}
-                        className="border rounded px-2 py-1 text-sm"
-                      />
+                        <input
+                          type="number"
+                          placeholder="Prix"
+                          value={p.prixUnitaire}
+                          onChange={(e) => {
+                            const copy = [...produits];
+                            copy[i].prixUnitaire = +e.target.value;
+                            setProduits(copy);
+                          }}
+                          className="border rounded px-2 py-1 text-sm"
+                        />
 
-                      <div className="text-sm font-semibold flex items-center">
-                        {(p.quantite * p.prixUnitaire).toLocaleString()} FCFA
+                        <div className="text-sm font-semibold flex items-center">
+                          {(p.quantite * p.prixUnitaire).toLocaleString()} FCFA
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -403,12 +423,22 @@ export default function Ventes() {
                   try {
                     await createVente(venteData);
                     setShowModal(false);
+                    // Reset form
+                    setClientInfo({ nom: "", telephone: "", adresse: "" });
+                    setProduits([{ id: 1, produit: "", quantite: 0, prixUnitaire: 0 }]);
+                    setModePaiement("");
                     setLoading(true);
                     getAllVentes()
-                      .then((res) => setVentes(res.data))
+                      .then((res) => {
+                        if (res.data && Array.isArray(res.data.ventes)) {
+                          setVentes(res.data.ventes);
+                        } else {
+                          setVentes([]);
+                        }
+                      })
                       .finally(() => setLoading(false));
                   } catch (err) {
-                    alert("Erreur lors de la création de la vente");
+                    alert("Erreur lors de la création de la vente : " + (err?.response?.data?.message || err.message || err));
                   }
                 }}
                 className="flex-1 bg-black text-white rounded-lg py-2"

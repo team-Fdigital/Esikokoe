@@ -34,8 +34,33 @@ function AppContent() {
   const location = useLocation()
 
   useEffect(() => {
-    const adminToken = localStorage.getItem('adminToken')
-    if (adminToken) setIsAdmin(true)
+    const token = localStorage.getItem('token')
+    if (token) {
+      setIsAdmin(true)
+    } else {
+      // Tenter de rafraîchir le token si refreshToken existe
+      const refreshToken = localStorage.getItem('refreshToken')
+      if (refreshToken) {
+        // DEBUG: Afficher le contenu du refreshToken
+        try {
+          const payload = JSON.parse(atob(refreshToken.split('.')[1]))
+          console.log('Payload refreshToken:', payload)
+        } catch (e) {
+          console.log('Impossible de décoder le refreshToken')
+        }
+        // Appel API pour rafraîchir le token
+        import('./apiClient').then(({ refreshToken: refreshTokenApi }) => {
+          refreshTokenApi().then(res => {
+            if (res.data && res.data.accessToken) {
+              localStorage.setItem('token', res.data.accessToken)
+              setIsAdmin(true)
+            } else {
+              setIsAdmin(false)
+            }
+          }).catch(() => setIsAdmin(false))
+        })
+      }
+    }
   }, [])
 
   const isAdminRoute = location.pathname.startsWith('/admin')

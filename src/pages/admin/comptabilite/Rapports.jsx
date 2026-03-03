@@ -46,7 +46,7 @@ export default function Rapports() {
   }, []);
 
   const categoriesByType = {
-    Recette: ["Ventes", "Services", "Autres revenue"],
+    Recette: ["Ventes"],
     Dépense: ["Approvisionnement", "Transport", "Salaires", "Loyer", "Utilities", "Autre"],
   };
 
@@ -111,21 +111,54 @@ export default function Rapports() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Stat
             label="Recettes totales"
-            value="214 500 FCFA"
+            value={
+              distribution && Array.isArray(distribution.recettes)
+                ? distribution.recettes.reduce((sum, item) => sum + Number(item.montant), 0).toLocaleString() + ' FCFA'
+                : '0 FCFA'
+            }
             color="green"
             icon={<TrendingUp className="text-green-600" />}
           />
           <Stat
             label="Dépenses totales"
-            value="655 000 FCFA"
+            value={
+              distribution && Array.isArray(distribution.depenses)
+                ? distribution.depenses.reduce((sum, item) => sum + Number(item.montant), 0).toLocaleString() + ' FCFA'
+                : '0 FCFA'
+            }
             color="red"
             icon={<TrendingDown className="text-red-600" />}
           />
           <Stat
             label="Bénéfice net"
-            value="-440 500 FCFA"
-            color="red"
-            icon={<DollarSign className="text-red-600" />}
+            value={(() => {
+              const recettes = distribution && Array.isArray(distribution.recettes)
+                ? distribution.recettes.reduce((sum, item) => sum + Number(item.montant), 0)
+                : 0;
+              const depenses = distribution && Array.isArray(distribution.depenses)
+                ? distribution.depenses.reduce((sum, item) => sum + Number(item.montant), 0)
+                : 0;
+              const benefice = recettes - depenses;
+              return benefice.toLocaleString() + ' FCFA';
+            })()}
+            color={(() => {
+              const recettes = distribution && Array.isArray(distribution.recettes)
+                ? distribution.recettes.reduce((sum, item) => sum + Number(item.montant), 0)
+                : 0;
+              const depenses = distribution && Array.isArray(distribution.depenses)
+                ? distribution.depenses.reduce((sum, item) => sum + Number(item.montant), 0)
+                : 0;
+              return recettes - depenses >= 0 ? "green" : "red";
+            })()}
+            icon={<DollarSign className={(() => {
+              const recettes = distribution && Array.isArray(distribution.recettes)
+                ? distribution.recettes.reduce((sum, item) => sum + Number(item.montant), 0)
+                : 0;
+              const depenses = distribution && Array.isArray(distribution.depenses)
+                ? distribution.depenses.reduce((sum, item) => sum + Number(item.montant), 0)
+                : 0;
+              return "text-" + (recettes - depenses >= 0 ? "green" : "red") + "-600";
+            })()} />}
           />
         </div>
 
@@ -187,6 +220,8 @@ export default function Rapports() {
               : <div className="text-gray-400 text-sm">Aucune donnée</div>}
           </div>
         </div>
+
+        {/* ...existing code... */}
       </div>
 
       {/* MODAL */}

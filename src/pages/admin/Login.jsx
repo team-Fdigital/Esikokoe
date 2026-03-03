@@ -44,11 +44,16 @@ export default function Login({ setIsAdmin }) {
         email,
         password,
       })
-      // Le backend retourne { accessToken, refreshToken }
+      // Le backend retourne { accessToken, refreshToken } ou { error }
       if (response.data && response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken)
+        if (response.data.refreshToken) {
+          localStorage.setItem('refreshToken', response.data.refreshToken)
+        }
         if (setIsAdmin) setIsAdmin(true)
         navigate('/admin')
+      } else if (response.data && response.data.error) {
+        setError(response.data.error)
       } else {
         setError('Email ou mot de passe incorrect')
       }

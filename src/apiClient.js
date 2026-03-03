@@ -21,7 +21,14 @@ apiClient.interceptors.request.use((config) => {
 // AUTH
 export const login = (email, password) => apiClient.post('/auth/login', { email, password });
 export const registerAdmin = (data) => apiClient.post('/auth/register', data);
-export const refreshToken = () => apiClient.post('/auth/refresh');
+export const refreshToken = () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  return apiClient.post('/auth/refresh', {}, {
+    headers: {
+      Authorization: `Bearer ${refreshToken}`
+    }
+  });
+};
 
 // USERS
 export const createUser = (data) => apiClient.post('/users', data);
