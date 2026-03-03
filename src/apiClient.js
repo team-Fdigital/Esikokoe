@@ -1,0 +1,67 @@
+import axios from 'axios';
+
+// Crée une instance Axios configurée pour le backend
+const apiClient = axios.create({
+  baseURL: 'http://localhost:9000', // URL du backend
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Intercepteur pour ajouter le token JWT si besoin
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
+
+// AUTH
+export const login = (email, password) => apiClient.post('/auth/login', { email, password });
+export const registerAdmin = (data) => apiClient.post('/auth/register', data);
+export const refreshToken = () => apiClient.post('/auth/refresh');
+
+// USERS
+export const createUser = (data) => apiClient.post('/users', data);
+
+// VENTES
+export const createVente = (data) => apiClient.post('/ventes', data);
+export const getAllVentes = () => apiClient.get('/ventes');
+export const searchVentes = (q) => apiClient.get('/ventes/search/query', { params: { q } });
+export const getVentesByDateRange = (debut, fin) => apiClient.get('/ventes/filter/date', { params: { debut, fin } });
+export const getVentesStats = () => apiClient.get('/ventes/stats/dashboard');
+export const getVenteDetail = (idVente) => apiClient.get(`/ventes/${idVente}`);
+export const updateVente = (idVente, data) => apiClient.patch(`/ventes/${idVente}`, data);
+export const deleteVente = (idVente) => apiClient.delete(`/ventes/${idVente}`);
+
+// STOCK
+export const registerStockEntry = (data) => apiClient.post('/stock/entry', data);
+export const deductStock = (data) => apiClient.post('/stock/deduct', data);
+export const getInventory = () => apiClient.get('/stock/inventory');
+export const getStockByFormat = () => apiClient.get('/stock/by-format');
+export const getCriticalStocks = () => apiClient.get('/stock/critical');
+export const getStockDashboardMetrics = () => apiClient.get('/stock/dashboard');
+export const getStockHistory = (limit) => apiClient.get('/stock/history', { params: { limit } });
+
+// RAPPORTS
+export const getProduitsRapport = () => apiClient.get('/rapports/produits');
+export const getVentesRapport = () => apiClient.get('/rapports/ventes');
+
+// PRODUITS
+export const searchProduits = (q) => apiClient.get('/produits/search/query', { params: { q } });
+export const getProduitsByFormat = (format) => apiClient.get('/produits/filter/format', { params: { format } });
+export const getStatsProduitsByFormat = () => apiClient.get('/produits/stats/by-format');
+export const getProduitsDashboardMetrics = () => apiClient.get('/produits/dashboard/metrics');
+export const createProduit = (data) => apiClient.post('/produits', data);
+export const getAllProduits = () => apiClient.get('/produits');
+export const getProduitByCode = (codeProduit) => apiClient.get(`/produits/${codeProduit}`);
+export const updateProduit = (codeProduit, data) => apiClient.put(`/produits/${codeProduit}`, data);
+export const deleteProduit = (codeProduit) => apiClient.delete(`/produits/${codeProduit}`);
+
+// Factures (exemple, à compléter selon besoins)
+// export const getAllFactures = () => apiClient.get('/factures');
+// export const updateFacture = (id, data) => apiClient.put(`/factures/${id}`, data);
+
+export default apiClient;
