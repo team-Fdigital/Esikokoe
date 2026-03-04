@@ -9,7 +9,8 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAuditStatus, getAuditLogs, getAuditEquilibration, getAuditTrend } from "../../../apiClient";
 
 export default function Audit() {
   const [showModal, setShowModal] = useState(false);
@@ -20,6 +21,25 @@ export default function Audit() {
     montant: "",
     reference: "",
   });
+  const [auditStatus, setAuditStatus] = useState(null);
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditEquil, setAuditEquil] = useState(null);
+  const [auditTrend, setAuditTrend] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      getAuditStatus(),
+      getAuditLogs(),
+      getAuditEquilibration(),
+      getAuditTrend(),
+    ]).then(([statusRes, logsRes, equilRes, trendRes]) => {
+      setAuditStatus(statusRes.data);
+      setAuditLogs(logsRes.data);
+      setAuditEquil(equilRes.data);
+      setAuditTrend(trendRes.data);
+    }).finally(() => setLoading(false));
+  }, []);
 
   const categoriesByType = {
     Recette: ["Ventes", "Services", "Autres revenue"],
@@ -126,12 +146,12 @@ export default function Audit() {
 
           {/* STATS */}
           <div className="grid md:grid-cols-3 gap-4">
-            <Stat title="Transactions vérifiées" value="5" color="text-green-600" />
-            <Stat title="Écarts détectés" value="0" color="text-yellow-600" />
+            <Stat title="Transactions vérifiées" value={auditStatus?.transactionsVerifiees ?? 0} color="text-green-600" />
+            <Stat title="Écarts détectés" value={auditStatus?.ecartsDetectes ?? 0} color="text-yellow-600" />
             <div className="border rounded-lg p-4 text-center">
               <p className="text-sm text-gray-600 mb-2">Statut audit</p>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                Conforme
+              <span className={`px-3 py-1 rounded-full text-sm ${auditStatus?.statut === 'Conforme' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {auditStatus?.statut || 'Inconnu'}
               </span>
             </div>
           </div>

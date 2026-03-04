@@ -1,39 +1,19 @@
 import { TrendingUp, ArrowLeft, Download, BarChart3, Target, PieChart, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getVentesRapport } from "../../../apiClient";
 
 export default function SalesReport() {
-  const stats = [
-    { 
-      title: "CA du mois", 
-      value: "2,847,500 FCFA", 
-      trend: "+12.5% vs mois dernier",
-      icon: <BarChart3 className="text-blue-500" size={28} />
-    },
-    { 
-      title: "Commandes", 
-      value: "89", 
-      trend: "+8.1% vs mois dernier",
-      icon: <Target className="text-green-600" size={28} />
-    },
-    { 
-      title: "Panier moyen", 
-      value: "31,989 FCFA", 
-      trend: "+4.2% vs mois dernier",
-      icon: <PieChart className="text-purple-600" size={28} />
-    },
-    { 
-      title: "Taux de croissance", 
-      value: "12.5%", 
-      trend: "Objectif: 10%",
-      icon: <ArrowUpRight className="text-orange-500" size={28} />
-    },
-  ];
+  const [metrics, setMetrics] = useState(null);
+  const [evolution, setEvolution] = useState([]);
 
-  const evolutionData = [
-    { month: "Janvier 2024", amount: "2 847 500 FCFA", status: "Mois actuel", current: true },
-    { month: "Décembre 2023", amount: "2 654 300 FCFA", status: "" },
-    { month: "Novembre 2023", amount: "2 543 100 FCFA", status: "" },
-  ];
+  useEffect(() => {
+    getVentesRapport().then(res => {
+      const data = res.data;
+      setMetrics(data.metrics || null);
+      setEvolution(data.evolution || []);
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -102,7 +82,32 @@ export default function SalesReport() {
 
         {/* KPI CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat, idx) => (
+          {metrics && [
+            {
+              title: "CA du mois",
+              value: metrics.caduMois?.toLocaleString() + " FCFA",
+              trend: `${metrics.variationCA > 0 ? "+" : ""}${metrics.variationCA}% vs mois dernier`,
+              icon: <BarChart3 className="text-blue-500" size={28} />
+            },
+            {
+              title: "Commandes",
+              value: metrics.commandes,
+              trend: `${metrics.variationCommandes > 0 ? "+" : ""}${metrics.variationCommandes}% vs mois dernier`,
+              icon: <Target className="text-green-600" size={28} />
+            },
+            {
+              title: "Panier moyen",
+              value: metrics.panierMoyen?.toLocaleString() + " FCFA",
+              trend: `${metrics.variationPanierMoyen > 0 ? "+" : ""}${metrics.variationPanierMoyen}% vs mois dernier`,
+              icon: <PieChart className="text-purple-600" size={28} />
+            },
+            {
+              title: "Taux de croissance",
+              value: `${metrics.tauxCroissance}%`,
+              trend: `Objectif: ${metrics.objectifCroissance}%`,
+              icon: <ArrowUpRight className="text-orange-500" size={28} />
+            }
+          ].map((stat, idx) => (
             <StatCard key={idx} {...stat} />
           ))}
         </div>
@@ -115,17 +120,17 @@ export default function SalesReport() {
           </div>
 
           <div className="p-6 space-y-4">
-            {evolutionData.map((item, idx) => (
+            {evolution.map((item, idx) => (
               <div key={idx} className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50">
                 <div>
-                  <h3 className="font-semibold text-gray-900">{item.month}</h3>
-                  <p className="text-xs text-gray-500">{item.amount.split(" ")[0]} commandes • {item.amount.split(" ")[1]} clients</p>
+                  <h3 className="font-semibold text-gray-900">{item.mois}</h3>
+                  <p className="text-xs text-gray-500">{item.nombreCommandes} commandes • {item.nombreClients} clients</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-bold text-gray-900">{item.amount}</span>
-                  {item.current && (
+                  <span className="font-bold text-gray-900">{item.chiffreAffaires?.toLocaleString()} FCFA</span>
+                  {item.isCurrent && (
                     <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">
-                      {item.status}
+                      Mois actuel
                     </span>
                   )}
                 </div>

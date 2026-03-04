@@ -1,11 +1,12 @@
 import { Package, Plus, Search, Download, Pencil, Trash2, ArrowLeft, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllProduits, createProduit } from "../../../apiClient";
 
 export default function Produits() {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    nom: "",
+    nomProduit: "",
     format: "",
     categorie: "",
     stockInitial: "",
@@ -13,68 +14,81 @@ export default function Produits() {
     prixUnitaire: "",
     fournisseur: "",
   });
+  const [produits, setProduits] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const categories = ["Eau Pure", "Eau Minérale", "Eau Gazeuse", "Autre"];
 
-  const handleAddProduct = () => {
-    if (!formData.nom || !formData.format || !formData.categorie || !formData.stockInitial || !formData.prixUnitaire) {
-      alert("Veuillez remplir tous les champs obligatoires");
+  useEffect(() => {
+    getAllProduits()
+      .then((res) => {
+        if (res.data && Array.isArray(res.data.produits)) {
+          setProduits(res.data.produits);
+        } else {
+          setProduits([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleAddProduct = async () => {
+    // Conversion des champs numériques
+    const stockInitial = Number(formData.stockInitial);
+    const stockMinimum = Number(formData.stockMinimum);
+    const prixUnitaire = Number(formData.prixUnitaire);
+
+    // Validation détaillée
+    let errorMsg = "";
+    if (!formData.nomProduit.trim()) errorMsg += "Nom du produit\n";
+    if (!formData.format.trim()) errorMsg += "Format\n";
+    if (!formData.categorie.trim()) errorMsg += "Catégorie\n";
+    if (formData.stockInitial === "" || isNaN(stockInitial)) errorMsg += "Stock initial (nombre)\n";
+    if (formData.prixUnitaire === "" || isNaN(prixUnitaire)) errorMsg += "Prix unitaire (nombre)\n";
+
+    if (errorMsg) {
+      alert("Veuillez remplir correctement les champs suivants :\n" + errorMsg);
       return;
     }
-    console.log("Nouveau produit:", formData);
-    setShowModal(false);
-    setFormData({
-      nom: "",
-      format: "",
-      categorie: "",
-      stockInitial: "",
-      stockMinimum: "",
-      prixUnitaire: "",
-      fournisseur: "",
-    });
+
+    // Préparer les données à envoyer
+    const dataToSend = {
+      ...formData,
+      stockInitial,
+      stockMinimum,
+      prixUnitaire,
+    };
+    try {
+      await createProduit(dataToSend);
+      setShowModal(false);
+      setFormData({
+        nomProduit: "",
+        format: "",
+        categorie: "",
+        stockInitial: "",
+        stockMinimum: "",
+        prixUnitaire: "",
+        fournisseur: "",
+      });
+      setLoading(true);
+      getAllProduits()
+        .then((res) => {
+          if (res.data && Array.isArray(res.data.produits)) {
+            setProduits(res.data.produits);
+          } else {
+            setProduits([]);
+          }
+        })
+        .finally(() => setLoading(false));
+    } catch (err) {
+      let msg = "Erreur lors de la création du produit";
+      if (err?.response?.data?.message) {
+        msg += " : " + err.response.data.message;
+      } else if (err?.message) {
+        msg += " : " + err.message;
+      }
+      alert(msg);
+    }
   };
-  const produits = [
-    {
-      code: "P001",
-      nom: "Eau Pure",
-      format: "Sachet 500ml",
-      stock: 1250,
-      min: 200,
-      statut: "bon",
-      prix: 25,
-      fournisseur: "Aqua Source",
-    },
-    {
-      code: "P002",
-      nom: "Eau Pure",
-      format: "Bouteille 1.5L",
-      stock: 45,
-      min: 50,
-      statut: "faible",
-      prix: 150,
-      fournisseur: "Aqua Source",
-    },
-    {
-      code: "P003",
-      nom: "Eau Minérale",
-      format: "Bouteille 500ml",
-      stock: 320,
-      min: 100,
-      statut: "bon",
-      prix: 100,
-      fournisseur: "Crystal Water",
-    },
-    {
-      code: "P004",
-      nom: "Eau Gazeuse",
-      format: "Bouteille 330ml",
-      stock: 180,
-      min: 80,
-      statut: "bon",
-      prix: 200,
-      fournisseur: "Sparkling Co",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -194,31 +208,30 @@ export default function Produits() {
 
               <tbody>
                 {produits.map((p) => (
-                  <tr key={p.code} className="border-b hover:bg-gray-50">
-                    <td className="py-3 font-medium">{p.code}</td>
-                    <td>{p.nom}</td>
+                  <tr key={p.codeProduit} className="border-b hover:bg-gray-50">
+                    <td className="py-3 font-medium">{p.codeProduit}</td>
+                    <td>{p.nomProduit}</td>
                     <td>{p.format}</td>
                     <td>
                       <span className="font-semibold">{p.stock}</span>
                       <span className="text-gray-500 text-xs">
-                        {" "}
-                        / {p.min} min
+                        {" "}/ min
                       </span>
                     </td>
                     <td>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          p.statut === "bon"
+                          p.statut === "En stock"
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {p.statut === "bon"
+                        {p.statut === "En stock"
                           ? "Stock bon"
                           : "Stock faible"}
                       </span>
                     </td>
-                    <td>{p.prix} FCFA</td>
+                    <td>{p.prixUnitaire} FCFA</td>
                     <td>{p.fournisseur}</td>
                     <td>
                       <div className="flex gap-2">
@@ -240,7 +253,7 @@ export default function Produits() {
 
       {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4 max-h-[90vh] overflow-y-auto">
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
@@ -268,9 +281,9 @@ export default function Produits() {
                   </label>
                   <input
                     type="text"
-                    value={formData.nom}
+                    value={formData.nomProduit}
                     onChange={(e) =>
-                      setFormData({ ...formData, nom: e.target.value })
+                      setFormData({ ...formData, nomProduit: e.target.value })
                     }
                     placeholder="Ex: Eau Pure"
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
@@ -383,7 +396,7 @@ export default function Produits() {
             
               <button
                 onClick={handleAddProduct}
-                className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
+                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm border border-blue-600"
               >
                 Ajouter le produit
               </button>

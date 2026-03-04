@@ -1,5 +1,6 @@
 // src/pages/admin/Dashboard.jsx
 import React, { useEffect, useState } from 'react';
+import { getVentesStats, getProduitsDashboardMetrics, getAllClients, getCriticalStocks, getAllVentes } from '../../apiClient';
 import StatCard from '../../components/admin/StatCard';
 import AlertCard from '../../components/admin/AlertCard';
 import RecentSalesTable from '../../components/admin/RecentSalesTable';
@@ -9,11 +10,36 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ ventes: null, stock: null, clients: null });
+  const [alertes, setAlertes] = useState([]);
+  const [recentSales, setRecentSales] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
+    Promise.all([
+      getVentesStats(),
+      getProduitsDashboardMetrics(),
+      getAllClients(),
+      getCriticalStocks(),
+      getAllVentes()
+    ]).then(([ventesRes, stockRes, clientsRes, alertesRes, ventesListRes]) => {
+      setStats({
+        ventes: ventesRes.data,
+        stock: stockRes.data,
+        clients: clientsRes.data,
+      });
+      setAlertes((alertesRes.data.produitsEnAlerte || []).map(
+        p => `Stock faible : ${p.nomProduit} (${p.stockActuel} unités restantes)`
+      ));
+      setRecentSales(
+        (ventesListRes.data.ventes || []).slice(0, 5).map(v => ({
+          client: v.numeroFacture,
+          product: v.client,
+          date: new Date(v.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }),
+          amount: v.montant?.toLocaleString() + ' FCFA',
+        }))
+      );
+    }).finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -44,31 +70,31 @@ export default function Dashboard() {
 
       {/* Statistiques principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
+        <StatCard
           title="Ventes du jour"
-          value="2,847,500 FCFA"
-          trend="+12.5% vs hier"
+          value={stats.ventes?.montantTotal?.toLocaleString() + ' FCFA' || '-'}
+          trend={stats.ventes ? `${stats.ventes.nombreVentes} ventes` : ''}
           trendUp={true}
           icon={<span className="text-green-600 text-2xl ml-2">$</span>}
         />
-        <StatCard 
+        <StatCard
           title="Stock total"
-          value="15,420 unités"
-          trend="-2.3% vs hier"
-          trendUp={false}
+          value={stats.stock?.valeurTotalStock?.toLocaleString() + ' FCFA' || '-'}
+          trend={stats.stock ? `${stats.stock.totalProduits} produits` : ''}
+          trendUp={true}
           icon={<Box className="text-blue-500 text-2xl ml-2" />}
         />
-        <StatCard 
+        <StatCard
           title="Commandes"
-          value="89"
-          trend="+8.1% vs hier"
+          value={stats.ventes?.nombreVentes || '-'}
+          trend={stats.ventes ? `Moyenne: ${stats.ventes.montantMoyen?.toLocaleString()} FCFA` : ''}
           trendUp={true}
           icon={<ShoppingCart className="text-purple-600 text-2xl ml-2" />}
         />
-        <StatCard 
+        <StatCard
           title="Clients actifs"
-          value="234"
-          trend="+5.2% vs hier"
+          value={stats.clients?.total || '-'}
+          trend={stats.clients ? `${stats.clients.total} clients` : ''}
           trendUp={true}
           icon={<Users className="text-orange-500 text-2xl ml-2" />}
         />
@@ -76,20 +102,15 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Alertes et Notifications */}
-        <AlertCard 
+        <AlertCard
           title="Alertes et Notifications"
-          alerts={[
-            'Stock faible : Bouteilles 1.5L (45 unités restantes)',
-            'Livraison prévue demain : 500 sachets 500ml',
-          ]}
+          alerts={alertes.length > 0 ? alertes : ["Aucune alerte"]}
         />
         {/* Ventes récentes */}
-        <RecentSalesTable 
+        <RecentSalesTable
           title="Ventes Récentes"
           subtitle="Dernières transactions effectuées"
-          sales={[
-            { client: 'F-2024-089', product: 'Restaurant Le Palmier', date: 'Il y a 15 min', amount: '125,000' },
-          ]}
+          sales={recentSales}
         />
       </div>
     </div>

@@ -1,28 +1,24 @@
 import { ShoppingCart, ArrowLeft, FileText, Plus, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createVente, getAllFactures } from "../../../apiClient";
 
 export default function Factures() {
   const [showModal, setShowModal] = useState(false);
+  const [factures, setFactures] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [clientInfo, setClientInfo] = useState({
-    nom: "",
-    telephone: "",
-    adresse: "",
-  });
-
-  const [produits, setProduits] = useState([
-    { id: 1, produit: "", quantite: 0, prixUnitaire: 0 },
-  ]);
-
-  const [modePaiement, setModePaiement] = useState("");
-
-  const listeProduits = [
-    { id: 1, nom: "Eau minérale 1L" },
-    { id: 2, nom: "Eau minérale 5L" },
-    { id: 3, nom: "Eau en vrac" },
-    { id: 4, nom: "Services de livraison" },
-  ];
+  useEffect(() => {
+    getAllFactures()
+      .then((res) => {
+        if (res.data && Array.isArray(res.data.factures)) {
+          setFactures(res.data.factures);
+        } else {
+          setFactures([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -92,16 +88,40 @@ export default function Factures() {
             </p>
           </div>
 
-          {/* EMPTY STATE */}
-          <div className="py-20 flex flex-col items-center text-center text-gray-500">
-            <FileText size={48} className="mb-4 text-gray-400" />
-            <h3 className="text-lg font-medium text-gray-700">
-              Fonctionnalité de gestion des factures
-            </h3>
-            <p className="text-sm">
-              À développer selon les besoins spécifiques
-            </p>
-          </div>
+          {loading ? (
+            <div className="py-20 flex flex-col items-center text-center text-gray-500">
+              <FileText size={48} className="mb-4 text-gray-400" />
+              <h3 className="text-lg font-medium text-gray-700">Chargement des factures...</h3>
+            </div>
+          ) : factures.length === 0 ? (
+            <div className="py-20 flex flex-col items-center text-center text-gray-500">
+              <FileText size={48} className="mb-4 text-gray-400" />
+              <h3 className="text-lg font-medium text-gray-700">Aucune facture enregistrée</h3>
+            </div>
+          ) : (
+            <div className="overflow-x-auto p-6">
+              <table className="w-full text-sm">
+                <thead className="border-b text-gray-500">
+                  <tr>
+                    <th className="text-left py-3">N° Facture</th>
+                    <th className="text-left">Date</th>
+                    <th className="text-left">Montant</th>
+                    <th className="text-left">Client</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {factures.map((f) => (
+                    <tr key={f.idFacture} className="border-b hover:bg-gray-50">
+                      <td className="py-3 font-medium">{f.numeroFacture}</td>
+                      <td>{new Date(f.dateFacture).toLocaleString()}</td>
+                      <td className="font-semibold">{f.montant} FCFA</td>
+                      <td>{f.vente?.commande?.client?.nomClient || ""}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 
@@ -290,12 +310,29 @@ export default function Factures() {
                 Annuler
               </button>
               <button
-                onClick={() => {
-                  console.log("Nouvelle vente:", { clientInfo, produits, modePaiement });
-                  setShowModal(false);
-                  setClientInfo({ nom: "", telephone: "", adresse: "" });
-                  setProduits([{ id: 1, produit: "", quantite: 0, prixUnitaire: 0 }]);
-                  setModePaiement("");
+                onClick={async () => {
+                  const venteData = {
+                    nomClient: clientInfo.nom,
+                    telephone: clientInfo.telephone,
+                    adresse: clientInfo.adresse,
+                    modePaiement,
+                    produits: produits.map((p) => ({
+                      codeProduit: p.produit,
+                      quantite: p.quantite,
+                      prixUnitaire: p.prixUnitaire,
+                    })),
+                    montantTotal: produits.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0) * 1.18,
+                    dateVente: new Date().toISOString(),
+                  };
+                  try {
+                    await createVente(venteData);
+                    setShowModal(false);
+                    setClientInfo({ nom: "", telephone: "", adresse: "" });
+                    setProduits([{ id: 1, produit: "", quantite: 0, prixUnitaire: 0 }]);
+                    setModePaiement("");
+                  } catch (err) {
+                    alert("Erreur lors de la création de la vente");
+                  }
                 }}
                 className="flex-1 px-4 py-2 text-sm bg-black hover:bg-gray-800 text-white rounded-lg font-medium"
               >

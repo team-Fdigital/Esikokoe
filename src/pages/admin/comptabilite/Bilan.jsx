@@ -7,7 +7,8 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getBilanSummary } from "../../../apiClient";
 
 export default function Bilan() {
   const [showModal, setShowModal] = useState(false);
@@ -18,6 +19,14 @@ export default function Bilan() {
     montant: "",
     reference: "",
   });
+  const [bilan, setBilan] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getBilanSummary()
+      .then((res) => setBilan(res.data))
+      .finally(() => setLoading(false));
+  }, []);
 
   const categoriesByType = {
     Recette: ["Ventes", "Services", "Autres revenue"],
@@ -120,40 +129,21 @@ export default function Bilan() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* ACTIFS */}
             <div>
-              <h3 className="text-green-600 font-semibold mb-4">
-                ACTIFS
-              </h3>
-
-              <Row label="Trésorerie" value="0 FCFA" />
-              <Row label="Stock" value="2 500 000 FCFA" />
-              <Row label="Créances clients" value="150 000 FCFA" />
-
+              <h3 className="text-green-600 font-semibold mb-4">ACTIFS</h3>
+              <Row label="Trésorerie" value={(bilan?.actifs?.tresorerie ?? 0) + ' FCFA'} />
+              <Row label="Stock" value={(bilan?.actifs?.stock ?? 0) + ' FCFA'} />
+              <Row label="Créances clients" value={(bilan?.actifs?.creancesClients ?? 0) + ' FCFA'} />
               <hr className="my-4" />
-
-              <Row
-                label="Total Actifs"
-                value="2 650 000 FCFA"
-                bold
-              />
+              <Row label="Total Actifs" value={(bilan?.actifs?.totalActifs ?? 0) + ' FCFA'} bold />
             </div>
-
             {/* PASSIFS */}
             <div>
-              <h3 className="text-red-600 font-semibold mb-4">
-                PASSIFS
-              </h3>
-
-              <Row label="Dettes fournisseurs" value="300 000 FCFA" />
-              <Row label="Charges à payer" value="50 000 FCFA" />
-              <Row label="Capital" value="2 000 000 FCFA" />
-
+              <h3 className="text-red-600 font-semibold mb-4">PASSIFS</h3>
+              <Row label="Dettes fournisseurs" value={(bilan?.passifs?.dettesFournisseurs ?? 0) + ' FCFA'} />
+              <Row label="Charges à payer" value={(bilan?.passifs?.chargesAPayer ?? 0) + ' FCFA'} />
+              <Row label="Capital" value={(bilan?.passifs?.capital ?? 0) + ' FCFA'} />
               <hr className="my-4" />
-
-              <Row
-                label="Total Passifs"
-                value="2 350 000 FCFA"
-                bold
-              />
+              <Row label="Total Passifs" value={(bilan?.passifs?.totalPassifs ?? 0) + ' FCFA'} bold />
             </div>
           </div>
         </div>

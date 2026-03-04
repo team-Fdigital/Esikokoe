@@ -1,28 +1,28 @@
 import { ShoppingCart, ArrowLeft, User, Plus, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createVente, getAllClients, createClient } from "../../../apiClient";
 
 export default function Clients() {
   const [showModal, setShowModal] = useState(false);
+  const [showAddClient, setShowAddClient] = useState(false);
+  const [newClient, setNewClient] = useState({ nomClient: "", telephone: "", adresse: "" });
+  const [addLoading, setAddLoading] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [clientInfo, setClientInfo] = useState({
-    nom: "",
-    telephone: "",
-    adresse: "",
-  });
-
-  const [produits, setProduits] = useState([
-    { id: 1, produit: "", quantite: 0, prixUnitaire: 0 },
-  ]);
-
-  const [modePaiement, setModePaiement] = useState("");
-
-  const listeProduits = [
-    { id: 1, nom: "Eau minérale 1L" },
-    { id: 2, nom: "Eau minérale 5L" },
-    { id: 3, nom: "Eau en vrac" },
-    { id: 4, nom: "Services de livraison" },
-  ];
+  useEffect(() => {
+    getAllClients()
+      .then((res) => {
+        // Le backend retourne { clients: [...] }
+        if (res.data && Array.isArray(res.data.clients)) {
+          setClients(res.data.clients);
+        } else {
+          setClients([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -92,16 +92,126 @@ export default function Clients() {
             </p>
           </div>
 
-          {/* EMPTY STATE */}
-          <div className="py-20 flex flex-col items-center text-center text-gray-500">
-            <User size={48} className="mb-4 text-gray-400" />
-            <h3 className="text-lg font-medium text-gray-700">
-              Gestion de la clientèle
-            </h3>
-            <p className="text-sm">
-              À développer selon les besoins spécifiques
-            </p>
+          <div className="flex justify-end p-4">
+            <button
+              onClick={() => setShowAddClient(true)}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+            >
+              Ajouter un client
+            </button>
           </div>
+          {loading ? (
+            <div className="py-20 flex flex-col items-center text-center text-gray-500">
+              <User size={48} className="mb-4 text-gray-400" />
+              <h3 className="text-lg font-medium text-gray-700">Chargement des clients...</h3>
+            </div>
+          ) : clients.length === 0 ? (
+            <div className="py-20 flex flex-col items-center text-center text-gray-500">
+              <User size={48} className="mb-4 text-gray-400" />
+              <h3 className="text-lg font-medium text-gray-700">Aucun client enregistré</h3>
+            </div>
+          ) : (
+            <div className="overflow-x-auto p-6">
+              <table className="w-full text-sm">
+                <thead className="border-b text-gray-500">
+                  <tr>
+                    <th className="text-left py-3">Nom</th>
+                    <th className="text-left">Téléphone</th>
+                    <th className="text-left">Adresse</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clients.map((c) => (
+                    <tr key={c.idClient} className="border-b hover:bg-gray-50">
+                      <td className="py-3 font-medium">{c.nomClient}</td>
+                      <td>{c.telephone}</td>
+                      <td>{c.adresse}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* MODAL AJOUT CLIENT */}
+          {showAddClient && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6">
+                <h2 className="text-lg font-bold mb-4">Ajouter un client</h2>
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setAddLoading(true);
+                    try {
+                      await createClient(newClient);
+                      setShowAddClient(false);
+                      setNewClient({ nomClient: "", telephone: "", adresse: "" });
+                      setLoading(true);
+                      getAllClients()
+                        .then((res) => {
+                          if (res.data && Array.isArray(res.data.clients)) {
+                            setClients(res.data.clients);
+                          } else {
+                            setClients([]);
+                          }
+                        })
+                        .finally(() => setLoading(false));
+                    } catch (err) {
+                      alert("Erreur lors de la création du client");
+                    }
+                    setAddLoading(false);
+                  }}
+                >
+                  <div className="mb-3">
+                    <label className="block text-xs font-semibold mb-1">Nom</label>
+                    <input
+                      type="text"
+                      required
+                      value={newClient.nomClient}
+                      onChange={(e) => setNewClient({ ...newClient, nomClient: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-xs font-semibold mb-1">Téléphone</label>
+                    <input
+                      type="text"
+                      required
+                      value={newClient.telephone}
+                      onChange={(e) => setNewClient({ ...newClient, telephone: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-xs font-semibold mb-1">Adresse</label>
+                    <input
+                      type="text"
+                      required
+                      value={newClient.adresse}
+                      onChange={(e) => setNewClient({ ...newClient, adresse: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddClient(false)}
+                      className="flex-1 bg-gray-200 text-gray-700 rounded-lg py-2"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={addLoading}
+                      className="flex-1 bg-green-600 text-white rounded-lg py-2"
+                    >
+                      {addLoading ? "Ajout..." : "Ajouter"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -290,12 +400,29 @@ export default function Clients() {
                 Annuler
               </button>
               <button
-                onClick={() => {
-                  console.log("Nouvelle vente:", { clientInfo, produits, modePaiement });
-                  setShowModal(false);
-                  setClientInfo({ nom: "", telephone: "", adresse: "" });
-                  setProduits([{ id: 1, produit: "", quantite: 0, prixUnitaire: 0 }]);
-                  setModePaiement("");
+                onClick={async () => {
+                  const venteData = {
+                    nomClient: clientInfo.nom,
+                    telephone: clientInfo.telephone,
+                    adresse: clientInfo.adresse,
+                    modePaiement,
+                    produits: produits.map((p) => ({
+                      codeProduit: p.produit,
+                      quantite: p.quantite,
+                      prixUnitaire: p.prixUnitaire,
+                    })),
+                    montantTotal: produits.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0) * 1.18,
+                    dateVente: new Date().toISOString(),
+                  };
+                  try {
+                    await createVente(venteData);
+                    setShowModal(false);
+                    setClientInfo({ nom: "", telephone: "", adresse: "" });
+                    setProduits([{ id: 1, produit: "", quantite: 0, prixUnitaire: 0 }]);
+                    setModePaiement("");
+                  } catch (err) {
+                    alert("Erreur lors de la création de la vente");
+                  }
                 }}
                 className="flex-1 px-4 py-2 text-sm bg-black hover:bg-gray-800 text-white rounded-lg font-medium"
               >

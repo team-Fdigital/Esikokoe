@@ -1,39 +1,22 @@
 import { TrendingUp, ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getRapports } from "../../../apiClient";
 
 export default function FinancialReport() {
-  const rentabiliteData = [
-    { label: "Marge brute", value: "42%" },
-    { label: "Marge nette", value: "18%" },
-    { label: "ROI", value: "24%" },
-  ];
+  const [rapports, setRapports] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const tresorerieData = [
-    { label: "Entrées", value: "+2,847,500 FCFA", color: "text-green-600" },
-    { label: "Sorties", value: "-2,234,800 FCFA", color: "text-red-600" },
-    { label: "Solde net", value: "+612,700 FCFA", color: "text-green-600" },
-  ];
+  useEffect(() => {
+    getRapports()
+      .then((res) => setRapports(res.data))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const previsions = [
-    {
-      title: "CA prévu (mois prochain)",
-      value: "3,200,000 FCFA",
-      trend: "+12% vs ce mois",
-      color: "text-blue-600",
-    },
-    {
-      title: "Bénéfice prévu",
-      value: "576,000 FCFA",
-      trend: "Margin: 18%",
-      color: "text-green-600",
-    },
-    {
-      title: "Objectif trimestriel",
-      value: "9,000,000 FCFA",
-      trend: "Progression: 32%",
-      color: "text-orange-500",
-    },
-  ];
+  // Extraction d'exemples de données dynamiques (adapter selon structure réelle)
+  const rentabiliteData = rapports[0]?.rentabilite || [];
+  const tresorerieData = rapports[0]?.tresorerie || [];
+  const previsions = rapports[0]?.previsions || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
