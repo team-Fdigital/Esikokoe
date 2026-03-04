@@ -1,4 +1,6 @@
 import { TrendingUp, ArrowLeft, Download, BarChart3, Target, PieChart, ArrowUpRight } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getVentesRapport } from "../../../apiClient";
@@ -14,6 +16,35 @@ export default function SalesReport() {
       setEvolution(data.evolution || []);
     });
   }, []);
+
+  // ...existing code...
+  const handleExportPDF = () => {
+    try {
+      console.log('Export PDF clicked');
+      if (!evolution || evolution.length === 0) {
+        alert('Aucune donnée à exporter');
+        return;
+      }
+      const doc = new jsPDF();
+      doc.text('Rapport des ventes', 14, 16);
+      const tableData = evolution.map(item => [
+        item.mois,
+        item.nombreCommandes,
+        item.nombreClients,
+        item.chiffreAffaires?.toLocaleString() + ' FCFA',
+        item.isCurrent ? 'Mois actuel' : ''
+      ]);
+      autoTable(doc, {
+        head: [['Mois', 'Commandes', 'Clients', 'Chiffre Affaires', 'Statut']],
+        body: tableData,
+        startY: 22,
+      });
+      doc.save('rapport_ventes.pdf');
+    } catch (err) {
+      console.error('Erreur export PDF:', err);
+      alert('Erreur lors de l\'exportation PDF. Voir la console.');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,7 +72,7 @@ export default function SalesReport() {
               <select className="border rounded-md px-3 py-2 text-sm">
                 <option>Ce mois</option>
               </select>
-              <button className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm hover:bg-gray-50">
+              <button className="border p-2 rounded-md text-gray-800 bg-white" onClick={handleExportPDF}>
                 <Download size={16} />
                 Exporter PDF
               </button>

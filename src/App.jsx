@@ -10,6 +10,7 @@ import Footer from './components/Footer'
 import AdminLayout from './layouts/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
 import Login from './pages/admin/Login'
+import AjouterAdmin from './pages/admin/ajouter-admin'
 import StocksIndex from './pages/admin/stocks/index'
 import Produits from './pages/admin/stocks/Produits'
 import Mouvements from './pages/admin/stocks/Mouvements'
@@ -36,24 +37,45 @@ function AppContent() {
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) {
-      setIsAdmin(true)
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        if (payload.role === 'ADMIN') {
+          setIsAdmin(true)
+        } else {
+          setIsAdmin(false)
+        }
+      } catch (e) {
+        setIsAdmin(false)
+      }
     } else {
       // Tenter de rafraîchir le token si refreshToken existe
       const refreshToken = localStorage.getItem('refreshToken')
       if (refreshToken) {
-        // DEBUG: Afficher le contenu du refreshToken
         try {
           const payload = JSON.parse(atob(refreshToken.split('.')[1]))
-          console.log('Payload refreshToken:', payload)
+          if (payload.role === 'ADMIN') {
+            setIsAdmin(true)
+          } else {
+            setIsAdmin(false)
+          }
         } catch (e) {
-          console.log('Impossible de décoder le refreshToken')
+          setIsAdmin(false)
         }
         // Appel API pour rafraîchir le token
         import('./apiClient').then(({ refreshToken: refreshTokenApi }) => {
           refreshTokenApi().then(res => {
             if (res.data && res.data.accessToken) {
               localStorage.setItem('token', res.data.accessToken)
-              setIsAdmin(true)
+              try {
+                const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]))
+                if (payload.role === 'ADMIN') {
+                  setIsAdmin(true)
+                } else {
+                  setIsAdmin(false)
+                }
+              } catch (e) {
+                setIsAdmin(false)
+              }
             } else {
               setIsAdmin(false)
             }
@@ -86,32 +108,30 @@ function AppContent() {
           {isAdmin ? (
             <Route path="/admin" element={<AdminLayout title="Tableau de bord" />}>
               <Route index element={<Dashboard />} />
-              
               {/* Stocks */}
               <Route path="stocks" element={<StocksIndex />} />
               <Route path="stocks/produits" element={<Produits />} />
               <Route path="stocks/mouvements" element={<Mouvements />} />
               <Route path="stocks/alertes" element={<Alertes />} />
-              
               {/* Ventes */}
               <Route path="ventes" element={<VentesIndex />} />
               <Route path="ventes/ventes" element={<Ventes />} />
               <Route path="ventes/factures" element={<Factures />} />
               <Route path="ventes/clients" element={<Clients />} />
-              
               {/* Comptabilité */}
               <Route path="comptabilite" element={<ComptabiliteIndex />} />
               <Route path="comptabilite/transactions" element={<Transactions />} />
               <Route path="comptabilite/bilan" element={<Bilan />} />
               <Route path="comptabilite/rapports" element={<Rapports />} />
               <Route path="comptabilite/audit" element={<Audit />} />
-              
               {/* Rapports */}
               <Route path="rapports" element={<RapportsIndex />} />
               <Route path="rapports/financial" element={<FinancialReport />} />
               <Route path="rapports/sales" element={<SalesReport />} />
               <Route path="rapports/products" element={<ProductsReport />} />
               <Route path="rapports/clients" element={<ClientsReport />} />
+              {/* Ajouter admin */}
+              <Route path="ajouter-admin" element={<AjouterAdmin />} />
             </Route>
           ) : (
             <Route path="/admin/*" element={<Navigate to="/admin/login" />} />

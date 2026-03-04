@@ -115,7 +115,11 @@ export default function Factures() {
                       <td className="py-3 font-medium">{f.numeroFacture}</td>
                       <td>{new Date(f.dateFacture).toLocaleString()}</td>
                       <td className="font-semibold">{f.montant} FCFA</td>
-                      <td>{f.vente?.commande?.client?.nomClient || ""}</td>
+                      <td>
+                        {f.client === "Commande non liée" || f.client === "Client inconnu" || f.client === "N/A" || f.client === "Aucun client"
+                          ? <span className="text-gray-400 italic">{f.client}</span>
+                          : f.client}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
