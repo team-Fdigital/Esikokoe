@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Droplets, Package, Building, Calendar, Star, Heart, ShoppingCart, ArrowRight, CircleCheckBig, Truck, Shield } from 'lucide-react'
 import useReveal from '../hooks/useReveal'
 
@@ -28,7 +29,7 @@ export default function Products() {
       gradient: 'from-blue-500 to-cyan-500',
       bgGradient: 'from-blue-600 to-cyan-600',
       icon: Droplets,
-      image: '/eau.png'
+      image: '/eau.jpg'
     },
     {
       id: 2,
@@ -46,7 +47,7 @@ export default function Products() {
       gradient: 'from-green-500 to-emerald-500',
       bgGradient: 'from-green-600 to-emerald-600',
       icon: Package,
-      image: '/eau.png'
+      image: '/eau.jpg'
     },
     {
       id: 3,
@@ -64,7 +65,7 @@ export default function Products() {
       gradient: 'from-purple-500 to-pink-500',
       bgGradient: 'from-purple-600 to-pink-600',
       icon: Building,
-      image: '/eau.png'
+      image: '/eau.jpg'
     },
     {
       id: 4,
@@ -82,7 +83,43 @@ export default function Products() {
       gradient: 'from-orange-500 to-red-500',
       bgGradient: 'from-orange-600 to-red-600',
       icon: Calendar,
-      image: '/eau.png'
+      image: '/eau.jpg'
+    },
+    {
+      id: 5,
+      title: 'Bouteille 75cl',
+      badge: 'Populaire',
+      price: '250 FCFA',
+      originalPrice: '300 FCFA',
+      format: 'Format Individuel',
+      description: 'Notre bouteille de 75cl est idéale pour rester hydraté tout au long de la journée. Un format élégant pour le bureau ou le sport.',
+      volume: '75cl',
+      features: ['75cl', 'Bouchon sport', 'Recyclable', 'Format idéal'],
+      likes: '1,540',
+      rating: '4.9',
+      reviews: '1,820',
+      gradient: 'from-blue-400 to-indigo-500',
+      bgGradient: 'from-blue-500 to-indigo-600',
+      icon: Droplets,
+      image: '/assets/b75cl.jpg'
+    },
+    {
+      id: 6,
+      title: 'Bouteille 35cl',
+      badge: 'Pratique',
+      price: '150 FCFA',
+      originalPrice: '200 FCFA',
+      format: 'Petit Format',
+      description: 'La petite bouteille de 35cl se glisse partout. Parfaite pour les enfants ou les événements.',
+      volume: '35cl',
+      features: ['35cl', 'Compacte', 'Légère', 'Pratique'],
+      likes: '920',
+      rating: '4.8',
+      reviews: '1,150',
+      gradient: 'from-cyan-400 to-blue-500',
+      bgGradient: 'from-cyan-500 to-blue-600',
+      icon: Droplets,
+      image: '/assets/b35cl.jpg'
     }
   ]
 
@@ -124,7 +161,7 @@ export default function Products() {
   return (
     <div className="w-full pb-20">
       {/* Carousel Section */}
-      <div className="h-[650px] md:h-screen">
+      <div className="h-[550px] lg:h-[79vh] min-h-[630px]">
         <div className="relative h-full overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-5">
@@ -139,8 +176,8 @@ export default function Products() {
                 <div
                   key={slide.id}
                   className={`absolute inset-0 transition-all duration-1000 ease-in-out ${index === currentSlide
-                    ? 'opacity-100 scale-100 pointer-events-auto'
-                    : 'opacity-0 scale-95 pointer-events-none'
+                    ? 'opacity-100 scale-100 pointer-events-auto z-10'
+                    : 'opacity-0 scale-95 pointer-events-none z-0'
                     }`}
                 >
                   <div className="relative z-10 h-auto md:h-full flex items-center justify-center py-4 md:py-8">
@@ -166,7 +203,7 @@ export default function Products() {
                                 <img
                                   src={slide.image}
                                   alt={slide.title}
-                                  className="w-full h-32 sm:h-64 object-cover"
+                                  className="w-full h-40 sm:h-72 object-contain p-4"
                                 />
                                 <div className={`absolute inset-0 bg-gradient-to-t ${slide.gradient} opacity-20`}></div>
                               </div>
@@ -210,10 +247,13 @@ export default function Products() {
                                 </div>
 
                                 {/* CTA Button */}
-                                <button className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 md:h-11 rounded-md px-6 md:px-8 w-full bg-gradient-to-r ${slide.gradient} hover:opacity-90 text-white text-base md:text-lg py-2 md:py-4 font-bold`}>
+                                <Link
+                                  to="/contact"
+                                  className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 md:h-11 rounded-md px-6 md:px-8 w-full bg-gradient-to-r ${slide.gradient} hover:opacity-90 text-white text-base md:text-lg py-2 md:py-4 font-bold`}
+                                >
                                   <ShoppingCart className="w-5 h-5 mr-2" />
                                   Commander Maintenant
-                                </button>
+                                </Link>
                               </div>
                             </div>
                           </div>
@@ -294,6 +334,67 @@ export default function Products() {
         </div>
       </div>
 
+      {/* Accessoires Section */}
+      <section className="container mx-auto px-6 py-20">
+        <div className="flex flex-col md:flex-row items-center gap-12 bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-gray-100 overflow-hidden relative group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 -mr-32 -mt-32"></div>
+
+          <div className="w-full md:w-1/2 relative z-10">
+            <div className="relative transition-all duration-700">
+              <img
+                src="/assets/fontaineb.jpg"
+                alt="Fontaine à Eau Dispenser"
+                className="w-full h-auto max-h-[500px] object-contain rounded-2xl"
+              />
+            </div>
+          </div>
+
+          <div className="w-full md:w-1/2 space-y-6 relative z-10 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 font-semibold text-sm">
+              <Package size={16} />
+              <span>Accessoire Indispensable</span>
+            </div>
+
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+              Fontaine à Eau <span className="text-blue-600">Premium</span>
+            </h2>
+
+            <p className="text-gray-600 text-lg leading-relaxed">
+              Optimisez votre consommation d'eau avec notre fontaine moderne spécialement conçue pour nos bonbonnes de 22L. Design élégant, robuste et facile à utiliser pour une eau toujours à la bonne température.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center gap-3">
+                <CircleCheckBig className="text-green-500" size={20} />
+                <span className="text-gray-700">Eau Chaude / Froide</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <CircleCheckBig className="text-green-500" size={20} />
+                <span className="text-gray-700">Facile à installer</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <CircleCheckBig className="text-green-500" size={20} />
+                <span className="text-gray-700">Design Moderne</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <CircleCheckBig className="text-green-500" size={20} />
+                <span className="text-gray-700">Garantie 1 an</span>
+              </div>
+            </div>
+
+            <div className="pt-6">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center rounded-full px-8 py-4 bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-200"
+              >
+                Demander un devis
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Product Range Section */}
       <section className="py-20 water-pattern">
         <div className="container mx-auto px-4">
@@ -312,7 +413,7 @@ export default function Products() {
               <div className="relative h-[500px] bg-gradient-to-br from-blue-100 via-cyan-50 to-blue-200 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-cyan-400/10"></div>
                 <img
-                  src="/eau.png"
+                  src="/eau.jpg"
                   alt="Sachets d'eau Intercontinental Eau"
                   className="w-80 h-80 object-contain animate-float relative z-10"
                 />
@@ -383,7 +484,7 @@ export default function Products() {
               <div className="relative h-[500px] bg-gradient-to-br from-green-100 via-emerald-50 to-green-200 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-emerald-400/10"></div>
                 <img
-                  src="/eau.png"
+                  src="/eau.jpg"
                   alt="Bonbonnes 22L Intercontinental Eau"
                   className="w-60 h-96 object-contain animate-float relative z-10"
                   style={{ animationDelay: '2s' }}

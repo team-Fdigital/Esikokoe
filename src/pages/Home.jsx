@@ -97,16 +97,16 @@ export default function Home() {
   ]
 
   const stats = [
-    { icon: '📅', title: 'Notre Histoire', description: 'Plus de 10 ans d\'expérience dans la production d\'eau pure au Togo' },
+    { icon: '📅', title: 'Notre Histoire', description: 'Plus de 2 ans d\'expérience dans la production d\'eau pure au Togo' },
     { icon: '🎯', title: 'Notre Mission', description: 'Fournir une eau pure et accessible à tous les Togolais' },
     { icon: '❤️', title: 'Nos Valeurs', description: 'Qualité, transparence et respect de nos clients' },
-    { icon: '👥', title: 'Notre Équipe', description: '50+ professionnels dévoués à votre service' },
+    { icon: '👥', title: 'Notre Équipe', description: '10+ professionnels dévoués à votre service' },
   ]
 
   const contact = [
-    { icon: Phone, title: 'Téléphone', info: '+228 XX XX XX XX', sub: 'Disponible 24/7', color: 'bg-green-100' },
-    { icon: Mail, title: 'Email', info: 'contact@votre-email.tg', sub: 'Réponse sous 2h', color: 'bg-blue-100' },
-    { icon: MapPin, title: 'Adresse', info: 'Votre adresse', sub: 'Lomé, Togo', color: 'bg-purple-100' },
+    { icon: Phone, title: 'Téléphone', info: '+228 91 29 99 99', sub: 'Disponible 24/7', color: 'bg-green-100' },
+    { icon: Mail, title: 'Email', info: 'Intercontinentaleau@gmail.com', sub: 'Réponse sous 2h', color: 'bg-blue-100' },
+    { icon: MapPin, title: 'Adresse', info: 'Hedranawoé', sub: 'Lomé, Togo', color: 'bg-purple-100' },
     { icon: Clock, title: 'Horaires', info: 'Lun-Sam: 8h-18h', sub: 'Livraison 24/7', color: 'bg-orange-100' },
   ]
 

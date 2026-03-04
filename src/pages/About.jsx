@@ -17,13 +17,13 @@ export default function About() {
       badge: 'Depuis 2010',
       description: 'Fondée en 2010, Intercontinental Eau s\'est imposée comme le leader de la production d\'eau pure au Togo. Notre engagement envers la qualité et l\'innovation nous a permis de servir des milliers de familles.',
       stats: [
-        { value: '13+', label: 'Années d\'expérience' },
-        { value: '50K+', label: 'Clients servis' }
+        { value: '2+', label: 'Années d\'expérience' },
+        { value: '100K+', label: 'Clients servis' }
       ],
       gradient: 'from-blue-600 to-indigo-600',
       bgGradient: 'from-blue-600 to-indigo-600',
       icon: Calendar,
-      image: '/eau.png'
+      image: '/eau.jpg'
     },
     {
       id: 2,
@@ -37,7 +37,7 @@ export default function About() {
       gradient: 'from-green-600 to-teal-600',
       bgGradient: 'from-green-600 to-teal-600',
       icon: Target,
-      image: '/eau.png'
+      image: '/eau.jpg'
     },
     {
       id: 3,
@@ -51,7 +51,7 @@ export default function About() {
       gradient: 'from-purple-600 to-pink-600',
       bgGradient: 'from-purple-600 to-pink-600',
       icon: Heart,
-      image: '/eau.png'
+      image: '/eau.jpg'
     },
     {
       id: 4,
@@ -59,13 +59,13 @@ export default function About() {
       badge: 'Professionnels Dévoués',
       description: 'Une équipe de 50+ professionnels passionnés travaille chaque jour pour vous offrir le meilleur service. De la production à la livraison, nous sommes là pour vous.',
       stats: [
-        { value: '50+', label: 'Employés' },
-        { value: '15', label: 'Livreurs' }
+        { value: '10+', label: 'Employés' },
+        { value: '5', label: 'Livreurs' }
       ],
       gradient: 'from-orange-600 to-red-600',
       bgGradient: 'from-orange-600 to-red-600',
       icon: Users,
-      image: '/eau.png'
+      image: '/eau.jpg'
     }
   ]
 

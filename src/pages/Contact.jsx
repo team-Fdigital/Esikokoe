@@ -22,7 +22,7 @@ const ContactSlider = () => {
       icone: Phone,
       degrade: 'from-blue-600 to-cyan-600',
       description: 'Notre équipe est disponible 24h/24 et 7j/7 pour répondre à tous vos besoins en eau pure.',
-      image: '/eau.png',
+      image: '/eau.jpg',
       altImage: 'Contact 24/7',
       contacts: [
         { type: 'phone', titre: '+228 91 29 99 99', sousTitre: 'Ligne principale' },
@@ -38,7 +38,7 @@ const ContactSlider = () => {
       icone: Truck,
       degrade: 'from-green-600 to-emerald-600',
       description: 'Livraison gratuite dans tout Lomé en moins de 2 heures.',
-      image: '/eau.png',
+      image: '/assets/fontaine.jpg',
       altImage: 'Livraison Express',
       contacts: [
         { type: 'phone', titre: '+228 91 29 99 99', sousTitre: 'Commandes express' },
@@ -54,7 +54,7 @@ const ContactSlider = () => {
       icone: MessageCircle,
       degrade: 'from-violet-600 to-pink-600',
       description: 'Plus de 10,000 familles nous font confiance au quotidien.',
-      image: '/eau.png',
+      image: '/assets/b75cl.jpg',
       altImage: 'Témoignages Clients',
       temoignages: [
         { etoiles: 5, texte: 'Service excellent, eau toujours fraîche !', auteur: 'Marie K.' },
@@ -69,7 +69,7 @@ const ContactSlider = () => {
       icone: Zap,
       degrade: 'from-red-600 to-orange-600',
       description: 'Besoin d\'eau en urgence ? Intervention rapide 24/7.',
-      image: '/eau.png',
+      image: '/assets/b35cl.jpg',
       altImage: 'Service d\'Urgence',
       contacts: [
         { type: 'phone', titre: '+228 91 29 99 99', sousTitre: 'Urgences 24/7' },
@@ -205,7 +205,7 @@ const ContactSlider = () => {
                         </div>
                       </div>
 
-                      {/* 🎨 ZONE IMAGE EN GRAND FORMAT ✅ */}
+                      {/*  ZONE IMAGE EN GRAND FORMAT  */}
                       <div className="relative hidden lg:block h-[500px] w-full"> {/* ← HAUTEUR AUGMENTÉE */}
                         <div className="w-full h-full rounded-2xl border bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-500">
                           <img
