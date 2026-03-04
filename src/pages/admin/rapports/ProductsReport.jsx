@@ -1,9 +1,36 @@
 import { Package, ArrowLeft, Download } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getProduitsRapport } from "../../../apiClient";
 
 export default function ProductsReport() {
+    const handleExportPDF = () => {
+      try {
+        if (!classement || classement.length === 0) {
+          alert('Aucune donnée à exporter');
+          return;
+        }
+        const doc = new jsPDF();
+        doc.text('Rapport des produits les plus vendus', 14, 16);
+        const tableData = classement.map(product => [
+          product.nom,
+          product.quantite,
+          product.ca?.toLocaleString() + ' FCFA',
+          product.pourcentageCA + '%'
+        ]);
+        autoTable(doc, {
+          head: [['Produit', 'Quantité vendue', 'Chiffre Affaires', '% du CA']],
+          body: tableData,
+          startY: 22,
+        });
+        doc.save('rapport_produits.pdf');
+      } catch (err) {
+        console.error('Erreur export PDF:', err);
+        alert('Erreur lors de l\'exportation PDF. Voir la console.');
+      }
+    };
   const [classement, setClassement] = useState([]);
   const [performanceCategorie, setPerformanceCategorie] = useState({});
   const [rotationStock, setRotationStock] = useState({});
@@ -43,7 +70,7 @@ export default function ProductsReport() {
               <select className="border rounded-md px-3 py-2 text-sm">
                 <option>Ce mois</option>
               </select>
-              <button className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm hover:bg-gray-50">
+              <button className="border p-2 rounded-md text-gray-800 bg-white" onClick={handleExportPDF}>
                 <Download size={16} />
                 Exporter PDF
               </button>

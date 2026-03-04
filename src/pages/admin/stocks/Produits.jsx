@@ -1,9 +1,17 @@
 import { Package, Plus, Search, Download, Pencil, Trash2, ArrowLeft, X } from "lucide-react";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAllProduits, createProduit } from "../../../apiClient";
+import { updateProduit, deleteProduit } from "../../../apiClient";
 
 export default function Produits() {
+        const [exportMenuOpen, setExportMenuOpen] = useState(false);
+      const [searchTerm, setSearchTerm] = useState("");
+      const [selectedCategory, setSelectedCategory] = useState("Toutes les catégories");
+    const [editingProductId, setEditingProductId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     nomProduit: "",
@@ -16,8 +24,11 @@ export default function Produits() {
   });
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [deleteLoadingId, setDeleteLoadingId] = useState(null);
 
   const categories = ["Eau Pure", "Eau Minérale", "Eau Gazeuse", "Autre"];
+  const formatsEnum = ["SACHET", "BOUTEILLE", "BONBONNE"];
 
   useEffect(() => {
     getAllProduits()
@@ -32,6 +43,7 @@ export default function Produits() {
   }, []);
 
   const handleAddProduct = async () => {
+    setActionLoading(true);
     // Conversion des champs numériques
     const stockInitial = Number(formData.stockInitial);
     const stockMinimum = Number(formData.stockMinimum);
@@ -88,6 +100,129 @@ export default function Produits() {
       }
       alert(msg);
     }
+    setActionLoading(false);
+  };
+
+  const handleEditProduct = async () => {
+    setActionLoading(true);
+    const stockInitial = Number(formData.stockInitial);
+    const stockMinimum = Number(formData.stockMinimum);
+    const prixUnitaire = Number(formData.prixUnitaire);
+
+    let errorMsg = "";
+    if (!formData.nomProduit.trim()) errorMsg += "Nom du produit\n";
+    if (!formData.format.trim()) errorMsg += "Format\n";
+    if (!formData.categorie.trim()) errorMsg += "Catégorie\n";
+    if (formData.stockInitial === "" || isNaN(stockInitial)) errorMsg += "Stock initial (nombre)\n";
+    if (formData.prixUnitaire === "" || isNaN(prixUnitaire)) errorMsg += "Prix unitaire (nombre)\n";
+
+    if (errorMsg) {
+      alert("Veuillez remplir correctement les champs suivants :\n" + errorMsg);
+      return;
+    }
+
+    const dataToSend = {
+      ...formData,
+      stockInitial,
+      stockMinimum,
+      prixUnitaire,
+    };
+    try {
+      await updateProduit(editingProductId, dataToSend);
+      setEditingProductId(null);
+      setShowModal(false);
+      setFormData({
+        nomProduit: "",
+        format: "",
+        categorie: "",
+        stockInitial: "",
+        stockMinimum: "",
+        prixUnitaire: "",
+        fournisseur: "",
+      });
+      setLoading(true);
+      getAllProduits()
+        .then((res) => {
+          if (res.data && Array.isArray(res.data.produits)) {
+            setProduits(res.data.produits);
+          } else {
+            setProduits([]);
+          }
+        })
+        .finally(() => setLoading(false));
+    } catch (err) {
+      let msg = "Erreur lors de la modification du produit";
+      if (err?.response?.data?.message) {
+        msg += " : " + err.response.data.message;
+      } else if (err?.message) {
+        msg += " : " + err.message;
+      }
+      alert(msg);
+    }
+    setActionLoading(false);
+  };
+
+  // Catégories dynamiques extraites des produits pour le formulaire
+  const formCategories = [
+    ...new Set([
+      ...produits.map(p => p.categorie && p.categorie.trim()).filter(Boolean),
+      ...categories // Ajoute les catégories statiques si besoin
+    ])
+  ];
+
+  // Filtrage dynamique
+  const filteredProduits = produits.filter((p) => {
+    const matchSearch = p.nomProduit?.toLowerCase().includes(searchTerm.toLowerCase()) || p.codeProduit?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchCategory = selectedCategory === "Toutes les catégories" || !selectedCategory || (p.categorie && p.categorie.trim().toLowerCase() === selectedCategory.trim().toLowerCase());
+    return matchSearch && matchCategory;
+  });
+
+  // Export Excel
+  const handleExportExcel = () => {
+    const data = filteredProduits.map((p) => ({
+      Code: p.codeProduit,
+      Produit: p.nomProduit,
+      Format: p.format,
+      Stock: p.stock,
+      Statut: p.statut,
+      Prix: p.prixUnitaire,
+      Fournisseur: p.fournisseur,
+      Catégorie: p.categorie,
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Produits");
+    XLSX.writeFile(wb, "produits.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    console.log('Export PDF called');
+    if (!filteredProduits.length) {
+      alert("Aucun produit à exporter.");
+      return;
+    }
+    try {
+      const doc = new jsPDF();
+      autoTable(doc, {
+        head: [["Code", "Produit", "Format", "Stock", "Statut", "Prix", "Fournisseur", "Catégorie"]],
+        body: filteredProduits.map((p) => [
+          p.codeProduit || "",
+          p.nomProduit || "",
+          p.format || "",
+          p.stock !== undefined ? p.stock : "",
+          p.statut || "",
+          p.prixUnitaire !== undefined ? p.prixUnitaire : "",
+          p.fournisseur || "",
+          p.categorie || ""
+        ]),
+        startY: 20,
+      });
+      doc.save("produits.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+      console.error(err);
+    }
   };
 
   return (
@@ -113,7 +248,19 @@ export default function Produits() {
             </div>
 
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setFormData({
+                  nomProduit: "",
+                  format: "",
+                  categorie: "",
+                  stockInitial: "",
+                  stockMinimum: "",
+                  prixUnitaire: "",
+                  fournisseur: "",
+                });
+                setEditingProductId(null);
+                setShowModal(true);
+              }}
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
             >
               <Plus size={16} />
@@ -164,10 +311,31 @@ export default function Produits() {
                 </p>
               </div>
 
-              <button className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm bg-white text-black hover:bg-gray-50">
-                <Download size={16} />
-                Exporter
-              </button>
+              <div className="relative">
+                <button
+                  className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm bg-white text-black hover:bg-gray-50"
+                  onClick={() => setExportMenuOpen((v) => !v)}
+                >
+                  <Download size={16} />
+                  Exporter
+                </button>
+                {exportMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                    <button
+                      className="border p-2 rounded-md text-gray-800 bg-white"
+                      onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                    >
+                      Exporter en Excel
+                    </button>
+                    <button
+                      className="border p-2 rounded-md text-gray-800 bg-white"
+                      onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                    >
+                      Exporter en PDF
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* SEARCH */}
@@ -181,11 +349,19 @@ export default function Produits() {
                   type="text"
                   placeholder="Rechercher un produit..."
                   className="w-full border rounded-md pl-9 pr-3 py-2 text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-
-              <select className="border rounded-md px-3 py-2 text-sm w-48">
+              <select
+                className="border rounded-md px-3 py-2 text-sm w-48"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
                 <option>Toutes les catégories</option>
+                {formCategories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -207,7 +383,7 @@ export default function Produits() {
               </thead>
 
               <tbody>
-                {produits.map((p) => (
+                {filteredProduits.map((p) => (
                   <tr key={p.codeProduit} className="border-b hover:bg-gray-50">
                     <td className="py-3 font-medium">{p.codeProduit}</td>
                     <td>{p.nomProduit}</td>
@@ -235,11 +411,41 @@ export default function Produits() {
                     <td>{p.fournisseur}</td>
                     <td>
                       <div className="flex gap-2">
-                        <button className="border p-2 rounded-md hover:bg-gray-50">
+                        <button
+                          className="border p-2 rounded-md text-gray-800 bg-white"
+                          onClick={() => {
+                            setFormData({
+                              nomProduit: p.nomProduit,
+                              format: p.format,
+                              categorie: p.categorie,
+                              stockInitial: p.stock,
+                              stockMinimum: p.stockMinimum || "",
+                              prixUnitaire: p.prixUnitaire,
+                              fournisseur: p.fournisseur || "",
+                            });
+                            setShowModal(true);
+                            setEditingProductId(p.codeProduit);
+                          }}
+                        >
                           <Pencil size={16} />
                         </button>
-                        <button className="border p-2 rounded-md hover:bg-gray-50">
-                          <Trash2 size={16} />
+                        <button
+                          className="border p-2 rounded-md text-gray-800 bg-white"
+                          onClick={async () => {
+                            if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+                              setDeleteLoadingId(p.codeProduit);
+                              try {
+                                await deleteProduit(p.codeProduit);
+                                setProduits(produits.filter(prod => prod.codeProduit !== p.codeProduit));
+                              } catch (err) {
+                                alert("Erreur lors de la suppression du produit");
+                              }
+                              setDeleteLoadingId(null);
+                            }
+                          }}
+                          disabled={deleteLoadingId === p.codeProduit}
+                        >
+                          {deleteLoadingId === p.codeProduit ? "Suppression en cours..." : <Trash2 size={16} />}
                         </button>
                       </div>
                     </td>
@@ -253,18 +459,25 @@ export default function Produits() {
 
       {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4 max-h-[90vh] overflow-y-auto">
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
               <div>
-                <h2 className="text-lg font-bold">Ajouter un nouveau produit</h2>
+                <h2 className="text-lg font-bold">
+                  {editingProductId ? "Modifier le produit" : "Ajouter un nouveau produit"}
+                </h2>
                 <p className="text-xs text-gray-600 mt-0.5">
-                  Remplissez les informations du produit à ajouter au stock.
+                  {editingProductId
+                    ? "Modifiez les informations du produit puis validez."
+                    : "Remplissez les informations du produit à ajouter au stock."}
                 </p>
               </div>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingProductId(null);
+                }}
                 className="text-gray-400 hover:text-gray-600 flex-shrink-0"
               >
                 <X size={18} />
@@ -293,15 +506,18 @@ export default function Produits() {
                   <label className="block text-xs font-semibold mb-1.5">
                     Format
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.format}
                     onChange={(e) =>
                       setFormData({ ...formData, format: e.target.value })
                     }
-                    placeholder="Ex: Bouteille 1.5L"
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
-                  />
+                  >
+                    <option value="">Sélectionner un format</option>
+                    {formatsEnum.map((fmt) => (
+                      <option key={fmt} value={fmt}>{fmt}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -318,10 +534,8 @@ export default function Produits() {
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
                 >
                   <option value="">Sélectionner une catégorie</option>
-                  {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
+                  {formCategories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
@@ -393,13 +607,23 @@ export default function Produits() {
 
             {/* FOOTER */}
             <div className="sticky bottom-0 bg-white flex gap-3 p-4 border-t">
-            
-              <button
-                onClick={handleAddProduct}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm border border-blue-600"
-              >
-                Ajouter le produit
-              </button>
+              {editingProductId ? (
+                <button
+                  onClick={handleEditProduct}
+                  className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
+                  disabled={actionLoading}
+                >
+                  {actionLoading ? "Enregistrement en cours..." : "Enregistrer les modifications"}
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddProduct}
+                  className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
+                  disabled={actionLoading}
+                >
+                  {actionLoading ? "Ajout en cours..." : "Ajouter le produit"}
+                </button>
+              )}
             </div>
           </div>
         </div>

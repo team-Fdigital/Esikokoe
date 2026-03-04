@@ -12,9 +12,13 @@ import {
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAllVentes, createVente, getAllProduits } from "../../../apiClient";
+import { getVenteDetail } from "../../../apiClient";
 
 export default function Ventes() {
+    const [loadingDetail, setLoadingDetail] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedSale, setSelectedSale] = useState(null);
 
   const [clientInfo, setClientInfo] = useState({
     nom: "",
@@ -66,6 +70,37 @@ export default function Ventes() {
 
   const tva = sousTotal * 0.18;
   const total = sousTotal + tva;
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredVentes, setFilteredVentes] = useState([]);
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredVentes(ventes);
+    } else {
+      setFilteredVentes(
+        ventes.filter(v =>
+          (v.numeroFacture || v.id || "").toString().includes(searchTerm) ||
+          (v.client || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (v.modePaiement || v.paiement || "").toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+  }, [searchTerm, ventes]);
+
+  const [dateFilter, setDateFilter] = useState("");
+
+  useEffect(() => {
+    if (!dateFilter) return;
+    setFilteredVentes(
+      ventes.filter(v => {
+        if (!v.date) return false;
+        const d = new Date(v.date);
+        const filterDate = new Date(dateFilter);
+        return d.toISOString().slice(0, 10) === filterDate.toISOString().slice(0, 10);
+      })
+    );
+  }, [dateFilter, ventes]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -150,10 +185,18 @@ export default function Ventes() {
                   <input
                     placeholder="Rechercher..."
                     className="border rounded-md pl-9 pr-3 py-2 text-sm w-64"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
                   />
                 </div>
 
-                <button className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm hover:bg-gray-50">
+                <button
+                  className="border p-2 rounded-md text-gray-800 bg-white"
+                  onClick={() => {
+                    const date = prompt("Entrez la date au format YYYY-MM-DD pour filtrer :");
+                    if (date) setDateFilter(date);
+                  }}
+                >
                   <Calendar size={16} />
                   Filtrer par date
                 </button>
@@ -176,12 +219,12 @@ export default function Ventes() {
               </thead>
 
               <tbody>
-                {ventes.map((v) => {
+                {filteredVentes.map((v) => {
                   const dateObj = v.date ? new Date(v.date) : null;
                   const dateStr = dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-';
                   const montantStr = v.montant ? v.montant.toLocaleString('fr-FR') + ' FCFA' : '-';
                   return (
-                    <tr key={v.id} className="border-b hover:bg-gray-50">
+                    <tr key={v.idVente || v.id || v.numeroFacture} className="border-b hover:bg-gray-50">
                       <td className="py-3 font-medium">{v.numeroFacture || v.id}</td>
                       <td>{dateStr}</td>
                       <td>{v.client}</td>
@@ -199,10 +242,121 @@ export default function Ventes() {
                       </td>
                       <td>
                         <div className="flex gap-2">
-                          <button className="border p-2 rounded-md hover:bg-gray-50">
+                          <button
+                            className="border p-2 rounded-md text-gray-800 bg-white"
+                            onClick={async () => {
+                              setSelectedSale(null);
+                              setShowDetailModal(true);
+                              setLoadingDetail(true);
+                              try {
+                                const res = await getVenteDetail(v.idVente || v.id);
+                                setSelectedSale(res.data || res);
+                              } catch (err) {
+                                console.log("Impossible de charger le détail de la vente", err);
+                                alert("Impossible de charger le détail de la vente");
+                              }
+                              setLoadingDetail(false);
+                            }}
+                          >
                             <Eye size={16} />
                           </button>
-                          <button className="border p-2 rounded-md hover:bg-gray-50">
+                          <button
+                            className="border p-2 rounded-md text-gray-800 bg-white"
+                            onClick={async () => {
+                              try {
+                                const venteId = v.idVente ? v.idVente : v.id;
+                                if (!venteId) {
+                                  alert("Identifiant de vente manquant.");
+                                  return;
+                                }
+                                // Utilise la même logique que le bouton Eye
+                                const res = await getVenteDetail(venteId);
+                                let venteDetail = null;
+                                if (res.data?.vente) {
+                                  venteDetail = res.data.vente;
+                                } else if (res.data) {
+                                  venteDetail = res.data;
+                                } else if (res.vente) {
+                                  venteDetail = res.vente;
+                                } else {
+                                  venteDetail = res;
+                                }
+                                // Correction : accepte idVente ou id ou numeroFacture
+                                if (!venteDetail || !(venteDetail.idVente || venteDetail.id || venteDetail.numeroFacture)) {
+                                  console.log('Réponse API:', res);
+                                  alert("Impossible de charger le détail de la vente pour impression. Vérifiez la structure de la réponse API.");
+                                  return;
+                                }
+                                // Mapping robuste pour les produits
+                                const produitsList = Array.isArray(venteDetail.produits) ? venteDetail.produits : (Array.isArray(venteDetail.items) ? venteDetail.items : (Array.isArray(venteDetail.lignes) ? venteDetail.lignes : (Array.isArray(venteDetail.details) ? venteDetail.details : [])));
+                                const printWindow = window.open('', '', 'width=800,height=600');
+                                if (!printWindow) {
+                                  alert("Impossible d'ouvrir la fenêtre d'impression. Vérifiez que les popups ne sont pas bloquées.");
+                                  return;
+                                }
+                                printWindow.document.write('<html><head><title>Impression Vente</title>');
+                                printWindow.document.write('<style>body{font-family:sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #ccc;padding:8px;} th{background:#f3f3f3;}</style>');
+                                printWindow.document.write('</head><body>');
+                                printWindow.document.write(`
+                                  <h2 style='font-size:1.2em;font-weight:bold;margin-bottom:1em;'>Détail de la vente ${venteDetail.numeroFacture || venteDetail.idVente || venteDetail.id || ''}</h2>
+                                  <div style='display:flex;justify-content:space-between;margin-bottom:1em;'>
+                                    <div>
+                                      <h3 style='font-weight:bold;'>Informations client</h3>
+                                      <div>Nom: <b>${venteDetail.client || '-'}</b></div>
+                                      <div>Téléphone: <b>${venteDetail.telephone || '-'}</b></div>
+                                      <div>Adresse: <b>${venteDetail.adresse || '-'}</b></div>
+                                    </div>
+                                    <div style='text-align:right;'>
+                                      <h3 style='font-weight:bold;'>Informations vente</h3>
+                                      <div>Date: <b>${venteDetail.date ? new Date(venteDetail.date).toLocaleString('fr-FR') : '-'}</b></div>
+                                      <div>Paiement: <b>${venteDetail.modePaiement || venteDetail.paiement || '-'}</b></div>
+                                      <div>Statut: <b>${venteDetail.statut || 'Payée'}</b></div>
+                                    </div>
+                                  </div>
+                                  <h3 style='font-weight:bold;margin-bottom:0.5em;'>Produits vendus</h3>
+                                  <table>
+                                    <thead>
+                                      <tr>
+                                        <th>Produit</th>
+                                        <th>Quantité</th>
+                                        <th>Prix unitaire</th>
+                                        <th>Total</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      ${produitsList.length === 0 ? `<tr><td colspan='4' style='text-align:center;color:#888;padding:1em;'>Aucun produit</td></tr>` : produitsList.map((p, idx) => `
+                                      <tr key="prod-${p.id || p.codeProduit || idx}">
+                                        <td>${p.nomProduit || p.productName || p.produit || p.name || '-'}</td>
+                                        <td>${p.quantite ?? p.qty ?? p.qte ?? '-'}</td>
+                                        <td>${(p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0).toLocaleString()} FCFA</td>
+                                        <td>${((p.quantite ?? p.qty ?? p.qte ?? 0) * (p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0)).toLocaleString()} FCFA</td>
+                                      </tr>
+                                    `).join('')}
+                                    </tbody>
+                                  </table>
+                                  <div style='margin-top:1em;display:flex;justify-content:space-between;'>
+                                    <div>
+                                      <div><b>Sous-total:</b></div>
+                                      <div><b>TVA:</b></div>
+                                      <div style='font-size:1.1em;font-weight:bold;'>Total:</div>
+                                    </div>
+                                    <div style='text-align:right;'>
+                                      <div>${venteDetail.sousTotal?.toLocaleString() || venteDetail.montant || '-'} FCFA</div>
+                                      <div>${venteDetail.tva?.toLocaleString() || ((venteDetail.montant || 0) * 0.18)?.toLocaleString()} FCFA</div>
+                                      <div style='font-size:1.1em;font-weight:bold;'>${venteDetail.total?.toLocaleString() || venteDetail.montant?.toLocaleString() || '-'} FCFA</div>
+                                    </div>
+                                  </div>
+                                `);
+                                printWindow.document.write('</body></html>');
+                                printWindow.document.close();
+                                printWindow.focus();
+                                setTimeout(() => printWindow.print(), 500);
+                              } catch (err) {
+                                alert("Erreur impression : " + (err.message || err));
+                              }
+                            }}
+                            title="Imprimer la vente"
+                          >
                             <Printer size={16} />
                           </button>
                         </div>
@@ -438,13 +592,100 @@ export default function Ventes() {
                       })
                       .finally(() => setLoading(false));
                   } catch (err) {
-                    alert("Erreur lors de la création de la vente : " + (err?.response?.data?.message || err.message || err));
+                    console.log("Erreur lors de la création de la vente : " + (err?.response?.data?.message || err.message || err));
                   }
                 }}
                 className="flex-1 bg-black text-white rounded-lg py-2"
               >
                 Créer la vente
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+
+      {/* MODAL DÉTAIL VENTE */}
+      {showDetailModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-lg font-bold">Détail de la vente {selectedSale?.numeroFacture || selectedSale?.id || ''}</h2>
+              <button onClick={() => { setShowDetailModal(false); setSelectedSale(null); }} className="border p-2 rounded-md text-gray-800 bg-white">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4 space-y-6">
+              {loadingDetail && (
+                <div className="text-center text-blue-600 font-semibold py-8">
+                  Chargement des détails de la vente...
+                </div>
+              )}
+              {!loadingDetail && selectedSale && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex flex-col justify-center items-start">
+                      <h3 className="font-semibold mb-2">Informations client</h3>
+                      <div className="text-sm space-y-1">
+                        <div><span className="font-bold">Nom:</span> {selectedSale.client || '-'}</div>
+                        <div><span className="font-bold">Téléphone:</span> {selectedSale.telephone || '-'}</div>
+                        <div><span className="font-bold">Adresse:</span> {selectedSale.adresse || '-'}</div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-center items-end">
+                      <h3 className="font-semibold mb-2">Informations vente</h3>
+                      <div className="text-sm space-y-1 text-right">
+                        <div><span className="font-bold">Date:</span> {selectedSale.date ? new Date(selectedSale.date).toLocaleString('fr-FR') : '-'}</div>
+                        <div><span className="font-bold">Paiement:</span> {selectedSale.modePaiement || selectedSale.paiement || '-'}</div>
+                        <div><span className="font-bold">Statut:</span> <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">{selectedSale.statut || 'Payée'}</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Produits vendus</h3>
+                    {(() => {
+                      // Cherche le bon tableau de produits
+                      const produitsList = selectedSale.produits || selectedSale.items || selectedSale.lignes || selectedSale.details || [];
+                      return (
+                        <table className="w-full text-sm border rounded-lg overflow-hidden">
+                          <thead>
+                            <tr className="bg-gray-100">
+                              <th className="text-left px-2 py-1">Produit</th>
+                              <th className="text-right px-2 py-1">Quantité</th>
+                              <th className="text-right px-2 py-1">Prix unitaire</th>
+                              <th className="text-right px-2 py-1">Total</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {produitsList.length === 0 ? (
+                              <tr><td colSpan={4} className="text-center py-4 text-gray-400">Aucun produit</td></tr>
+                            ) : produitsList.map((p, i) => (
+                              <tr key={i}>
+                                <td className="px-2 py-1">{p.nomProduit || p.productName || p.produit || p.name || '-'}</td>
+                                <td className="px-2 py-1 text-right">{p.quantite ?? p.qty ?? p.qte ?? '-'}</td>
+                                <td className="px-2 py-1 text-right">{(p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0)?.toLocaleString()} FCFA</td>
+                                <td className="px-2 py-1 text-right">{((p.quantite ?? p.qty ?? p.qte ?? 0) * (p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0))?.toLocaleString()} FCFA</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      );
+                    })()}
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                      <div className="flex flex-col items-start space-y-2">
+                        <div className="font-medium">Sous-total:</div>
+                        <div className="font-medium">TVA:</div>
+                        <div className="font-bold text-lg">Total:</div>
+                      </div>
+                      <div className="flex flex-col items-end space-y-2">
+                        <div>{selectedSale.sousTotal?.toLocaleString() || selectedSale.montant || '-'} FCFA</div>
+                        <div>{selectedSale.tva?.toLocaleString() || ((selectedSale.montant || 0) * 0.18)?.toLocaleString()} FCFA</div>
+                        <div className="font-bold text-lg">{selectedSale.total?.toLocaleString() || selectedSale.montant?.toLocaleString() || '-'} FCFA</div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
