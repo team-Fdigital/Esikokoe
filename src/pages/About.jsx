@@ -225,22 +225,70 @@ export default function About() {
       </div>
 
       {/* Notre Histoire Section */}
-      <section className="py-20 water-pattern">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+      <section className="py-24 relative overflow-hidden bg-white">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-50/50 rounded-l-[100px] -z-10 transform translate-x-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-50 rounded-full -z-10 blur-3xl opacity-60"></div>
+
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16">
+            <span className="text-blue-600 font-semibold tracking-wider uppercase text-sm mb-3 block">Origines</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900">
               Notre Histoire
             </h2>
-            <div className="prose prose-lg mx-auto text-gray-600">
-              <p className="text-xl leading-relaxed mb-6">
-                Fondée au cœur du Togo, <strong>Intercontinental Eau</strong> est née d'une vision simple mais ambitieuse : fournir à tous les Togolais un accès à une eau pure, saine et abordable.
-              </p>
-              <p className="text-lg leading-relaxed mb-6">
-                Depuis nos débuts, nous nous sommes engagés à respecter les plus hauts standards de qualité dans la production de nos sachets d'eau et bonbonnes de 22 litres. Notre équipe passionnée travaille chaque jour pour garantir que chaque goutte d'eau qui porte notre nom répond aux exigences les plus strictes de pureté et de goût.
-              </p>
-              <p className="text-lg leading-relaxed">
-                Aujourd'hui, nous sommes fiers d'être reconnus comme l'un des leaders du marché togolais de l'eau embouteillée, tout en restant fidèles à nos valeurs d'excellence et de service client.
-              </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-cyan-400 mx-auto mt-6 rounded-full"></div>
+          </div>
+
+          <div className="grid md:grid-cols-12 gap-12 items-center">
+            {/* Left side text column */}
+            <div className="md:col-span-5 space-y-6">
+              <div className="bg-blue-50/80 p-8 rounded-2xl border border-blue-100 shadow-sm relative">
+                <div className="absolute -top-4 -left-4 text-blue-200">
+                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
+                </div>
+                <p className="text-xl leading-relaxed text-gray-800 font-medium relative z-10 italic">
+                  Fondée au cœur du Togo, <strong className="text-blue-700">Intercontinental Eau</strong> est née d'une vision simple mais ambitieuse : fournir à tous les Togolais un accès à une eau pure, saine et abordable.
+                </p>
+              </div>
+            </div>
+
+            {/* Right side narrative timeline */}
+            <div className="md:col-span-7 relative">
+              <div className="absolute left-8 md:left-12 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-100 via-blue-200 to-transparent"></div>
+
+              <div className="space-y-12">
+                {/* Paragraph 2 */}
+                <div className="relative pl-24 md:pl-32 pr-4 group">
+                  <div className="absolute left-6 md:left-10 top-1 w-5 h-5 bg-white border-4 border-blue-500 rounded-full shadow-md group-hover:scale-125 transition-transform duration-300"></div>
+                  <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:border-blue-100">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                        <Target size={18} />
+                      </div>
+                      <h4 className="font-semibold text-gray-900">Notre Engagement</h4>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed">
+                      Depuis nos débuts, nous nous sommes engagés à respecter les plus hauts standards de qualité dans la production de nos sachets d'eau et bonbonnes de 22 litres. Notre équipe passionnée travaille chaque jour pour garantir que chaque goutte d'eau qui porte notre nom répond aux exigences les plus strictes de pureté et de goût.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Paragraph 3 */}
+                <div className="relative pl-24 md:pl-32 pr-4 group">
+                  <div className="absolute left-6 md:left-10 top-1 w-5 h-5 bg-white border-4 border-cyan-500 rounded-full shadow-md group-hover:scale-125 transition-transform duration-300"></div>
+                  <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:border-cyan-100">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-cyan-100 text-cyan-600 rounded-lg">
+                        <Heart size={18} />
+                      </div>
+                      <h4 className="font-semibold text-gray-900">Aujourd'hui</h4>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed">
+                      Aujourd'hui, nous sommes fiers d'être reconnus comme l'un des leaders du marché togolais de l'eau embouteillée, tout en restant fidèles à nos valeurs d'excellence et de service client.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

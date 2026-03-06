@@ -196,7 +196,9 @@ const ContactSlider = () => {
                             Appeler maintenant
                           </a>
                           <a
-                            href="mailto:contact@intercontinentale-eau.tg?subject=Demande%20de%20contact"
+                            href="mailto:Intercontinentaleau@gmail.com?subject=Demande%20de%20contact"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center font-medium border border-input hover:bg-accent text-lg px-8 py-4 rounded-md bg-transparent hover:text-accent-foreground transition-all"
                           >
                             <Mail className="w-5 h-5 mr-2" />
@@ -206,7 +208,7 @@ const ContactSlider = () => {
                       </div>
 
                       {/*  ZONE IMAGE EN GRAND FORMAT  */}
-                      <div className="relative hidden lg:block h-[500px] w-full"> {/* ← HAUTEUR AUGMENTÉE */}
+                      <div className="relative hidden lg:block h-[600px] w-full">
                         <div className="w-full h-full rounded-2xl border bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-500">
                           <img
                             src={slide.image}

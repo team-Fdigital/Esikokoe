@@ -43,4 +43,3 @@ export default function AdminLayout() {
     </div>
   );
 }
-// End of file
