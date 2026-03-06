@@ -2,11 +2,12 @@ import axios from 'axios';
 
 // Crée une instance Axios configurée pour le backend
 const apiClient = axios.create({
-  baseURL: 'http://localhost:9000', // URL du backend
+  baseURL: 'https://essikokoe.onrender.com', // URL publique Render
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
 
 // Intercepteur pour ajouter le token JWT si besoin
 apiClient.interceptors.request.use((config) => {
