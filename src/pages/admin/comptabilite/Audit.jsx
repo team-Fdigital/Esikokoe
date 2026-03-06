@@ -316,7 +316,7 @@ function Stat({ title, value, color }) {
 
 function Action({ icon, label }) {
   return (
-    <button className="flex items-center gap-3 border rounded-lg px-4 py-3 hover:bg-gray-50">
+    <button className="border p-2 rounded-md text-gray-800 bg-white">
       {icon}
       {label}
     </button>
