@@ -36,10 +36,10 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Nos Produits</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/products" className="hover:text-blue-400 transition">Sachets 500ml</a></li>
-              <li><a href="/products" className="hover:text-blue-400 transition">Bonbonnes 22L</a></li>
-              <li><a href="/products" className="hover:text-blue-400 transition">Pack Entreprise</a></li>
-              <li><a href="/products" className="hover:text-blue-400 transition">Abonnement</a></li>
+              <li><a href="/products" className="text-gray-400 hover:text-blue-400 transition">Sachets 500ml</a></li>
+              <li><a href="/products" className="text-gray-400 hover:text-blue-400 transition">Bonbonnes 22L</a></li>
+              <li><a href="/products" className="text-gray-400 hover:text-blue-400 transition">Pack Entreprise</a></li>
+              <li><a href="/products" className="text-gray-400 hover:text-blue-400 transition">Abonnement</a></li>
             </ul>
           </div>
 
