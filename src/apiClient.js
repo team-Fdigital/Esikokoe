@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Crée une instance Axios configurée pour le backend
 const apiClient = axios.create({
-  baseURL: 'https://essikokoe.onrender.com', // URL publique Render
+  baseURL: import.meta.env.VITE_API_URL, // Utilise la variable d'environnement VITE_API_URL
   headers: {
     'Content-Type': 'application/json',
   },
