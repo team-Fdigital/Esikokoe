@@ -10,24 +10,24 @@ export default function Navbar() {
   };
 
   return (
-    <header className="h-16 bg-white border-b flex items-center justify-between px-6">
+    <header className="h-14 bg-white border-b flex items-center justify-between px-4 lg:px-6">
       <div className="flex items-center gap-3">
-        <img src="/logo.svg" alt="Logo" className="h-10 w-10 object-contain" />
-        <span className="font-semibold text-gray-800 text-base">
+        <img src="/logo.svg" alt="Logo" className="h-8 w-8 object-contain" />
+        <span className="font-semibold text-gray-900 text-sm md:text-base">
           Intercontinental Eau
         </span>
       </div>
 
       <button
         onClick={handleLogout}
-        className="flex items-center gap-2 px-4 py-2 
+        className="flex items-center gap-2 px-3 py-1.5 
                    border border-red-500 text-red-600 
                    bg-white rounded-md 
                    hover:bg-red-50 
                    transition"
       >
-        <LogOut size={18} />
-        <span className="text-base font-medium">Déconnexion</span>
+        <LogOut size={16} />
+        <span className="text-sm font-medium">Déconnexion</span>
       </button>
     </header>
   );

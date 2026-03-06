@@ -47,21 +47,21 @@ export default function Dashboard() {
   }
 
   const modules = [
-    { id: 1, icon: <Box className="text-blue-500" size={28} />, title: "Gestion des Stocks", subtitle: "Inventaire et approvisionnement", path: "/admin/stocks/produits" },
-    { id: 2, icon: <ShoppingCart className="text-green-600" size={28} />, title: "Module de Vente", subtitle: "Factures et commandes", path: "/admin/ventes/ventes" },
-    { id: 3, icon: <BarChart2 className="text-purple-600" size={28} />, title: "Comptabilité", subtitle: "Finances et rapports", path: "/admin/comptabilite/transactions" },
-    { id: 4, icon: <TrendingUp className="text-orange-500" size={28} />, title: "Rapports", subtitle: "Analyses et statistiques", path: "/admin/rapports/financial" },
+    { id: 1, icon: <Box className="text-blue-500" size={20} />, title: "Gestion des Stocks", subtitle: "Inventaire et approvisionnement", path: "/admin/stocks/produits" },
+    { id: 2, icon: <ShoppingCart className="text-green-600" size={20} />, title: "Module de Vente", subtitle: "Factures et commandes", path: "/admin/ventes/ventes" },
+    { id: 3, icon: <BarChart2 className="text-purple-600" size={20} />, title: "Comptabilité", subtitle: "Finances et rapports", path: "/admin/comptabilite/transactions" },
+    { id: 4, icon: <TrendingUp className="text-orange-500" size={20} />, title: "Rapports", subtitle: "Analyses et statistiques", path: "/admin/rapports/financial" },
   ];
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Cards d'accès rapide */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {modules.map((module) => (
-          <QuickAccessCard 
-            key={module.id} 
-            icon={module.icon} 
-            title={module.title} 
+          <QuickAccessCard
+            key={module.id}
+            icon={module.icon}
+            title={module.title}
             subtitle={module.subtitle}
             onClick={() => navigate(module.path)}
           />
@@ -69,34 +69,34 @@ export default function Dashboard() {
       </div>
 
       {/* Statistiques principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Ventes du jour"
           value={stats.ventes?.montantTotal?.toLocaleString() + ' FCFA' || '-'}
           trend={stats.ventes ? `${stats.ventes.nombreVentes} ventes` : ''}
           trendUp={true}
-          icon={<span className="text-green-600 text-2xl ml-2">$</span>}
+          icon={<span className="text-green-600 text-lg ml-1">$</span>}
         />
         <StatCard
           title="Stock total"
           value={stats.stock?.valeurTotalStock?.toLocaleString() + ' FCFA' || '-'}
           trend={stats.stock ? `${stats.stock.totalProduits} produits` : ''}
           trendUp={true}
-          icon={<Box className="text-blue-500 text-2xl ml-2" />}
+          icon={<Box className="text-blue-500 text-lg ml-1" size={20} />}
         />
         <StatCard
           title="Commandes"
           value={stats.ventes?.nombreVentes || '-'}
-          trend={stats.ventes ? `Moyenne: ${stats.ventes.montantMoyen?.toLocaleString()} FCFA` : ''}
+          trend={stats.ventes ? `Moy: ${stats.ventes.montantMoyen?.toLocaleString()} F` : ''}
           trendUp={true}
-          icon={<ShoppingCart className="text-purple-600 text-2xl ml-2" />}
+          icon={<ShoppingCart className="text-purple-600 text-lg ml-1" size={20} />}
         />
         <StatCard
           title="Clients actifs"
           value={stats.clients?.total || '-'}
           trend={stats.clients ? `${stats.clients.total} clients` : ''}
           trendUp={true}
-          icon={<Users className="text-orange-500 text-2xl ml-2" />}
+          icon={<Users className="text-orange-500 text-lg ml-1" size={20} />}
         />
       </div>
 
@@ -119,15 +119,15 @@ export default function Dashboard() {
 
 function QuickAccessCard({ icon, title, subtitle, onClick }) {
   return (
-    <div 
+    <div
       onClick={onClick}
-      className="flex flex-col items-start bg-white rounded-xl border shadow-sm p-6 gap-3 min-h-[120px] cursor-pointer hover:shadow-md hover:border-blue-300 transition"
+      className="flex flex-col items-center text-center bg-white rounded-xl border shadow-sm p-4 gap-2 min-h-[100px] cursor-pointer hover:shadow-md hover:border-blue-300 transition"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col items-center gap-2 w-full">
         <div>{icon}</div>
-        <div className="font-semibold text-sm leading-tight">{title}</div>
+        <div className="font-semibold text-sm leading-tight truncate w-full">{title}</div>
       </div>
-      <div className="text-gray-500 text-xs">{subtitle}</div>
+      <div className="text-gray-500 text-[11px] truncate w-full opacity-80">{subtitle}</div>
     </div>
   );
 }

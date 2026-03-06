@@ -118,7 +118,7 @@ const ContactSlider = () => {
               <IconComponent className="w-5 h-5 text-gray-700" />
             </div>
             <div className="min-w-0">
-              <p className={`font-semibold text-gray-900 ${contact.type === 'mail' ? 'text-xs break-words' : ''}`}>{contact.titre}</p>
+              <p className={`font-semibold text-gray-900 ${contact.type === 'mail' ? 'text-xs break-words break-all' : ''}`}>{contact.titre}</p>
               <p className="text-sm text-gray-500">{contact.sousTitre}</p>
             </div>
           </div>

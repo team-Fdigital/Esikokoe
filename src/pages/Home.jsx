@@ -381,7 +381,7 @@ export default function Home() {
                       <Icon className="w-6 h-6 text-gray-700" />
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">{item.title}</h3>
-                    <p className="text-gray-600 text-sm">{item.info}</p>
+                    <p className="text-gray-600 text-sm break-words break-all">{item.info}</p>
                     <p className="text-gray-600 text-sm">{item.sub}</p>
                   </div>
                 </div>
