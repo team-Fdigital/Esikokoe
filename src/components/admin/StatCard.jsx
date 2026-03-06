@@ -7,17 +7,23 @@ export default function StatCard({
   icon,
 }) {
   return (
-    <div className="bg-white border rounded-lg p-6">
-      <p className="text-xs text-gray-500 mb-3">{title}</p>
-      <div className="flex items-end justify-between mb-2">
-        <p className={`text-1xl font-bold ${color}`}>{value}</p>
-        {icon && <span>{icon}</span>}
+    <div className="bg-white border rounded-lg p-5 shadow-sm">
+      <p className="text-sm text-gray-500 mb-2">{title}</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <p className={`text-2xl font-bold ${color}`}>{value}</p>
+          {trend && (
+            <p className={`text-sm mt-1 ${trendUp ? 'text-green-500' : 'text-red-500'}`}>
+              {trend}
+            </p>
+          )}
+        </div>
+        {icon && (
+          <div className="flex-shrink-0 ml-4">
+            {icon}
+          </div>
+        )}
       </div>
-      {trend && (
-        <p className={`text-xs ${trendUp ? 'text-green-600' : 'text-red-600'}`}>
-          {trend}
-        </p>
-      )}
     </div>
   );
 }
