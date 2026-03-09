@@ -30,29 +30,18 @@ import SalesReport from './pages/admin/rapports/SalesReport'
 import ProductsReport from './pages/admin/rapports/ProductsReport'
 import ClientsReport from './pages/admin/rapports/ClientsReport'
 
+
 function AppContent() {
   const [isAdmin, setIsAdmin] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const location = useLocation()
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        if (payload.role === 'ADMIN') {
-          setIsAdmin(true)
-        } else {
-          setIsAdmin(false)
-        }
-      } catch (e) {
-        setIsAdmin(false)
-      }
-    } else {
-      // Tenter de rafraîchir le token si refreshToken existe
-      const refreshToken = localStorage.getItem('refreshToken')
-      if (refreshToken) {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token')
+      if (token) {
         try {
-          const payload = JSON.parse(atob(refreshToken.split('.')[1]))
+          const payload = JSON.parse(atob(token.split('.')[1]))
           if (payload.role === 'ADMIN') {
             setIsAdmin(true)
           } else {
@@ -61,9 +50,25 @@ function AppContent() {
         } catch (e) {
           setIsAdmin(false)
         }
-        // Appel API pour rafraîchir le token
-        import('./apiClient').then(({ refreshToken: refreshTokenApi }) => {
-          refreshTokenApi().then(res => {
+        setIsLoading(false)
+      } else {
+        // Tenter de rafraîchir le token si refreshToken existe
+        const refreshToken = localStorage.getItem('refreshToken')
+        if (refreshToken) {
+          try {
+            const payload = JSON.parse(atob(refreshToken.split('.')[1]))
+            if (payload.role === 'ADMIN') {
+              setIsAdmin(true)
+            } else {
+              setIsAdmin(false)
+            }
+          } catch (e) {
+            setIsAdmin(false)
+          }
+          // Appel API pour rafraîchir le token
+          try {
+            const { refreshToken: refreshTokenApi } = await import('./apiClient')
+            const res = await refreshTokenApi()
             if (res.data && res.data.accessToken) {
               localStorage.setItem('token', res.data.accessToken)
               try {
@@ -79,14 +84,25 @@ function AppContent() {
             } else {
               setIsAdmin(false)
             }
-          }).catch(() => setIsAdmin(false))
-        })
+          } catch {
+            setIsAdmin(false)
+          }
+          setIsLoading(false)
+        } else {
+          setIsAdmin(false)
+          setIsLoading(false)
+        }
       }
     }
+    checkAuth()
   }, [])
 
   const isAdminRoute = location.pathname.startsWith('/admin')
   const isLoginPage = location.pathname === '/admin/login'
+
+  if (isAdminRoute && !isLoginPage && isLoading) {
+    return <div style={{textAlign:'center',marginTop:'3rem'}}>Chargement...</div>
+  }
 
   return (
     <>

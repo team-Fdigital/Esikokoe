@@ -29,7 +29,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       )}
 
       <aside
-        className={`hidden md:flex md:relative z-50 w-56 bg-slate-900 border-r border-slate-800 h-full min-h-screen flex-col transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        className={`hidden md:flex md:relative z-50 w-56 border p-2 rounded-md text-gray-800 bg-white h-full min-h-screen flex-col transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
           }`}
       >
         {/* Mobile menu header */}
