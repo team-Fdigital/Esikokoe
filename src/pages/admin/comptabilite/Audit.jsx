@@ -70,7 +70,7 @@ export default function Audit() {
             <div className="flex items-center gap-4">
               <Link
                 to="/admin"
-                className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
                 Retour
@@ -78,23 +78,24 @@ export default function Audit() {
 
               <ChartColumn className="text-purple-600" size={22} />
 
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-lg md:text-xl font-semibold text-gray-900">
                 Gestion Comptable
               </h1>
             </div>
 
-            <div className="flex gap-2">
-              <button className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm bg-white text-black hover:bg-gray-50">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
                 <Download size={16} />
                 Exporter
               </button>
 
               <button
                 onClick={() => setShowModal(true)}
-                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md"
+                className="flex items-center justify-center gap-1 md:gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-md"
               >
                 <Plus size={16} />
-                Nouvelle transaction
+                <span className="hidden sm:inline">Nouvelle transaction</span>
+                <span className="inline sm:hidden">Transaction</span>
               </button>
             </div>
           </div>
@@ -102,55 +103,55 @@ export default function Audit() {
       </header>
 
       {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {/* TABS */}
-        <div className="flex gap-2 bg-gray-100 p-1 rounded-md w-fit">
+        <div className="flex flex-wrap md:flex-nowrap gap-1 md:gap-2 bg-gray-100 p-1 md:p-1.5 rounded-md w-fit">
           <Link
             to="/admin/comptabilite/transactions"
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Transactions
           </Link>
           <Link
             to="/admin/comptabilite/rapports"
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Rapports
           </Link>
           <Link
             to="/admin/comptabilite/bilan"
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Bilan
           </Link>
           <Link
             to="/admin/comptabilite/audit"
-            className="px-3 py-1.5 bg-white rounded-md shadow text-sm font-semibold"
+            className="px-2 md:px-3 py-1.5 bg-white rounded-md shadow text-xs md:text-sm font-semibold"
           >
             Audit
           </Link>
         </div>
 
         {/* CARD */}
-        <div className="bg-white border rounded-lg p-6 space-y-6">
+        <div className="bg-white border rounded-lg p-4 md:p-6 space-y-4 md:space-y-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <FileText size={20} />
-              <h2 className="text-xl font-semibold">Audit et contrôle</h2>
+              <h2 className="text-lg md:text-xl font-semibold">Audit et contrôle</h2>
             </div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               Vérification et équilibrage des comptes
             </p>
           </div>
 
           {/* STATS */}
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
             <Stat title="Transactions vérifiées" value={auditStatus?.transactionsVerifiees ?? 0} color="text-green-600" />
             <Stat title="Écarts détectés" value={auditStatus?.ecartsDetectes ?? 0} color="text-yellow-600" />
-            <div className="border rounded-lg p-4 text-center">
-              <p className="text-sm text-gray-600 mb-2">Statut audit</p>
-              <span className={`px-3 py-1 rounded-full text-sm ${auditStatus?.statut === 'Conforme' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            <div className="border rounded-lg p-3 md:p-4 text-center">
+              <p className="text-xs md:text-sm text-gray-600 mb-2">Statut audit</p>
+              <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm ${auditStatus?.statut === 'Conforme' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                 {auditStatus?.statut || 'Inconnu'}
               </span>
             </div>
@@ -158,15 +159,15 @@ export default function Audit() {
 
           {/* ACTIONS */}
           <div>
-            <h3 className="font-semibold mb-3">
+            <h3 className="text-sm md:text-base font-semibold mb-3">
               Actions d'audit disponibles
             </h3>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <Action icon={<FileText size={18} />} label="Générer rapport d'audit" />
-              <Action icon={<Calculator size={18} />} label="Vérifier équilibrage" />
-              <Action icon={<Download size={18} />} label="Exporter pour expert-comptable" />
-              <Action icon={<BarChart3 size={18} />} label="Analyser tendances" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+              <Action icon={<FileText size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Générer rapport d'audit" />
+              <Action icon={<Calculator size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Vérifier équilibrage" />
+              <Action icon={<Download size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Exporter pour expert-comptable" />
+              <Action icon={<BarChart3 size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Analyser tendances" />
             </div>
           </div>
         </div>
@@ -307,16 +308,16 @@ export default function Audit() {
 
 function Stat({ title, value, color }) {
   return (
-    <div className="border rounded-lg p-4 text-center">
-      <p className="text-sm text-gray-600">{title}</p>
-      <p className={`text-2xl font-bold ${color}`}>{value}</p>
+    <div className="border rounded-lg p-3 md:p-4 text-center">
+      <p className="text-xs md:text-sm text-gray-600">{title}</p>
+      <p className={`text-lg md:text-2xl font-bold ${color}`}>{value}</p>
     </div>
   );
 }
 
 function Action({ icon, label }) {
   return (
-    <button className="border p-2 rounded-md text-gray-800 bg-white">
+    <button className="flex items-center gap-2 border p-2 rounded-md text-xs md:text-sm text-gray-800 bg-white hover:bg-gray-50 text-left">
       {icon}
       {label}
     </button>

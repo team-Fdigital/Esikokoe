@@ -15,7 +15,7 @@ import { getAllVentes, createVente, getAllProduits } from "../../../apiClient";
 import { getVenteDetail } from "../../../apiClient";
 
 export default function Ventes() {
-    const [loadingDetail, setLoadingDetail] = useState(false);
+  const [loadingDetail, setLoadingDetail] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedSale, setSelectedSale] = useState(null);
@@ -111,7 +111,7 @@ export default function Ventes() {
             <div className="flex items-center gap-4">
               <Link
                 to="/admin"
-                className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
                 Retour
@@ -125,17 +125,18 @@ export default function Ventes() {
 
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+              className="flex items-center gap-1 md:gap-2 text-xs md:text-sm bg-green-600 hover:bg-green-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-md"
             >
-              <Plus size={16} />
-              Nouvelle vente
+              <Plus size={16} className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="hidden sm:inline">Nouvelle vente</span>
+              <span className="inline sm:hidden">Vente</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* TABLE */}
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {loading && (
           <div className="flex justify-center py-10">
             <span>Chargement des ventes...</span>
@@ -145,21 +146,21 @@ export default function Ventes() {
         <div className="flex gap-1 border-b">
           <Link
             to="/admin/ventes/ventes"
-            className="px-4 py-2 text-sm font-medium border-b-2 border-white hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-white hover:bg-gray-50"
           >
             Ventes
           </Link>
 
           <Link
             to="/admin/ventes/factures"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Factures
           </Link>
 
           <Link
             to="/admin/ventes/clients"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Clients
           </Link>
@@ -167,16 +168,16 @@ export default function Ventes() {
 
         {/* CARD */}
         <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <div className="flex justify-between items-start">
+          <div className="p-4 md:p-6 border-b">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
               <div>
-                <h2 className="text-xl font-semibold">Historique des ventes</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-lg md:text-xl font-semibold">Historique des ventes</h2>
+                <p className="text-xs md:text-sm text-gray-500">
                   Toutes les transactions effectuées
                 </p>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <div className="relative">
                   <Search
                     className="absolute left-3 top-3 text-gray-400"
@@ -204,8 +205,8 @@ export default function Ventes() {
             </div>
           </div>
 
-          <div className="p-6 overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="p-4 md:p-6 overflow-x-auto">
+            <table className="w-full text-xs md:text-sm min-w-[800px]">
               <thead className="border-b text-gray-500">
                 <tr>
                   <th className="text-left py-3">N° Facture</th>
@@ -603,7 +604,7 @@ export default function Ventes() {
           </div>
         </div>
       )}
-      
+
 
       {/* MODAL DÉTAIL VENTE */}
       {showDetailModal && (

@@ -74,7 +74,7 @@ export default function Rapports() {
             <div className="flex items-center gap-4">
               <Link
                 to="/admin"
-                className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
                 Retour
@@ -82,23 +82,24 @@ export default function Rapports() {
 
               <ChartColumn className="text-purple-600" size={22} />
 
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-lg md:text-xl font-semibold text-gray-900">
                 Gestion Comptable
               </h1>
             </div>
 
-            <div className="flex gap-2">
-              <button className="flex items-center gap-2 border px-4 py-2 rounded-md text-sm bg-white text-black hover:bg-gray-50">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
                 <Download size={16} />
                 Exporter
               </button>
 
               <button
                 onClick={() => setShowModal(true)}
-                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md"
+                className="flex items-center justify-center gap-1 md:gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-md"
               >
                 <Plus size={16} />
-                Nouvelle transaction
+                <span className="hidden sm:inline">Nouvelle transaction</span>
+                <span className="inline sm:hidden">Transaction</span>
               </button>
             </div>
           </div>
@@ -106,9 +107,9 @@ export default function Rapports() {
       </header>
 
       {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {/* STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           <Stat
             label="Recettes totales"
             value={
@@ -117,7 +118,7 @@ export default function Rapports() {
                 : '0 FCFA'
             }
             color="green"
-            icon={<TrendingUp className="text-green-600" />}
+            icon={<TrendingUp className="text-green-600 w-5 h-5 md:w-6 md:h-6" />}
           />
           <Stat
             label="Dépenses totales"
@@ -127,7 +128,7 @@ export default function Rapports() {
                 : '0 FCFA'
             }
             color="red"
-            icon={<TrendingDown className="text-red-600" />}
+            icon={<TrendingDown className="text-red-600 w-5 h-5 md:w-6 md:h-6" />}
           />
           <Stat
             label="Bénéfice net"
@@ -150,7 +151,7 @@ export default function Rapports() {
                 : 0;
               return recettes - depenses >= 0 ? "green" : "red";
             })()}
-            icon={<DollarSign className={(() => {
+            icon={<DollarSign className={"w-5 h-5 md:w-6 md:h-6 " + (() => {
               const recettes = distribution && Array.isArray(distribution.recettes)
                 ? distribution.recettes.reduce((sum, item) => sum + Number(item.montant), 0)
                 : 0;
@@ -163,61 +164,61 @@ export default function Rapports() {
         </div>
 
         {/* TABS */}
-        <div className="flex gap-2 bg-gray-100 p-1 rounded-md w-fit">
+        <div className="flex flex-wrap md:flex-nowrap gap-1 md:gap-2 bg-gray-100 p-1 md:p-1.5 rounded-md w-fit">
           <Link
             to="/admin/comptabilite/transactions"
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Transactions
           </Link>
           <Link
             to="/admin/comptabilite/rapports"
-            className="px-3 py-1.5 bg-white rounded-md shadow text-sm font-semibold"
+            className="px-2 md:px-3 py-1.5 bg-white rounded-md shadow text-xs md:text-sm font-semibold"
           >
             Rapports
           </Link>
           <Link
             to="/admin/comptabilite/bilan"
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Bilan
           </Link>
           <Link
             to="/admin/comptabilite/audit"
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             Audit
           </Link>
         </div>
 
         {/* REPORT CARDS */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
           {/* RECETTES */}
-          <div className="bg-white rounded-lg border p-6 space-y-4">
+          <div className="bg-white rounded-lg border p-4 md:p-6 space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
-              <Clock size={18} />
-              <h2 className="text-lg font-semibold">Répartition des recettes</h2>
+              <Clock size={16} className="w-4 h-4 md:w-5 md:h-5" />
+              <h2 className="text-base md:text-lg font-semibold">Répartition des recettes</h2>
             </div>
             {distribution?.recettes && Array.isArray(distribution.recettes)
               ? distribution.recettes.map((item) => (
-                  <div key={item.categorie} className="flex justify-between text-sm">
-                    <span>{item.categorie}</span>
-                    <span className="text-green-600 font-medium">{item.montant} FCFA</span>
-                  </div>
-                ))
-              : <div className="text-gray-400 text-sm">Aucune donnée</div>}
+                <div key={item.categorie} className="flex justify-between text-xs md:text-sm">
+                  <span>{item.categorie}</span>
+                  <span className="text-green-600 font-medium">{item.montant} FCFA</span>
+                </div>
+              ))
+              : <div className="text-gray-400 text-xs md:text-sm">Aucune donnée</div>}
           </div>
           {/* DEPENSES */}
-          <div className="bg-white rounded-lg border p-6 space-y-4">
+          <div className="bg-white rounded-lg border p-4 md:p-6 space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
-              <Clock size={18} />
-              <h2 className="text-lg font-semibold">Répartition des dépenses</h2>
+              <Clock size={16} className="w-4 h-4 md:w-5 md:h-5" />
+              <h2 className="text-base md:text-lg font-semibold">Répartition des dépenses</h2>
             </div>
             {distribution?.depenses && Array.isArray(distribution.depenses)
               ? distribution.depenses.map((item) => (
-                  <Row key={item.categorie} label={item.categorie} value={item.montant + ' FCFA'} />
-                ))
-              : <div className="text-gray-400 text-sm">Aucune donnée</div>}
+                <Row key={item.categorie} label={item.categorie} value={item.montant + ' FCFA'} />
+              ))
+              : <div className="text-gray-400 text-xs md:text-sm">Aucune donnée</div>}
           </div>
         </div>
 
@@ -335,7 +336,7 @@ export default function Rapports() {
 
             {/* FOOTER */}
             <div className="sticky bottom-0 bg-white flex gap-3 p-4 border-t">
-             
+
               <button
                 onClick={handleAddTransaction}
                 className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
@@ -354,13 +355,12 @@ export default function Rapports() {
 
 function Stat({ label, value, color, icon }) {
   return (
-    <div className="bg-white rounded-lg border p-6 flex justify-between items-center">
+    <div className="bg-white rounded-lg border p-4 md:p-6 flex justify-between items-center">
       <div>
-        <p className="text-sm text-gray-600">{label}</p>
+        <p className="text-xs md:text-sm text-gray-600">{label}</p>
         <p
-          className={`text-2xl font-bold ${
-            color === "green" ? "text-green-600" : "text-red-600"
-          }`}
+          className={`text-lg md:text-2xl font-bold ${color === "green" ? "text-green-600" : "text-red-600"
+            }`}
         >
           {value}
         </p>
@@ -372,7 +372,7 @@ function Stat({ label, value, color, icon }) {
 
 function Row({ label, value }) {
   return (
-    <div className="flex justify-between text-sm">
+    <div className="flex justify-between text-xs md:text-sm">
       <span>{label}</span>
       <span className="text-red-600 font-medium">{value}</span>
     </div>
