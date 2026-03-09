@@ -34,6 +34,7 @@ import ClientsReport from './pages/admin/rapports/ClientsReport'
 function AppContent() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [userEmail, setUserEmail] = useState("")
   const location = useLocation()
 
   useEffect(() => {
@@ -44,11 +45,14 @@ function AppContent() {
           const payload = JSON.parse(atob(token.split('.')[1]))
           if (payload.role === 'ADMIN') {
             setIsAdmin(true)
+            setUserEmail(payload.email || "")
           } else {
             setIsAdmin(false)
+            setUserEmail("")
           }
         } catch (e) {
           setIsAdmin(false)
+          setUserEmail("")
         }
         setIsLoading(false)
       } else {
@@ -59,8 +63,10 @@ function AppContent() {
             const payload = JSON.parse(atob(refreshToken.split('.')[1]))
             if (payload.role === 'ADMIN') {
               setIsAdmin(true)
+              setUserEmail(payload.email || "")
             } else {
               setIsAdmin(false)
+              setUserEmail("")
             }
           } catch (e) {
             setIsAdmin(false)
@@ -75,8 +81,10 @@ function AppContent() {
                 const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]))
                 if (payload.role === 'ADMIN') {
                   setIsAdmin(true)
+                  setUserEmail(payload.email || "")
                 } else {
                   setIsAdmin(false)
+                  setUserEmail("")
                 }
               } catch (e) {
                 setIsAdmin(false)
@@ -122,7 +130,7 @@ function AppContent() {
 
           {/* ADMIN */}
           {isAdmin ? (
-            <Route path="/admin" element={<AdminLayout title="Tableau de bord" />}>
+            <Route path="/admin" element={<AdminLayout title="Tableau de bord" userEmail={userEmail} />}>
               <Route index element={<Dashboard />} />
               {/* Stocks */}
               <Route path="stocks" element={<StocksIndex />} />

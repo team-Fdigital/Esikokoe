@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   LayoutDashboard,
@@ -17,7 +17,16 @@ const menu = [
   { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp },
 ];
 
-export default function Sidebar({ isOpen, setIsOpen }) {
+export default function Sidebar({ isOpen, setIsOpen, userEmail }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    navigate("/admin/login");
+  };
+
   return (
     <>
       {/* Mobile overlay */}
@@ -29,8 +38,12 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       )}
 
       <aside
-        className={`hidden md:flex md:relative z-50 w-56 border p-2 rounded-md text-gray-800 bg-white h-full min-h-screen flex-col transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-          }`}
+        className={`fixed md:relative z-50 w-64 border p-2 rounded-md text-gray-800 bg-white h-full min-h-screen flex-col transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+        ${isOpen ? "block" : "hidden"} md:flex
+        top-0 left-0 md:static
+        `}
+        style={{ maxWidth: '90vw' }}
       >
         {/* Mobile menu header */}
         <div className="flex items-center justify-between p-4 md:hidden border-b border-slate-800">
@@ -54,8 +67,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 onClick={() => setIsOpen?.(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-md text-xs transition ${isActive
-                    ? "bg-slate-800 text-blue-400 font-medium"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800"
+                    ? "bg-gray-100 text-blue-600 font-medium"
+                    : "text-gray-600 hover:text-blue-600 hover:bg-gray-100"
                   }`
                 }
               >
@@ -65,6 +78,26 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             );
           })}
         </nav>
+
+        {/* User email and dropdown */}
+        <div className="mt-auto px-3 pb-2">
+          <div className="relative">
+            <button
+              className="w-full flex items-center justify-between px-3 py-2 rounded-md bg-gray-50 text-gray-700 hover:bg-gray-100 border cursor-pointer"
+              onClick={() => setDropdownOpen((v) => !v)}
+            >
+              <span className="truncate max-w-[120px]">{userEmail || "Utilisateur"}</span>
+              <svg className={`ml-2 w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {dropdownOpen && (
+              <div className="absolute left-0 right-0 mt-2 bg-white border rounded-md shadow-lg z-50 animate-fade-in">
+                <button onClick={() => navigate('/admin/profile')} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Profil</button>
+                <button onClick={() => navigate('/admin/settings')} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Paramètres</button>
+                <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">Déconnexion</button>
+              </div>
+            )}
+          </div>
+        </div>
       </aside>
     </>
   );
