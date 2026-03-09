@@ -6,31 +6,31 @@ import { useEffect, useState } from "react";
 import { getProduitsRapport } from "../../../apiClient";
 
 export default function ProductsReport() {
-    const handleExportPDF = () => {
-      try {
-        if (!classement || classement.length === 0) {
-          alert('Aucune donnée à exporter');
-          return;
-        }
-        const doc = new jsPDF();
-        doc.text('Rapport des produits les plus vendus', 14, 16);
-        const tableData = classement.map(product => [
-          product.nom,
-          product.quantite,
-          product.ca?.toLocaleString() + ' FCFA',
-          product.pourcentageCA + '%'
-        ]);
-        autoTable(doc, {
-          head: [['Produit', 'Quantité vendue', 'Chiffre Affaires', '% du CA']],
-          body: tableData,
-          startY: 22,
-        });
-        doc.save('rapport_produits.pdf');
-      } catch (err) {
-        console.error('Erreur export PDF:', err);
-        alert('Erreur lors de l\'exportation PDF. Voir la console.');
+  const handleExportPDF = () => {
+    try {
+      if (!classement || classement.length === 0) {
+        alert('Aucune donnée à exporter');
+        return;
       }
-    };
+      const doc = new jsPDF();
+      doc.text('Rapport des produits les plus vendus', 14, 16);
+      const tableData = classement.map(product => [
+        product.nom,
+        product.quantite,
+        product.ca?.toLocaleString() + ' FCFA',
+        product.pourcentageCA + '%'
+      ]);
+      autoTable(doc, {
+        head: [['Produit', 'Quantité vendue', 'Chiffre Affaires', '% du CA']],
+        body: tableData,
+        startY: 22,
+      });
+      doc.save('rapport_produits.pdf');
+    } catch (err) {
+      console.error('Erreur export PDF:', err);
+      alert('Erreur lors de l\'exportation PDF. Voir la console.');
+    }
+  };
   const [classement, setClassement] = useState([]);
   const [performanceCategorie, setPerformanceCategorie] = useState({});
   const [rotationStock, setRotationStock] = useState({});
@@ -53,7 +53,7 @@ export default function ProductsReport() {
             <div className="flex items-center gap-4">
               <Link
                 to="/admin"
-                className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
                 Retour
@@ -61,18 +61,19 @@ export default function ProductsReport() {
 
               <Package className="text-purple-600" size={24} />
 
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-lg md:text-xl font-semibold text-gray-900">
                 Rapports et Analyses
               </h1>
             </div>
 
-            <div className="flex items-center gap-3">
-              <select className="border rounded-md px-3 py-2 text-sm">
+            <div className="flex items-center gap-2 md:gap-3">
+              <select className="border rounded-md px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm">
                 <option>Ce mois</option>
               </select>
-              <button className="border p-2 rounded-md text-gray-800 bg-white" onClick={handleExportPDF}>
+              <button className="flex items-center justify-center gap-1 md:gap-2 border px-2 md:px-3 py-1.5 md:py-2 rounded-md text-xs md:text-sm text-gray-800 bg-white hover:bg-gray-50" onClick={handleExportPDF}>
                 <Download size={16} />
-                Exporter PDF
+                <span className="hidden sm:inline">Exporter PDF</span>
+                <span className="inline sm:hidden">PDF</span>
               </button>
             </div>
           </div>
@@ -80,30 +81,30 @@ export default function ProductsReport() {
       </header>
 
       {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {/* TABS */}
-        <div className="flex gap-1 border-b">
+        <div className="flex flex-wrap md:flex-nowrap gap-1 border-b">
           <Link
             to="/admin/rapports/sales"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Ventes
           </Link>
           <Link
             to="/admin/rapports/products"
-            className="px-4 py-2 text-sm font-medium border-b-2 border-white hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-white hover:bg-gray-50"
           >
             Produits
           </Link>
           <Link
             to="/admin/rapports/clients"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Clients
           </Link>
           <Link
             to="/admin/rapports/financial"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Financier
           </Link>
@@ -111,24 +112,26 @@ export default function ProductsReport() {
 
         {/* PRODUITS BEST-SELLERS */}
         <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">Produits les plus vendus</h2>
-            <p className="text-sm text-gray-500 mt-1">Top 4 des ventes du mois</p>
+          <div className="p-4 md:p-6 border-b">
+            <h2 className="text-lg md:text-xl font-semibold">Produits les plus vendus</h2>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">Top 4 des ventes du mois</p>
           </div>
 
-          <div className="p-6 space-y-4">
+          <div className="p-4 md:p-6 space-y-3 md:space-y-4">
             {classement.slice(0, 4).map((product, idx) => (
-              <div key={idx} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="font-bold text-blue-600">{idx + 1}</span>
+              <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 p-3 md:p-4 border rounded-lg hover:bg-gray-50 text-xs md:text-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="font-bold text-blue-600">{idx + 1}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900">{product.nom}</h3>
+                    <p className="text-xs md:text-sm text-gray-500">{product.quantite} unités vendues</p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{product.nom}</h3>
-                  <p className="text-xs text-gray-500">{product.quantite} unités vendues</p>
-                </div>
-                <div className="text-right flex-shrink-0">
+                <div className="text-left sm:text-right mt-1 sm:mt-0 sm:ml-auto">
                   <p className="font-bold text-gray-900">{product.ca?.toLocaleString()} FCFA</p>
-                  <p className="text-xs text-gray-500">{product.pourcentageCA}% du CA</p>
+                  <p className="text-xs md:text-sm text-gray-500">{product.pourcentageCA}% du CA</p>
                 </div>
               </div>
             ))}
@@ -136,11 +139,11 @@ export default function ProductsReport() {
         </div>
 
         {/* PERFORMANCE ET ROTATION */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {/* Performance par catégorie */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-6">Performance par catégorie</h3>
-            <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
+            <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-6">Performance par catégorie</h3>
+            <div className="space-y-4 md:space-y-6">
               {Object.entries(performanceCategorie).map(([cat, percent], idx) => (
                 <div key={cat}>
                   <div className="flex justify-between mb-2">
@@ -148,7 +151,7 @@ export default function ProductsReport() {
                     <span className="text-sm font-bold text-gray-900">{percent}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className={`h-2 rounded-full ${idx === 0 ? "bg-blue-600" : "bg-green-600"}`}
                       style={{ width: `${percent}%` }}
                     ></div>
@@ -159,20 +162,20 @@ export default function ProductsReport() {
           </div>
 
           {/* Rotation des stocks */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-6">Rotation des stocks</h3>
-            <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
+            <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-6">Rotation des stocks</h3>
+            <div className="space-y-4 md:space-y-6">
               <div>
-                <p className="text-sm text-gray-600 mb-2">Rotation moyenne</p>
-                <p className="text-2xl font-bold text-gray-900">{rotationStock.moyenne ?? '-'} fois/mois</p>
+                <p className="text-xs md:text-sm text-gray-600 mb-1 md:mb-2">Rotation moyenne</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900">{rotationStock.moyenne ?? '-'} fois/mois</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-2">Produit le plus rapide</p>
-                <p className="text-2xl font-bold text-gray-900">{rotationStock.produitRapide ?? '-'}</p>
+                <p className="text-xs md:text-sm text-gray-600 mb-1 md:mb-2">Produit le plus rapide</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900">{rotationStock.produitRapide ?? '-'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-2">Stock dormant</p>
-                <p className="text-2xl font-bold text-red-600">{rotationStock.stockDormant ? 'Oui' : 'Non'}</p>
+                <p className="text-xs md:text-sm text-gray-600 mb-1 md:mb-2">Stock dormant</p>
+                <p className="text-xl md:text-2xl font-bold text-red-600">{rotationStock.stockDormant ? 'Oui' : 'Non'}</p>
               </div>
             </div>
           </div>

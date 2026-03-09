@@ -28,7 +28,7 @@ export default function Alertes() {
             <div className="flex items-center gap-4">
               <Link
                 to="/admin/stocks"
-                className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
                 Retour
@@ -45,27 +45,27 @@ export default function Alertes() {
       </header>
 
       {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-6">
         {/* TABS */}
         <div className="flex gap-1">
           <Link
             to="/admin/stocks/produits"
-            className="px-4 py-2 bg-white rounded-t-md text-sm font-medium text-black hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 bg-white rounded-t-md text-xs md:text-sm font-medium text-black hover:bg-gray-50"
           >
             Inventaire
           </Link>
           <Link
             to="/admin/stocks/alertes"
-            className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50 relative border-b-2 border-white"
+            className="px-3 md:px-4 py-2 rounded-t-md text-xs md:text-sm font-medium bg-white text-black hover:bg-gray-50 relative border-b-2 border-white"
           >
             Alertes
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center text-[10px] md:text-xs font-bold">
               1
             </span>
           </Link>
           <Link
             to="/admin/stocks/mouvements"
-            className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 rounded-t-md text-xs md:text-sm font-medium bg-white text-black hover:bg-gray-50"
           >
             Mouvements
           </Link>
@@ -80,8 +80,8 @@ export default function Alertes() {
             </p>
           </div>
 
-          <div className="p-6 overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="p-4 md:p-6 overflow-x-auto">
+            <table className="w-full text-xs md:text-sm min-w-[600px]">
               <thead className="border-b text-gray-500">
                 <tr>
                   <th className="text-left py-3">Code</th>

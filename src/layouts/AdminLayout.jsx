@@ -17,19 +17,6 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-gray-50 flex-col">
-      {/* Mobile Top Bar */}
-      <div className="md:hidden flex items-center justify-between bg-white border-b px-4 h-14 sticky top-0 z-40">
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-gray-800">Admin</span>
-        </div>
-        <button
-          onClick={() => setIsSidebarOpen(true)}
-          className="p-2 text-gray-600 hover:bg-gray-100 rounded-md"
-        >
-          <Menu size={20} />
-        </button>
-      </div>
-
       {isDashboard && <Navbar />}
 
       <div className="flex flex-1 relative">

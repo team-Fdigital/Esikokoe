@@ -27,7 +27,7 @@ export default function FinancialReport() {
             <div className="flex items-center gap-4">
               <Link
                 to="/admin"
-                className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
                 Retour
@@ -35,20 +35,21 @@ export default function FinancialReport() {
 
               <TrendingUp className="text-orange-500" size={22} />
 
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-lg md:text-xl font-semibold text-gray-900">
                 Rapports et Analyses
               </h1>
             </div>
 
-            <div className="flex items-center gap-3">
-              <select className="px-3 py-2 border rounded-md text-sm font-medium">
+            <div className="flex items-center gap-2 md:gap-3">
+              <select className="px-2 md:px-3 py-1.5 md:py-2 border rounded-md text-xs md:text-sm font-medium">
                 <option>Ce mois</option>
                 <option>Mois dernier</option>
                 <option>Trimestre</option>
               </select>
-              <button className="flex items-center gap-2 px-3 py-2 bg-white border rounded-md text-sm font-medium hover:bg-gray-50">
+              <button className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-1.5 md:py-2 bg-white border rounded-md text-xs md:text-sm font-medium hover:bg-gray-50">
                 <Download size={16} />
-                Exporter PDF
+                <span className="hidden sm:inline">Exporter PDF</span>
+                <span className="inline sm:hidden">PDF</span>
               </button>
             </div>
           </div>
@@ -56,45 +57,45 @@ export default function FinancialReport() {
       </header>
 
       {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {/* TABS */}
-        <div className="flex gap-1 border-b">
+        <div className="flex flex-wrap md:flex-nowrap gap-1 border-b">
           <Link
             to="/admin/rapports/sales"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Ventes
           </Link>
           <Link
             to="/admin/rapports/products"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Produits
           </Link>
           <Link
             to="/admin/rapports/clients"
-            className="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
             Clients
           </Link>
           <Link
             to="/admin/rapports/financial"
-            className="px-4 py-2 text-sm font-medium border-b-2 border-orange-500 hover:bg-gray-50"
+            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-orange-500 hover:bg-gray-50"
           >
             Financier
           </Link>
         </div>
 
         {/* RENTABILITÉ & TRÉSORERIE */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
           {/* Rentabilité */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h2 className="text-2xl font-bold mb-6">Rentabilité</h2>
-            <div className="space-y-4">
+          <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
+            <h2 className="text-lg md:text-2xl font-bold mb-4 md:mb-6">Rentabilité</h2>
+            <div className="space-y-3 md:space-y-4">
               {rentabiliteData.map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center">
+                <div key={idx} className="flex justify-between items-center text-xs md:text-sm">
                   <span className="text-gray-700 font-medium">{item.label}</span>
-                  <span className="text-2xl font-bold text-green-600">
+                  <span className="text-lg md:text-2xl font-bold text-green-600">
                     {item.value}
                   </span>
                 </div>
@@ -103,13 +104,13 @@ export default function FinancialReport() {
           </div>
 
           {/* Flux de trésorerie */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h2 className="text-2xl font-bold mb-6">Flux de trésorerie</h2>
-            <div className="space-y-4">
+          <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
+            <h2 className="text-lg md:text-2xl font-bold mb-4 md:mb-6">Flux de trésorerie</h2>
+            <div className="space-y-3 md:space-y-4">
               {tresorerieData.map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center">
+                <div key={idx} className="flex justify-between items-center text-xs md:text-sm">
                   <span className="text-gray-700 font-medium">{item.label}</span>
-                  <span className={`text-2xl font-bold ${item.color}`}>
+                  <span className={`text-lg md:text-2xl font-bold ${item.color}`}>
                     {item.value}
                   </span>
                 </div>
@@ -119,20 +120,20 @@ export default function FinancialReport() {
         </div>
 
         {/* PRÉVISIONS */}
-        <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-2xl font-bold mb-2">Prévisions</h2>
-          <p className="text-gray-600 text-sm mb-6">
+        <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
+          <h2 className="text-lg md:text-2xl font-bold mb-2">Prévisions</h2>
+          <p className="text-gray-600 text-xs md:text-sm mb-4 md:mb-6">
             Projections basées sur les tendances actuelles
           </p>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
             {previsions.map((item, idx) => (
-              <div key={idx} className="border rounded-lg p-6">
-                <p className="text-sm text-gray-600 mb-2">{item.title}</p>
-                <p className={`text-3xl font-bold ${item.color}`}>
+              <div key={idx} className="border rounded-lg p-4 md:p-6 text-center sm:text-left">
+                <p className="text-xs md:text-sm text-gray-600 mb-2">{item.title}</p>
+                <p className={`text-2xl md:text-3xl font-bold ${item.color}`}>
                   {item.value}
                 </p>
-                <p className="text-sm text-gray-600 mt-2">{item.trend}</p>
+                <p className="text-xs md:text-sm text-gray-600 mt-2">{item.trend}</p>
               </div>
             ))}
           </div>

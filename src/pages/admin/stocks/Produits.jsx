@@ -8,10 +8,10 @@ import { getAllProduits, createProduit } from "../../../apiClient";
 import { updateProduit, deleteProduit } from "../../../apiClient";
 
 export default function Produits() {
-        const [exportMenuOpen, setExportMenuOpen] = useState(false);
-      const [searchTerm, setSearchTerm] = useState("");
-      const [selectedCategory, setSelectedCategory] = useState("Toutes les catégories");
-    const [editingProductId, setEditingProductId] = useState(null);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Toutes les catégories");
+  const [editingProductId, setEditingProductId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     nomProduit: "",
@@ -166,7 +166,7 @@ export default function Produits() {
   const formCategories = [
     ...new Set([
       ...produits.map(p => p.categorie && p.categorie.trim()).filter(Boolean),
-      ...categories // Ajoute les catégories statiques si besoin
+      ...categories
     ])
   ];
 
@@ -396,13 +396,12 @@ export default function Produits() {
                     </td>
                     <td>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          p.statut === "En stock"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${p.statut === "En stock" || p.stock > (p.stockMinimum || 0)
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                          }`}
                       >
-                        {p.statut === "En stock"
+                        {p.statut === "En stock" || p.stock > (p.stockMinimum || 0)
                           ? "Stock bon"
                           : "Stock faible"}
                       </span>
