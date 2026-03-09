@@ -80,8 +80,8 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail }) {
         </nav>
 
         {/* User email and dropdown */}
-        <div className="mt-auto px-3 pb-2">
-          <div className="relative">
+        <div className="mt-auto px-3 pb-2" style={{overflow:'visible'}}>
+          <div className="relative" style={{overflow:'visible'}}>
             <button
               className="w-full flex items-center justify-between px-3 py-2 rounded-md bg-gray-50 text-gray-700 hover:bg-gray-100 border cursor-pointer"
               onClick={() => setDropdownOpen((v) => !v)}
@@ -90,11 +90,15 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail }) {
               <svg className={`ml-2 w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
             </button>
             {dropdownOpen && (
-              <div className="border p-2 rounded-md text-gray-800 bg-white" style={{backgroundColor:'#fff', bottom:'auto', top:'100%', left:0, right:0, position:'absolute', zIndex:99}}>
-                <button onClick={() => navigate('/admin/profile')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">Profil</button>
-                <button onClick={() => navigate('/admin/settings')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">Paramètres</button>
-                <button onClick={handleLogout} className="block w-full text-left px-4 py-2 bg-white text-red-600 hover:bg-gray-100">Déconnexion</button>
-              </div>
+              <>
+                {/* Overlay for outside click */}
+                <div onClick={()=>setDropdownOpen(false)} className="fixed inset-0 z-[9998]" style={{background:'transparent'}} />
+                <div className="border p-2 rounded-md text-gray-800 bg-white animate-fade-in" style={{backgroundColor:'#fff', bottom:'100%', left:0, right:0, position:'absolute', zIndex:9999, minWidth:'180px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)'}}>
+                  <button onClick={() => navigate('/admin/profile')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">Profil</button>
+                  <button onClick={() => navigate('/admin/settings')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">Paramètres</button>
+                  <button onClick={handleLogout} className="block w-full text-left px-4 py-2 bg-white text-red-600 hover:bg-gray-100">Déconnexion</button>
+                </div>
+              </>
             )}
           </div>
         </div>
