@@ -610,7 +610,7 @@ export default function Ventes() {
       {showDetailModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center p-4 border-b">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b gap-2">
               <h2 className="text-lg font-bold">Détail de la vente {selectedSale?.numeroFacture || selectedSale?.id || ''}</h2>
               <button onClick={() => { setShowDetailModal(false); setSelectedSale(null); }} className="border p-2 rounded-md text-gray-800 bg-white">
                 <X size={20} />
@@ -644,34 +644,36 @@ export default function Ventes() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Produits vendus</h3>
-                    {(() => {
-                      // Cherche le bon tableau de produits
-                      const produitsList = selectedSale.produits || selectedSale.items || selectedSale.lignes || selectedSale.details || [];
-                      return (
-                        <table className="w-full text-sm border rounded-lg overflow-hidden">
-                          <thead>
-                            <tr className="bg-gray-100">
-                              <th className="text-left px-2 py-1">Produit</th>
-                              <th className="text-right px-2 py-1">Quantité</th>
-                              <th className="text-right px-2 py-1">Prix unitaire</th>
-                              <th className="text-right px-2 py-1">Total</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {produitsList.length === 0 ? (
-                              <tr><td colSpan={4} className="text-center py-4 text-gray-400">Aucun produit</td></tr>
-                            ) : produitsList.map((p, i) => (
-                              <tr key={i}>
-                                <td className="px-2 py-1">{p.nomProduit || p.productName || p.produit || p.name || '-'}</td>
-                                <td className="px-2 py-1 text-right">{p.quantite ?? p.qty ?? p.qte ?? '-'}</td>
-                                <td className="px-2 py-1 text-right">{(p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0)?.toLocaleString()} FCFA</td>
-                                <td className="px-2 py-1 text-right">{((p.quantite ?? p.qty ?? p.qte ?? 0) * (p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0))?.toLocaleString()} FCFA</td>
+                    <div className="overflow-x-auto">
+                      {(() => {
+                        // Cherche le bon tableau de produits
+                        const produitsList = selectedSale.produits || selectedSale.items || selectedSale.lignes || selectedSale.details || [];
+                        return (
+                          <table className="w-full min-w-[400px] text-sm border rounded-lg overflow-hidden">
+                            <thead>
+                              <tr className="bg-gray-100">
+                                <th className="text-left px-2 py-1">Produit</th>
+                                <th className="text-right px-2 py-1">Quantité</th>
+                                <th className="text-right px-2 py-1">Prix unitaire</th>
+                                <th className="text-right px-2 py-1">Total</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      );
-                    })()}
+                            </thead>
+                            <tbody>
+                              {produitsList.length === 0 ? (
+                                <tr><td colSpan={4} className="text-center py-4 text-gray-400">Aucun produit</td></tr>
+                              ) : produitsList.map((p, i) => (
+                                <tr key={i}>
+                                  <td className="px-2 py-1">{p.nomProduit || p.productName || p.produit || p.name || '-'}</td>
+                                  <td className="px-2 py-1 text-right">{p.quantite ?? p.qty ?? p.qte ?? '-'}</td>
+                                  <td className="px-2 py-1 text-right">{(p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0)?.toLocaleString()} FCFA</td>
+                                  <td className="px-2 py-1 text-right">{((p.quantite ?? p.qty ?? p.qte ?? 0) * (p.prixUnitaire ?? p.unitPrice ?? p.price ?? 0))?.toLocaleString()} FCFA</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        );
+                      })()}
+                    </div>
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                       <div className="flex flex-col items-start space-y-2">
                         <div className="font-medium">Sous-total:</div>
