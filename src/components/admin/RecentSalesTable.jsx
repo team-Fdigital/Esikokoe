@@ -18,10 +18,10 @@ export default function RecentSalesTable({ title, subtitle, sales }) {
           <tbody>
             {sales && sales.length > 0 ? sales.map((sale, i) => (
               <tr key={i} className="border-b hover:bg-gray-50">
-                <td className="py-2">{sale.client || '-'}</td>
-                <td>{sale.product || '-'}</td>
-                <td>{sale.date || '-'}</td>
-                <td className="text-right font-semibold">{sale.amount || '-'} FCFA</td>
+                <td className="py-2 pr-2">{sale.client || '-'}</td>
+                <td className="pr-2">{sale.product || '-'}</td>
+                <td className="pr-2 whitespace-nowrap">{sale.date || '-'}</td>
+                <td className="text-right font-semibold whitespace-nowrap">{sale.amount || '-'}</td>
               </tr>
             )) : (
               <tr><td colSpan="4" className="text-center text-gray-400 py-4">Aucune vente récente</td></tr>

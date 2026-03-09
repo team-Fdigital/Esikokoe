@@ -54,7 +54,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="w-full space-y-8">
       {/* Cards d'accès rapide */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {modules.map((module) => (
