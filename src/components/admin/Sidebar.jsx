@@ -38,7 +38,7 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail }) {
       )}
 
       <aside
-        className={`fixed md:relative z-50 w-64 border p-2 rounded-md text-gray-800 bg-white h-full min-h-screen flex-col transition-transform duration-300 ease-in-out
+        className={`fixed md:relative z-50 w-full max-w-xs md:w-64 border p-4 rounded-md text-gray-800 bg-white h-full min-h-screen flex-col transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
         ${isOpen ? "block" : "hidden"} md:flex
         top-0 left-0 md:static
@@ -80,7 +80,7 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail }) {
         </nav>
 
         {/* User email and dropdown */}
-        <div className="mt-auto px-3 pb-2" style={{overflow:'visible'}}>
+        <div className="mt-auto px-4 pb-8" style={{overflow:'visible'}}>
           <div className="relative" style={{overflow:'visible'}}>
             <button
               className="w-full flex items-center justify-between px-3 py-2 rounded-md bg-gray-50 text-gray-700 hover:bg-gray-100 border cursor-pointer"
