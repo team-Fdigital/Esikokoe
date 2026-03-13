@@ -193,15 +193,15 @@ export default function Home() {
                       </div>
 
                       <div className="relative hidden lg:block">
-                        <div className="relative z-10">
+                        <div className="relative z-10 w-[85%] mx-auto">
                           <img
                             src={slide.image}
                             alt={slide.title}
                             className="w-full h-auto rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
                           />
                         </div>
-                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/20 rounded-full animate-pulse"></div>
-                        <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/30 rounded-full animate-bounce"></div>
+                        <div className="absolute -top-3 right-4 w-24 h-24 bg-white/20 rounded-full animate-pulse"></div>
+                        <div className="absolute -bottom-3 left-4 w-16 h-16 bg-white/30 rounded-full animate-bounce"></div>
                       </div>
                     </div>
                   </div>
@@ -255,10 +255,10 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {products.map((product) => (
-              <div key={product.id} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                <div className={`relative h-64 bg-gradient-to-br ${product.gradient} flex items-center justify-center overflow-hidden`}>
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" onError={(e) => { e.target.src = '/placeholder.svg?height=200&width=200' }} />
-                  <div className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold absolute top-4 right-4 ${product.badgeColor} animate-pulse`}>
+              <div key={product.id} className="rounded-lg border bg-white shadow-sm overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className={`relative h-60 w-full bg-gradient-to-br ${product.gradient} flex items-center justify-center`}>
+                  <img src={product.image} alt={product.name} className="w-auto h-auto max-w-[80%] max-h-[70%] object-contain drop-shadow-xl transform hover:scale-110 transition-transform duration-500" onError={(e) => { e.target.src = '/placeholder.svg?height=200&width=200' }} />
+                  <div className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold absolute top-4 right-4 ${product.badgeColor} shadow-md`}>
                     {product.badge}
                   </div>
                 </div>
