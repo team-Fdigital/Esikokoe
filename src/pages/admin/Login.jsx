@@ -56,7 +56,7 @@ export default function Login({ setUserRole }) {
         localStorage.removeItem('mockStore')
         
         const payload = JSON.parse(atob(response.data.accessToken.split('.')[1]))
-        if (setUserRole) setUserRole(payload.role || 'SUPER_ADMIN')
+        if (setUserRole) setUserRole(payload.role || 'SUPERADMIN')
         navigate('/admin')
       } else if (response.data && response.data.error) {
         setError(response.data.error)
@@ -173,7 +173,7 @@ export default function Login({ setUserRole }) {
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-xs text-center text-gray-500 mb-3 font-semibold uppercase tracking-wider">Mode Simulation (Tests)</p>
             <div className="grid grid-cols-3 gap-2">
-              <button onClick={() => handleMockLogin('SUPER_ADMIN')} type="button" className="text-[10px] bg-purple-100 text-purple-700 border border-purple-200 py-1.5 rounded hover:bg-purple-200 transition font-medium">SUPER ADMIN</button>
+              <button onClick={() => handleMockLogin('SUPERADMIN')} type="button" className="text-[10px] bg-purple-100 text-purple-700 border border-purple-200 py-1.5 rounded hover:bg-purple-200 transition font-medium">SUPER ADMIN</button>
               <button onClick={() => handleMockLogin('ADMIN')} type="button" className="text-[10px] bg-blue-100 text-blue-700 border border-blue-200 py-1.5 rounded hover:bg-blue-200 transition font-medium">ADMIN</button>
               <button onClick={() => handleMockLogin('VENDEUR')} type="button" className="text-[10px] bg-emerald-100 text-emerald-700 border border-emerald-200 py-1.5 rounded hover:bg-emerald-200 transition font-medium">VENDEUR</button>
             </div>

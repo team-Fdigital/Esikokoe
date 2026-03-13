@@ -1,10 +1,11 @@
 import { ArrowDown, ArrowUp, Box, X, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAllProduits, registerStockEntry, deductStock } from "../../../apiClient";
+import { getAllProduits, registerStockEntry, deductStock, transferStock, getAllMagasins } from "../../../apiClient";
 
 export default function Stock() {
   const [produits, setProduits] = useState([]);
+  const [magasins, setMagasins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,35 +15,41 @@ export default function Stock() {
   const [formData, setFormData] = useState({
     codeProduit: "",
     quantite: "",
-    idMagasin: ""
+    idMagasin: "",
+    motif: ""
   });
 
-  const userRole = localStorage.getItem('mockRole') || 'SUPER_ADMIN';
-  const mockMagasins = [
-    { id: 'magasin_1', nom: 'Magasin Principal Lome' },
-    { id: 'magasin_2', nom: 'Magasin Kara' }
-  ];
+  const userRole = localStorage.getItem('mockRole') || 'SUPERADMIN';
 
-  const fetchProduits = () => {
+  const fetchData = async () => {
     setLoading(true);
-    getAllProduits()
-      .then((res) => {
-        if (res.data && Array.isArray(res.data.produits)) {
-          setProduits(res.data.produits);
-        } else {
-          setProduits([]);
-        }
-      })
-      .finally(() => setLoading(false));
+    try {
+      const [produitsRes, magasinsRes] = await Promise.all([
+        getAllProduits(),
+        getAllMagasins()
+      ]);
+      
+      if (produitsRes.data && Array.isArray(produitsRes.data.produits)) {
+        setProduits(produitsRes.data.produits);
+      } else {
+        setProduits(Array.isArray(produitsRes.data) ? produitsRes.data : []);
+      }
+
+      setMagasins(Array.isArray(magasinsRes.data) ? magasinsRes.data : (magasinsRes.data.magasins || []));
+    } catch (error) {
+      console.error("Erreur lors du chargement des données:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchProduits();
+    fetchData();
   }, []);
 
   const openModal = (action, codeProduit = "") => {
     setCurrentAction(action);
-    setFormData({ codeProduit, quantite: "", idMagasin: "" });
+    setFormData({ codeProduit, quantite: "", idMagasin: "", motif: "" });
     setIsModalOpen(true);
   };
 
@@ -50,31 +57,27 @@ export default function Stock() {
     e.preventDefault();
     setActionLoading(true);
     try {
-      const payload = { 
-        codeProduit: formData.codeProduit, 
-        quantite: Number(formData.quantite),
-        idMagasin: currentAction === "SORTIE" ? formData.idMagasin : undefined
-      };
-      
       if (currentAction === "ENTREE") {
-        await registerStockEntry(payload).catch(() => {});
+        await registerStockEntry({ 
+          codeProduit: formData.codeProduit, 
+          quantite: Number(formData.quantite),
+          motif: "Entrée manuelle"
+        });
       } else {
-        await deductStock(payload).catch(() => {});
+        // Pour une "SORTIE" (Distribution), on utilise l'API de transfert
+        await transferStock({
+          produitId: formData.codeProduit,
+          sourceMagasinId: "principal", // À adapter selon la logique métier/auth
+          destinationMagasinId: formData.idMagasin,
+          quantite: Number(formData.quantite),
+          motif: formData.motif || "Distribution stock"
+        });
       }
       
-      // Update local state to reflect changes instead of waiting for backend
-      setProduits(produits.map(p => {
-        if (p.categorie === formData.codeProduit || p.nomProduit === formData.codeProduit || p.codeProduit === formData.codeProduit) {
-          const newStock = currentAction === "ENTREE" 
-            ? (p.stock || 0) + Number(formData.quantite)
-            : (p.stock || 0) - Number(formData.quantite);
-          return { ...p, stock: newStock };
-        }
-        return p;
-      }));
-      
+      await fetchData(); // Refresh data from server
       setIsModalOpen(false);
     } catch (err) {
+      console.error(err);
       alert("Erreur lors de l'enregistrement de l'opération");
     }
     setActionLoading(false);
@@ -85,9 +88,8 @@ export default function Stock() {
            p.codeProduit?.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  // Séparer les matériaux d'achat des produits de vente
-  const materiaux = filteredProduits.filter(p => p.type === 'Achat');
-  const produitsVente = filteredProduits.filter(p => p.type !== 'Achat');
+  const materiaux = filteredProduits.filter(p => p.type === 'ACHAT');
+  const produitsVente = filteredProduits.filter(p => p.type !== 'ACHAT');
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -95,10 +97,10 @@ export default function Stock() {
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold border-b-2 border-emerald-500 pb-2 inline-block text-gray-800">
-            Effectuer un Stockage / Destockage
+            Effectuer un Stockage / Distribution
           </h1>
           <p className="text-gray-500 text-sm mt-2">
-            Réalisez rapidement une entrée ou une sortie de matériel.
+            Réalisez une entrée ou une distribution de matériel vers un autre magasin.
           </p>
         </div>
         <div className="flex gap-3">
@@ -114,7 +116,7 @@ export default function Stock() {
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-red-500/20"
           >
             <ArrowUp size={20} />
-            Sortie 
+            Distribution 
           </button>
         </div>
       </div>
@@ -128,7 +130,7 @@ export default function Stock() {
         </Link>
         <Link
           to="/admin/stocks/action"
-          className="px-4 py-2 bg-white rounded-t-md text-sm font-medium border-b-2 border-white text-black hover:bg-gray-50"
+          className="px-4 py-2 bg-white rounded-t-md text-sm font-medium border-b-2 border-emerald-500 text-black hover:bg-gray-50"
         >
           Stock
         </Link>
@@ -137,9 +139,6 @@ export default function Stock() {
           className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50 relative"
         >
           Alertes
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-            1
-          </span>
         </Link>
         <Link
           to="/admin/stocks/mouvements"
@@ -150,58 +149,64 @@ export default function Stock() {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <div className="mb-6 relative max-w-md">
-          <Search className="absolute left-3 top-3 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="Rechercher un produit ou matériel..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        {loading ? (
+             <div className="text-center py-20">Chargement...</div>
+        ) : (
+            <>
+            <div className="mb-6 relative max-w-md">
+                <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+                <input
+                    type="text"
+                    placeholder="Rechercher un produit ou matériel..."
+                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
 
-        {/* Matériaux d'Achat */}
-        <div className="mb-8">
-          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-orange-500"></span>
-            Achat
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {materiaux.map(p => (
-              <ProductCard 
-                key={p.codeProduit} 
-                produit={p} 
-                onStockage={() => openModal("ENTREE", p.categorie)}
-                onDestockage={() => openModal("SORTIE", p.categorie)}
-              />
-            ))}
-            {materiaux.length === 0 && (
-              <p className="text-sm text-gray-500 italic col-span-full">Aucun matériel trouvé.</p>
-            )}
-          </div>
-        </div>
+            {/* Matériaux d'Achat */}
+            <div className="mb-8">
+                <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                    Matériaux / Achat
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {materiaux.map(p => (
+                    <ProductCard 
+                        key={p.codeProduit} 
+                        produit={p} 
+                        onStockage={() => openModal("ENTREE", p.codeProduit)}
+                        onDestockage={() => openModal("SORTIE", p.codeProduit)}
+                    />
+                    ))}
+                    {materiaux.length === 0 && (
+                    <p className="text-sm text-gray-500 italic col-span-full">Aucun matériel trouvé.</p>
+                    )}
+                </div>
+            </div>
 
-        {/* Produits de Vente */}
-        <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-             Vente
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {produitsVente.map(p => (
-              <ProductCard 
-                key={p.codeProduit} 
-                produit={p} 
-                onStockage={() => openModal("ENTREE", p.categorie)}
-                onDestockage={() => openModal("SORTIE", p.categorie)}
-              />
-            ))}
-            {produitsVente.length === 0 && (
-              <p className="text-sm text-gray-500 italic col-span-full">Aucun produit trouvé.</p>
-            )}
-          </div>
-        </div>
+            {/* Produits de Vente */}
+            <div>
+                <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    Produits Finis / Vente
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {produitsVente.map(p => (
+                    <ProductCard 
+                        key={p.codeProduit} 
+                        produit={p} 
+                        onStockage={() => openModal("ENTREE", p.codeProduit)}
+                        onDestockage={() => openModal("SORTIE", p.codeProduit)}
+                    />
+                    ))}
+                    {produitsVente.length === 0 && (
+                    <p className="text-sm text-gray-500 italic col-span-full">Aucun produit trouvé.</p>
+                    )}
+                </div>
+            </div>
+            </>
+        )}
       </div>
 
       {/* MODAL */}
@@ -215,7 +220,7 @@ export default function Stock() {
                 </div>
                 <div>
                   <h2 className={`text-lg font-bold ${currentAction === 'ENTREE' ? 'text-green-800' : 'text-red-800'}`}>
-                    {currentAction === "ENTREE" ? "Entrée en stock" : "Sortie de stock"}
+                    {currentAction === "ENTREE" ? "Entrée en stock" : "Distribution"}
                   </h2>
                 </div>
               </div>
@@ -234,16 +239,15 @@ export default function Stock() {
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                 >
                   <option value="">Sélectionnez un produit...</option>
-                  <option value="Sachets">Sachets</option>
-                  <option value="Bouteilles">Bouteilles</option>
-                  <option value="Bonbonnes">Bonbonnes</option>
-                  <option value="Autre">Autre</option>
+                  {produits.map(p => (
+                      <option key={p.codeProduit} value={p.codeProduit}>{p.nomProduit} ({p.format})</option>
+                  ))}
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quantité à {currentAction === 'ENTREE' ? 'ajouter' : 'déstocker'}
+                  Quantité
                 </label>
                 <div className="relative">
                   <input
@@ -257,7 +261,7 @@ export default function Stock() {
                 </div>
               </div>
 
-              {currentAction === 'SORTIE' && userRole === 'SUPER_ADMIN' && (
+              {currentAction === 'SORTIE' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Magasin de destination
@@ -269,12 +273,23 @@ export default function Stock() {
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                   >
                     <option value="">Sélectionnez un magasin...</option>
-                    {mockMagasins.map(m => (
-                      <option key={m.id} value={m.id}>{m.nom}</option>
+                    {magasins.map(m => (
+                      <option key={m.idMagasin} value={m.idMagasin}>{m.nom}</option>
                     ))}
                   </select>
                 </div>
               )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Motif</label>
+                <input
+                  type="text"
+                  value={formData.motif}
+                  onChange={(e) => setFormData({ ...formData, motif: e.target.value })}
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                  placeholder="Ex: Réapprovisionnement"
+                />
+              </div>
 
               <div className="pt-4 flex justify-end gap-3">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">Annuler</button>
@@ -306,7 +321,7 @@ function ProductCard({ produit, onStockage, onDestockage }) {
         </div>
         <div className="flex items-center gap-2 mb-4">
           <Box size={14} className="text-gray-400" />
-          <span className="text-sm text-gray-600">Stock actuel :</span>
+          <span className="text-sm text-gray-600">Stock :</span>
           <span className={`font-bold ml-auto ${produit.stock <= (produit.stockMinimum || 0) ? 'text-red-500' : 'text-green-600'}`}>
             {produit.stock || 0}
           </span>
@@ -323,7 +338,7 @@ function ProductCard({ produit, onStockage, onDestockage }) {
           onClick={onDestockage}
           className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
         >
-          <ArrowUp size={14} /> Sortie
+          <ArrowUp size={14} /> Distribuer
         </button>
       </div>
     </div>

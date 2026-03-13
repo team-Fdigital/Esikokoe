@@ -12,13 +12,13 @@ import {
 } from "lucide-react";
 
 const menu = [
-  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, end: true, roles: ['SUPER_ADMIN', 'ADMIN', 'VENDEUR'] },
-  { to: "/admin/magasins", label: "Magasins", icon: Store, roles: ['SUPER_ADMIN'] },
-  { to: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, roles: ['SUPER_ADMIN', 'ADMIN'] },
-  { to: "/admin/stocks/produits", label: "Gestion des Stocks", icon: Box, roles: ['SUPER_ADMIN', 'ADMIN'] },
-  { to: "/admin/ventes/ventes", label: "Module de Vente", icon: ShoppingCart, roles: ['SUPER_ADMIN', 'ADMIN', 'VENDEUR'] },
-  { to: "/admin/comptabilite/transactions", label: "Comptabilité", icon: BarChart2, roles: ['SUPER_ADMIN', 'ADMIN'] },
-  { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, end: true, roles: ['SUPERADMIN', 'ADMIN', 'VENDEUR'] },
+  { to: "/admin/magasins", label: "Magasins", icon: Store, roles: ['SUPERADMIN'] },
+  { to: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, roles: ['SUPERADMIN', 'ADMIN'] },
+  { to: "/admin/stocks/produits", label: "Gestion des Stocks", icon: Box, roles: ['SUPERADMIN', 'ADMIN'] },
+  { to: "/admin/ventes/ventes", label: "Module de Vente", icon: ShoppingCart, roles: ['SUPERADMIN', 'ADMIN', 'VENDEUR'] },
+  { to: "/admin/comptabilite/transactions", label: "Comptabilité", icon: BarChart2, roles: ['SUPERADMIN', 'ADMIN'] },
+  { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp, roles: ['SUPERADMIN', 'ADMIN'] },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen, userEmail, userRole }) {
@@ -64,7 +64,7 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail, userRole }) {
 
         <nav className="px-3 space-y-1 flex-1 overflow-y-auto py-4">
           {menu
-            .filter((item) => !item.roles || item.roles.includes(userRole || 'SUPER_ADMIN'))
+            .filter((item) => !item.roles || item.roles.includes(userRole || 'SUPERADMIN'))
             .map((item) => {
             const Icon = item.icon;
             return (

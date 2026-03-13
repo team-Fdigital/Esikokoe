@@ -35,7 +35,7 @@ import ClientsReport from './pages/admin/rapports/ClientsReport'
 
 
 function AppContent() {
-  const [userRole, setUserRole] = useState(null) // 'SUPER_ADMIN', 'ADMIN', 'VENDEUR', null
+  const [userRole, setUserRole] = useState(null) // 'SUPERADMIN', 'ADMIN', 'VENDEUR', null
   const [userStore, setUserStore] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [userEmail, setUserEmail] = useState("")
@@ -55,7 +55,7 @@ function AppContent() {
           } else {
             setUserEmail("test@admin.com")
           }
-          setUserRole(mockRole || 'SUPER_ADMIN')
+          setUserRole(mockRole || 'SUPERADMIN')
           setUserStore(mockStore || 'magasin_1')
         } catch (e) {
           setUserRole(null)
@@ -72,7 +72,7 @@ function AppContent() {
             if (res.data && res.data.accessToken) {
               localStorage.setItem('token', res.data.accessToken)
               const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]))
-              setUserRole(mockRole || payload.role || 'SUPER_ADMIN')
+              setUserRole(mockRole || payload.role || 'SUPERADMIN')
               setUserStore(mockStore || payload.magasin_id || 'magasin_1')
               setUserEmail(payload.email || "test@admin.com")
             } else {

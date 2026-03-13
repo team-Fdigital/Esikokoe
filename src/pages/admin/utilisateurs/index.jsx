@@ -18,7 +18,7 @@ export default function Utilisateurs({ userRole, userStore }) {
   const [formData, setFormData] = useState({ nom: '', email: '', role: 'VENDEUR', magasin_id: userStore || 'magasin_1', password: '' });
 
   // Filter users based on role
-  const filteredUsers = userRole === 'SUPER_ADMIN' 
+  const filteredUsers = userRole === 'SUPERADMIN' 
     ? users 
     : users.filter(u => u.magasin_id === userStore && u.role === 'VENDEUR');
 
@@ -45,7 +45,7 @@ export default function Utilisateurs({ userRole, userStore }) {
   };
 
   const roleStyles = {
-    'SUPER_ADMIN': 'bg-purple-100 text-purple-700 border-purple-200',
+    'SUPERADMIN': 'bg-purple-100 text-purple-700 border-purple-200',
     'ADMIN': 'bg-blue-100 text-blue-700 border-blue-200',
     'VENDEUR': 'bg-emerald-100 text-emerald-700 border-emerald-200'
   };
@@ -57,7 +57,7 @@ export default function Utilisateurs({ userRole, userStore }) {
         <div>
           <h1 className="text-2xl font-bold border-b-2 border-indigo-500 pb-2 inline-block text-gray-800">Gestion des Utilisateurs</h1>
           <p className="text-gray-500 text-sm mt-2">
-            {userRole === 'SUPER_ADMIN' 
+            {userRole === 'SUPERADMIN' 
               ? "Gérez l'ensemble du personnel, gérants et vendeurs de tous les magasins."
               : "Gérez les vendeurs assignés à votre magasin."}
           </p>
@@ -79,7 +79,7 @@ export default function Utilisateurs({ userRole, userStore }) {
               <tr className="bg-gray-50/50 border-b border-gray-100 text-sm text-gray-500 uppercase tracking-wider">
                 <th className="px-6 py-4 font-medium">Utilisateur</th>
                 <th className="px-6 py-4 font-medium">Rôle</th>
-                {userRole === 'SUPER_ADMIN' && <th className="px-6 py-4 font-medium">Magasin</th>}
+                {userRole === 'SUPERADMIN' && <th className="px-6 py-4 font-medium">Magasin</th>}
                 <th className="px-6 py-4 font-medium">Statut</th>
                 <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
@@ -103,7 +103,7 @@ export default function Utilisateurs({ userRole, userStore }) {
                       {user.role}
                     </span>
                   </td>
-                  {userRole === 'SUPER_ADMIN' && (
+                  {userRole === 'SUPERADMIN' && (
                     <td className="px-6 py-4 text-sm text-gray-600">
                       {magasinsMap[user.magasin_id] || 'Inconnu'}
                     </td>
@@ -128,7 +128,7 @@ export default function Utilisateurs({ userRole, userStore }) {
               ))}
               {filteredUsers.length === 0 && (
                 <tr>
-                  <td colSpan={userRole === 'SUPER_ADMIN' ? 5 : 4} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={userRole === 'SUPERADMIN' ? 5 : 4} className="px-6 py-12 text-center text-gray-500">
                     <Users className="mx-auto h-12 w-12 text-gray-300 mb-3" />
                     Aucun utilisateur trouvé.
                   </td>
@@ -169,7 +169,7 @@ export default function Utilisateurs({ userRole, userStore }) {
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                {userRole === 'SUPER_ADMIN' && (
+                {userRole === 'SUPERADMIN' && (
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
@@ -179,14 +179,14 @@ export default function Utilisateurs({ userRole, userStore }) {
                       >
                         <option value="VENDEUR">Vendeur</option>
                         <option value="ADMIN">Admin (Gérant)</option>
-                        <option value="SUPER_ADMIN">Super Admin</option>
+                        <option value="SUPERADMIN">Super Admin</option>
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Magasin</label>
                       <select
                         value={formData.magasin_id} onChange={e => setFormData({...formData, magasin_id: e.target.value})}
-                        disabled={formData.role === 'SUPER_ADMIN'}
+                        disabled={formData.role === 'SUPERADMIN'}
                         className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all disabled:opacity-50"
                       >
                         {Object.entries(magasinsMap).map(([id, nom]) => (

@@ -41,6 +41,13 @@ export const updateClient = (id, data) => apiClient.put(`/clients/${id}`, data);
 export const deleteClient = (id) => apiClient.delete(`/clients/${id}`);
 export const getClientById = (id) => apiClient.get(`/clients/${id}`);
 
+// MAGASINS
+export const createMagasin = (data) => apiClient.post('/magasins', data);
+export const getAllMagasins = () => apiClient.get('/magasins');
+export const updateMagasin = (id, data) => apiClient.patch(`/magasins/${id}`, data);
+export const deleteMagasin = (id) => apiClient.delete(`/magasins/${id}`);
+export const getMagasinById = (id) => apiClient.get(`/magasins/${id}`);
+
 // VENTES
 export const createVente = (data) => apiClient.post('/ventes', data);
 export const getAllVentes = () => apiClient.get('/ventes');
@@ -70,11 +77,13 @@ export const deleteProduit = (codeProduit) => apiClient.delete(`/produits/${code
 // STOCK
 export const registerStockEntry = (data) => apiClient.post('/stock/entry', data);
 export const deductStock = (data) => apiClient.post('/stock/deduct', data);
+export const transferStock = (data) => apiClient.post('/stock/transfer', data);
 export const getInventory = () => apiClient.get('/stock/inventory');
 export const getStockByFormat = () => apiClient.get('/stock/by-format');
 export const getCriticalStocks = () => apiClient.get('/stock/critical');
 export const getStockDashboardMetrics = () => apiClient.get('/stock/dashboard');
 export const getStockHistory = (limit) => apiClient.get('/stock/history', { params: { limit } });
+export const getTransferHistory = () => apiClient.get('/stock/transfers');
 
 // COMPTABILITE
 export const createTransaction = (data) => apiClient.post('/comptabilite/transactions', data);
