@@ -1,18 +1,41 @@
+import { useEffect, useState } from 'react';
+import { getAllClients, getClientStats } from '../../../apiClient';
 import { Users, ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
+import Loader from '../../../components/ui/Loader';
 
 export default function ClientsReport() {
-  const topClients = [
-    { rank: 1, name: "Restaurant Le Palmier", orders: "12 commandes", amount: "1250 000 FCFA", average: "104 166.667 FCFA/commande" },
-    { rank: 2, name: "Hôtel Ivoire", orders: "8 commandes", amount: "895 000 FCFA", average: "111 875 FCFA/commande" },
-    { rank: 3, name: "Épicerie Moderne", orders: "15 commandes", amount: "672 000 FCFA", average: "44 800 FCFA/commande" },
-    { rank: 4, name: "Café Central", orders: "10 commandes", amount: "445 000 FCFA", average: "44 500 FCFA/commande" },
-  ];
+  const [clients, setClients] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([getAllClients(), getClientStats()])
+      .then(([clientsRes, statsRes]) => {
+        setClients(clientsRes.data.clients || []);
+        setStats(statsRes.data);
+      })
+      .catch(err => console.error("Erreur chargement rapports clients:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <Loader />;
+
+  const topClients = [...clients]
+    .sort((a, b) => (b.nombreCommandes || 0) - (a.nombreCommandes || 0))
+    .slice(0, 4)
+    .map((c, idx) => ({
+      rank: idx + 1,
+      name: c.nomClient,
+      orders: `${c.nombreCommandes || 0} commandes`,
+      amount: c.totalDepense ? c.totalDepense.toLocaleString() + " FCFA" : "N/A",
+      average: c.montantMoyen ? c.montantMoyen.toLocaleString() + " FCFA/commande" : "N/A"
+    }));
 
   const kpis = [
-    { label: "Nouveaux clients", value: "23", subtext: "Ce mois", color: "text-blue-600" },
-    { label: "Taux de fidélité", value: "78%", subtext: "Clients récurrents", color: "text-green-600" },
-    { label: "Satisfaction", value: "4.6/5", subtext: "Note moyenne", color: "text-orange-500" },
+    { label: "Total Clients", value: stats?.totalClients || clients.length || "0", subtext: "Inscrits", color: "text-blue-600" },
+    { label: "Dépense Totale", value: (stats?.totalDepense?.toLocaleString() || "0") + " FCFA", subtext: "Cumulé", color: "text-green-600" },
+    { label: "Panier Moyen", value: (stats?.montantMoyenParClient?.toLocaleString() || "0") + " FCFA", subtext: "Par client", color: "text-orange-500" },
   ];
 
   return (
@@ -29,9 +52,7 @@ export default function ClientsReport() {
                 <ArrowLeft size={16} />
                 Retour
               </Link>
-
               <Users className="text-orange-500" size={24} />
-
               <h1 className="text-lg md:text-xl font-semibold text-gray-900">
                 Rapports et Analyses
               </h1>
@@ -55,41 +76,21 @@ export default function ClientsReport() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {/* TABS */}
         <div className="flex flex-wrap md:flex-nowrap gap-1 border-b">
-          <Link
-            to="/admin/rapports/sales"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
-          >
-            Ventes
-          </Link>
-          <Link
-            to="/admin/rapports/products"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
-          >
-            Produits
-          </Link>
-          <Link
-            to="/admin/rapports/clients"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-white hover:bg-gray-50"
-          >
-            Clients
-          </Link>
-          <Link
-            to="/admin/rapports/financial"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
-          >
-            Financier
-          </Link>
+          <Link to="/admin/rapports/sales" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">Ventes</Link>
+          <Link to="/admin/rapports/products" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">Produits</Link>
+          <Link to="/admin/rapports/clients" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-orange-500 hover:bg-gray-50">Clients</Link>
+          <Link to="/admin/rapports/financial" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">Financier</Link>
         </div>
 
         {/* MEILLEURS CLIENTS */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-4 md:p-6 border-b">
             <h2 className="text-lg md:text-xl font-semibold">Meilleurs clients</h2>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">Top 4 des clients les plus fidèles</p>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">Clients classés par nombre de commandes</p>
           </div>
 
           <div className="p-4 md:p-6 space-y-3 md:space-y-4">
-            {topClients.map((client, idx) => (
+            {topClients.length > 0 ? topClients.map((client, idx) => (
               <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 p-3 md:p-4 border rounded-lg hover:bg-gray-50 text-xs md:text-sm">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 md:w-10 md:h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -105,7 +106,9 @@ export default function ClientsReport() {
                   <p className="text-xs md:text-sm text-gray-500">{client.average}</p>
                 </div>
               </div>
-            ))}
+            )) : (
+              <p className="text-center text-gray-400 py-4">Aucun client trouvé</p>
+            )}
           </div>
         </div>
 
