@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Package, AlertTriangle, Truck } from "lucide-react";
+import { Package, AlertTriangle, Truck, ArrowDownUp } from "lucide-react";
 
 export default function StocksIndex() {
   return (
@@ -9,7 +9,7 @@ export default function StocksIndex() {
         <p className="text-gray-600">Gérez votre inventaire et approvisionnement</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StockModule 
           icon={<Package className="text-blue-500" size={32} />}
           title="Produits"
@@ -21,6 +21,12 @@ export default function StocksIndex() {
           title="Mouvements"
           description="Entrées et sorties de stock"
           to="mouvements"
+        />
+        <StockModule 
+          icon={<ArrowDownUp className="text-emerald-500" size={32} />}
+          title="Stockage/Destockage"
+          description="Entrées et sorties rapides"
+          to="action"
         />
         <StockModule 
           icon={<AlertTriangle className="text-orange-500" size={32} />}

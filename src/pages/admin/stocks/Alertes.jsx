@@ -55,6 +55,12 @@ export default function Alertes() {
             Inventaire
           </Link>
           <Link
+            to="/admin/stocks/action"
+            className="px-3 md:px-4 py-2 bg-white rounded-t-md text-xs md:text-sm font-medium text-black hover:bg-gray-50"
+          >
+            Stock
+          </Link>
+          <Link
             to="/admin/stocks/alertes"
             className="px-3 md:px-4 py-2 rounded-t-md text-xs md:text-sm font-medium bg-white text-black hover:bg-gray-50 relative border-b-2 border-white"
           >

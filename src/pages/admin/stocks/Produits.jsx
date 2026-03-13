@@ -17,6 +17,7 @@ export default function Produits() {
     nomProduit: "",
     format: "",
     categorie: "",
+    type: "Vente", // 'Achat' ou 'Vente'
     stockInitial: "",
     stockMinimum: "",
     prixUnitaire: "",
@@ -27,8 +28,7 @@ export default function Produits() {
   const [actionLoading, setActionLoading] = useState(false);
   const [deleteLoadingId, setDeleteLoadingId] = useState(null);
 
-  const categories = ["Eau Pure", "Eau Minérale", "Eau Gazeuse", "Autre"];
-  const formatsEnum = ["SACHET", "BOUTEILLE", "BONBONNE"];
+  const categories = ["Sachets", "Bouteilles", "Bidons", "Bonbonnes"];
 
   useEffect(() => {
     getAllProduits()
@@ -76,6 +76,7 @@ export default function Produits() {
         nomProduit: "",
         format: "",
         categorie: "",
+        type: "Vente",
         stockInitial: "",
         stockMinimum: "",
         prixUnitaire: "",
@@ -135,6 +136,7 @@ export default function Produits() {
         nomProduit: "",
         format: "",
         categorie: "",
+        type: "Vente",
         stockInitial: "",
         stockMinimum: "",
         prixUnitaire: "",
@@ -185,6 +187,7 @@ export default function Produits() {
       Format: p.format,
       Stock: p.stock,
       Statut: p.statut,
+      Type: p.type || 'Vente',
       Prix: p.prixUnitaire,
       Fournisseur: p.fournisseur,
       Catégorie: p.categorie,
@@ -210,6 +213,7 @@ export default function Produits() {
           p.codeProduit || "",
           p.nomProduit || "",
           p.format || "",
+          p.type || "Vente",
           p.stock !== undefined ? p.stock : "",
           p.statut || "",
           p.prixUnitaire !== undefined ? p.prixUnitaire : "",
@@ -253,6 +257,7 @@ export default function Produits() {
                   nomProduit: "",
                   format: "",
                   categorie: "",
+                  type: "Vente",
                   stockInitial: "",
                   stockMinimum: "",
                   prixUnitaire: "",
@@ -279,6 +284,12 @@ export default function Produits() {
             className="px-4 py-2 bg-white rounded-t-md text-sm font-medium border-b-2 border-white text-black hover:bg-gray-50"
           >
             Inventaire
+          </Link>
+          <Link
+            to="/admin/stocks/action"
+            className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50"
+          >
+            Stock
           </Link>
           <Link
             to="/admin/stocks/alertes"
@@ -374,6 +385,7 @@ export default function Produits() {
                   <th className="text-left py-3">Code</th>
                   <th className="text-left">Produit</th>
                   <th className="text-left">Format</th>
+                  <th className="text-left">Type</th>
                   <th className="text-left">Stock</th>
                   <th className="text-left">Statut</th>
                   <th className="text-left">Prix</th>
@@ -388,6 +400,11 @@ export default function Produits() {
                     <td className="py-3 font-medium">{p.codeProduit}</td>
                     <td>{p.nomProduit}</td>
                     <td>{p.format}</td>
+                    <td>
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-semibold ${p.type === 'Achat' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
+                        {p.type || 'Vente'}
+                      </span>
+                    </td>
                     <td>
                       <span className="font-semibold">{p.stock}</span>
                       <span className="text-gray-500 text-xs">
@@ -417,6 +434,7 @@ export default function Produits() {
                               nomProduit: p.nomProduit,
                               format: p.format,
                               categorie: p.categorie,
+                              type: p.type || "Vente",
                               stockInitial: p.stock,
                               stockMinimum: p.stockMinimum || "",
                               prixUnitaire: p.prixUnitaire,
@@ -459,7 +477,7 @@ export default function Produits() {
       {/* MODAL */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
               <div>
@@ -484,9 +502,9 @@ export default function Produits() {
             </div>
 
             {/* FORM */}
-            <div className="p-4 space-y-3">
+            <div className="p-5 space-y-4">
               {/* Nom du produit & Format */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
                     Nom du produit
@@ -505,18 +523,15 @@ export default function Produits() {
                   <label className="block text-xs font-semibold mb-1.5">
                     Format
                   </label>
-                  <select
+                  <input
+                    type="text"
                     value={formData.format}
                     onChange={(e) =>
                       setFormData({ ...formData, format: e.target.value })
                     }
+                    placeholder="Ex: Bouteille 1.5L"
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
-                  >
-                    <option value="">Sélectionner un format</option>
-                    {formatsEnum.map((fmt) => (
-                      <option key={fmt} value={fmt}>{fmt}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 
@@ -539,8 +554,23 @@ export default function Produits() {
                 </select>
               </div>
 
+              {/* Type (Achat/Vente) */}
+              <div>
+                <label className="block text-xs font-semibold mb-1.5">
+                  Type de Produit
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
+                >
+                  <option value="Vente"> Vente</option>
+                  <option value="Achat"> Achat</option>
+                </select>
+              </div>
+
               {/* Stock initial & Stock minimum */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
                     Stock initial
@@ -572,7 +602,7 @@ export default function Produits() {
               </div>
 
               {/* Prix unitaire & Fournisseur */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
                     Prix unitaire (FCFA)

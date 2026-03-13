@@ -33,9 +33,7 @@ export default function Mouvements() {
                 <ArrowLeft size={16} />
                 Retour
               </Link>
-
               <Package className="text-blue-600" size={22} />
-
               <h1 className="text-xl font-semibold text-gray-900">
                 Mouvements de Stock
               </h1>
@@ -55,6 +53,12 @@ export default function Mouvements() {
             Inventaire
           </Link>
           <Link
+            to="/admin/stocks/action"
+            className="px-3 md:px-4 py-2 rounded-t-md text-xs md:text-sm font-medium bg-white text-black hover:bg-gray-50"
+          >
+            Stock
+          </Link>
+          <Link
             to="/admin/stocks/alertes"
             className="px-3 md:px-4 py-2 rounded-t-md text-xs md:text-sm font-medium bg-white text-black hover:bg-gray-50 relative"
           >
@@ -71,13 +75,15 @@ export default function Mouvements() {
           </Link>
         </div>
         <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">
-              Historique des mouvements
-            </h2>
-            <p className="text-sm text-gray-500">
-              Entrées et sorties de stock des produits
-            </p>
+          <div className="p-6 border-b flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-semibold">
+                Historique des mouvements
+              </h2>
+              <p className="text-sm text-gray-500">
+                Entrées et sorties de produits
+              </p>
+            </div>
           </div>
 
           <div className="p-4 md:p-6 overflow-x-auto">

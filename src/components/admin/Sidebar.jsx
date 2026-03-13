@@ -6,24 +6,30 @@ import {
   ShoppingCart,
   BarChart2,
   TrendingUp,
-  X
+  X,
+  Store,
+  Users
 } from "lucide-react";
 
 const menu = [
-  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, end: true },
-  { to: "/admin/stocks/produits", label: "Gestion des Stocks", icon: Box },
-  { to: "/admin/ventes/ventes", label: "Module de Vente", icon: ShoppingCart },
-  { to: "/admin/comptabilite/transactions", label: "Comptabilité", icon: BarChart2 },
-  { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp },
+  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, end: true, roles: ['SUPER_ADMIN', 'ADMIN', 'VENDEUR'] },
+  { to: "/admin/magasins", label: "Magasins", icon: Store, roles: ['SUPER_ADMIN'] },
+  { to: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { to: "/admin/stocks/produits", label: "Gestion des Stocks", icon: Box, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { to: "/admin/ventes/ventes", label: "Module de Vente", icon: ShoppingCart, roles: ['SUPER_ADMIN', 'ADMIN', 'VENDEUR'] },
+  { to: "/admin/comptabilite/transactions", label: "Comptabilité", icon: BarChart2, roles: ['SUPER_ADMIN', 'ADMIN'] },
+  { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp, roles: ['SUPER_ADMIN', 'ADMIN'] },
 ];
 
-export default function Sidebar({ isOpen, setIsOpen, userEmail }) {
+export default function Sidebar({ isOpen, setIsOpen, userEmail, userRole }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("mockRole");
+    localStorage.removeItem("mockStore");
     navigate("/admin/login");
   };
 
@@ -57,7 +63,9 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail }) {
         </div>
 
         <nav className="px-3 space-y-1 flex-1 overflow-y-auto py-4">
-          {menu.map((item) => {
+          {menu
+            .filter((item) => !item.roles || item.roles.includes(userRole || 'SUPER_ADMIN'))
+            .map((item) => {
             const Icon = item.icon;
             return (
               <NavLink

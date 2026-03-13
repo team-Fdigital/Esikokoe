@@ -11,10 +11,13 @@ import AdminLayout from './layouts/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
 import Login from './pages/admin/Login'
 import AjouterAdmin from './pages/admin/ajouter-admin'
+import Magasins from './pages/admin/magasins/index'
+import Utilisateurs from './pages/admin/utilisateurs/index'
 import StocksIndex from './pages/admin/stocks/index'
 import Produits from './pages/admin/stocks/Produits'
 import Mouvements from './pages/admin/stocks/Mouvements'
 import Alertes from './pages/admin/stocks/Alertes'
+import StockAction from './pages/admin/stocks/StockAction'
 import VentesIndex from './pages/admin/ventes/index'
 import Ventes from './pages/admin/ventes/Ventes'
 import Factures from './pages/admin/ventes/Factures'
@@ -32,26 +35,30 @@ import ClientsReport from './pages/admin/rapports/ClientsReport'
 
 
 function AppContent() {
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [userRole, setUserRole] = useState(null) // 'SUPER_ADMIN', 'ADMIN', 'VENDEUR', null
+  const [userStore, setUserStore] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [userEmail, setUserEmail] = useState("")
   const location = useLocation()
 
   useEffect(() => {
     const checkAuth = async () => {
+      const mockRole = localStorage.getItem('mockRole')
+      const mockStore = localStorage.getItem('mockStore')
+      
       const token = localStorage.getItem('token')
-      if (token) {
+      if (token || mockRole) {
         try {
-          const payload = JSON.parse(atob(token.split('.')[1]))
-          if (payload.role === 'ADMIN') {
-            setIsAdmin(true)
-            setUserEmail(payload.email || "")
+          if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]))
+            setUserEmail(payload.email || "test@admin.com")
           } else {
-            setIsAdmin(false)
-            setUserEmail("")
+            setUserEmail("test@admin.com")
           }
+          setUserRole(mockRole || 'SUPER_ADMIN')
+          setUserStore(mockStore || 'magasin_1')
         } catch (e) {
-          setIsAdmin(false)
+          setUserRole(null)
           setUserEmail("")
         }
         setIsLoading(false)
@@ -60,44 +67,23 @@ function AppContent() {
         const refreshToken = localStorage.getItem('refreshToken')
         if (refreshToken) {
           try {
-            const payload = JSON.parse(atob(refreshToken.split('.')[1]))
-            if (payload.role === 'ADMIN') {
-              setIsAdmin(true)
-              setUserEmail(payload.email || "")
-            } else {
-              setIsAdmin(false)
-              setUserEmail("")
-            }
-          } catch (e) {
-            setIsAdmin(false)
-          }
-          // Appel API pour rafraîchir le token
-          try {
             const { refreshToken: refreshTokenApi } = await import('./apiClient')
             const res = await refreshTokenApi()
             if (res.data && res.data.accessToken) {
               localStorage.setItem('token', res.data.accessToken)
-              try {
-                const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]))
-                if (payload.role === 'ADMIN') {
-                  setIsAdmin(true)
-                  setUserEmail(payload.email || "")
-                } else {
-                  setIsAdmin(false)
-                  setUserEmail("")
-                }
-              } catch (e) {
-                setIsAdmin(false)
-              }
+              const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]))
+              setUserRole(mockRole || payload.role || 'SUPER_ADMIN')
+              setUserStore(mockStore || payload.magasin_id || 'magasin_1')
+              setUserEmail(payload.email || "test@admin.com")
             } else {
-              setIsAdmin(false)
+              setUserRole(null)
             }
           } catch {
-            setIsAdmin(false)
+            setUserRole(null)
           }
           setIsLoading(false)
         } else {
-          setIsAdmin(false)
+          setUserRole(null)
           setIsLoading(false)
         }
       }
@@ -126,16 +112,20 @@ function AppContent() {
           <Route path="/contact" element={<Contact />} />
 
           {/* LOGIN */}
-          <Route path="/admin/login" element={<Login setIsAdmin={setIsAdmin} />} />
+          <Route path="/admin/login" element={<Login setUserRole={setUserRole} />} />
 
           {/* ADMIN */}
-          {isAdmin ? (
-            <Route path="/admin" element={<AdminLayout title="Tableau de bord" userEmail={userEmail} />}>
+          {userRole ? (
+            <Route path="/admin" element={<AdminLayout title="Tableau de bord" userEmail={userEmail} userRole={userRole} userStore={userStore} />}>
               <Route index element={<Dashboard />} />
+              {/* Entités Globales */}
+              <Route path="magasins" element={<Magasins />} />
+              <Route path="utilisateurs" element={<Utilisateurs userRole={userRole} userStore={userStore} />} />
               {/* Stocks */}
               <Route path="stocks" element={<StocksIndex />} />
               <Route path="stocks/produits" element={<Produits />} />
               <Route path="stocks/mouvements" element={<Mouvements />} />
+              <Route path="stocks/action" element={<StockAction />} />
               <Route path="stocks/alertes" element={<Alertes />} />
               {/* Ventes */}
               <Route path="ventes" element={<VentesIndex />} />

@@ -16,7 +16,7 @@ export default function Home() {
       stat: '100%',
       statLabel: 'Pure',
       gradient: 'from-blue-600 to-cyan-600',
-      image: '/assets/sachet.png',
+      image: '/assets/hero-water.png',
     },
     {
       title: 'Livraison',
@@ -26,7 +26,7 @@ export default function Home() {
       stat: '2h',
       statLabel: 'Livraison',
       gradient: 'from-green-600 to-emerald-600',
-      image: '/assets/hero-water.jpg',
+      image: '/assets/hero-water.png',
     },
     {
       title: 'Clients',
@@ -36,7 +36,7 @@ export default function Home() {
       stat: '10K+',
       statLabel: 'Clients',
       gradient: 'from-purple-600 to-pink-600',
-      image: '/assets/bonbonne.jpg',
+      image: '/assets/bonbonne.png',
     },
   ]
 
@@ -80,7 +80,7 @@ export default function Home() {
       badgeColor: 'bg-yellow-500 text-black',
       features: ['Eau purifiée', 'Hygiénique'],
       buttonColor: 'bg-blue-600 hover:bg-blue-700',
-      image: '/assets/sachet.png',
+      image: '/assets/b35cl.jpg',
     },
     {
       id: 2,
