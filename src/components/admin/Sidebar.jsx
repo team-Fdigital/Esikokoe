@@ -12,13 +12,13 @@ import {
 } from "lucide-react";
 
 const menu = [
-  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, end: true, roles: ['SUPERADMIN', 'ADMIN', 'VENDEUR'] },
+  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, end: true, roles: ['SUPERADMIN', 'GERANT', 'VENDEUR', 'MAGASINIER', 'RESPONSABLE_ACHAT'] },
   { to: "/admin/magasins", label: "Magasins", icon: Store, roles: ['SUPERADMIN'] },
-  { to: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, roles: ['SUPERADMIN', 'ADMIN'] },
-  { to: "/admin/stocks/produits", label: "Gestion des Stocks", icon: Box, roles: ['SUPERADMIN', 'ADMIN'] },
-  { to: "/admin/ventes/ventes", label: "Module de Vente", icon: ShoppingCart, roles: ['SUPERADMIN', 'ADMIN', 'VENDEUR'] },
-  { to: "/admin/comptabilite/transactions", label: "Comptabilité", icon: BarChart2, roles: ['SUPERADMIN', 'ADMIN'] },
-  { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp, roles: ['SUPERADMIN', 'ADMIN'] },
+  { to: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, roles: ['SUPERADMIN', 'GERANT'] },
+  { to: "/admin/stocks/produits", label: "Gestion des Stocks", icon: Box, roles: ['SUPERADMIN', 'GERANT', 'MAGASINIER'] },
+  { to: "/admin/ventes/ventes", label: "Module de Vente", icon: ShoppingCart, roles: ['SUPERADMIN', 'GERANT', 'VENDEUR'] },
+  { to: "/admin/comptabilite/transactions", label: "Comptabilité", icon: BarChart2, roles: ['SUPERADMIN', 'GERANT'] },
+  { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp, roles: ['SUPERADMIN', 'GERANT'] },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen, userEmail, userRole }) {

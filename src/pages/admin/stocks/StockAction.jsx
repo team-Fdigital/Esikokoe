@@ -19,7 +19,8 @@ export default function Stock() {
     motif: ""
   });
 
-  const userRole = localStorage.getItem('mockRole') || 'SUPERADMIN';
+  const userRole = localStorage.getItem('mockRole') || (localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role : null) || 'SUPERADMIN';
+  const userStore = localStorage.getItem('mockStore') || (localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).magasinId : null) || 'magasin_1';
 
   const fetchData = async () => {
     setLoading(true);
@@ -67,7 +68,7 @@ export default function Stock() {
         // Pour une "SORTIE" (Distribution), on utilise l'API de transfert
         await transferStock({
           produitId: formData.codeProduit,
-          sourceMagasinId: "principal", // À adapter selon la logique métier/auth
+          sourceMagasinId: userStore, 
           destinationMagasinId: formData.idMagasin,
           quantite: Number(formData.quantite),
           motif: formData.motif || "Distribution stock"

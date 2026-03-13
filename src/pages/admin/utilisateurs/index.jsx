@@ -1,69 +1,115 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, Users, Shield, Briefcase, Key } from "lucide-react";
+import { Plus, Edit2, Trash2, Users, Key, Loader2 } from "lucide-react";
+import { getAllUsers, createUser, updateUser, deleteUser, getAllMagasins } from "../../../apiClient";
 
 export default function Utilisateurs({ userRole, userStore }) {
-  const [users, setUsers] = useState([
-    { id: 'usr_1', nom: 'Gérant Lomé', email: 'gerant.lome@test.com', role: 'ADMIN', magasin_id: 'magasin_1', statut: 'Actif' },
-    { id: 'usr_2', nom: 'Vendeur A (Lomé)', email: 'vendeur.lome1@test.com', role: 'VENDEUR', magasin_id: 'magasin_1', statut: 'Actif' },
-    { id: 'usr_3', nom: 'Gérant Kara', email: 'gerant.kara@test.com', role: 'ADMIN', magasin_id: 'magasin_2', statut: 'Actif' },
-    { id: 'usr_4', nom: 'Vendeur B (Kara)', email: 'vendeur.kara1@test.com', role: 'VENDEUR', magasin_id: 'magasin_2', statut: 'Inactif' }
-  ]);
-  
-  const [magasinsMap, setMagasinsMap] = useState({
-    'magasin_1': 'Magasin Principal Lome',
-    'magasin_2': 'Magasin Kara'
-  });
-
+  const [users, setUsers] = useState([]);
+  const [magasinsMap, setMagasinsMap] = useState({});
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ nom: '', email: '', role: 'VENDEUR', magasin_id: userStore || 'magasin_1', password: '' });
+  const [actionLoading, setActionLoading] = useState(false);
+  const [formData, setFormData] = useState({ nom: '', email: '', role: 'VENDEUR', magasinId: userStore || '', motDePasse: '' });
 
-  // Filter users based on role
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [usersRes, magasinsRes] = await Promise.all([
+        getAllUsers(),
+        getAllMagasins()
+      ]);
+      
+      setUsers(Array.isArray(usersRes.data) ? usersRes.data : []);
+      
+      const mArray = Array.isArray(magasinsRes.data) ? magasinsRes.data : (magasinsRes.data.magasins || []);
+      const mMap = {};
+      mArray.forEach(m => {
+        mMap[m.idMagasin] = m.nom;
+      });
+      setMagasinsMap(mMap);
+    } catch (error) {
+      console.error("Erreur lors du chargement des données:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const filteredUsers = userRole === 'SUPERADMIN' 
     ? users 
-    : users.filter(u => u.magasin_id === userStore && u.role === 'VENDEUR');
+    : users.filter(u => u.magasinId === userStore && u.role !== 'SUPERADMIN');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.id) {
-      setUsers(users.map(u => u.id === formData.id ? formData : u));
-    } else {
-      setUsers([...users, { ...formData, id: `usr_${Date.now()}`, statut: 'Actif' }]);
+    setActionLoading(true);
+    try {
+      if (formData.idUtilisateur) {
+        const { idUtilisateur, createdAt, magasin, ...updateData } = formData;
+        if (!updateData.motDePasse) delete updateData.motDePasse;
+        await updateUser(idUtilisateur, updateData);
+      } else {
+        await createUser(formData);
+      }
+      await fetchData();
+      setIsModalOpen(false);
+      setFormData({ nom: '', email: '', role: 'VENDEUR', magasinId: userStore || '', motDePasse: '' });
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement:", error);
+      alert(error.response?.data?.message || "Erreur lors de l'enregistrement de l'utilisateur");
+    } finally {
+        setActionLoading(false);
     }
-    setIsModalOpen(false);
-    setFormData({ nom: '', email: '', role: 'VENDEUR', magasin_id: userStore || 'magasin_1', password: '' });
   };
 
   const handleEdit = (user) => {
-    setFormData({ ...user, password: '' });
+    setFormData({ ...user, motDePasse: '' });
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm('Voulez-vous vraiment désactiver/supprimer cet utilisateur ?')) {
-      setUsers(users.filter(u => u.id !== id));
+  const handleDelete = async (id) => {
+    if (window.confirm('Voulez-vous vraiment supprimer cet utilisateur ?')) {
+      try {
+        await deleteUser(id);
+        await fetchData();
+      } catch (error) {
+        console.error("Erreur lors de la suppression:", error);
+        alert(error.response?.data?.message || "Erreur lors de la suppression");
+      }
     }
   };
 
   const roleStyles = {
     'SUPERADMIN': 'bg-purple-100 text-purple-700 border-purple-200',
-    'ADMIN': 'bg-blue-100 text-blue-700 border-blue-200',
-    'VENDEUR': 'bg-emerald-100 text-emerald-700 border-emerald-200'
+    'GERANT': 'bg-blue-100 text-blue-700 border-blue-200',
+    'VENDEUR': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'MAGASINIER': 'bg-orange-100 text-orange-700 border-orange-200',
+    'RESPONSABLE_ACHAT': 'bg-cyan-100 text-cyan-700 border-cyan-200'
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
+        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
+        <p className="text-gray-500 font-medium">Chargement des utilisateurs...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header */}
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold border-b-2 border-indigo-500 pb-2 inline-block text-gray-800">Gestion des Utilisateurs</h1>
           <p className="text-gray-500 text-sm mt-2">
             {userRole === 'SUPERADMIN' 
               ? "Gérez l'ensemble du personnel, gérants et vendeurs de tous les magasins."
-              : "Gérez les vendeurs assignés à votre magasin."}
+              : "Gérez les membres de votre magasin."}
           </p>
         </div>
         <button
-          onClick={() => { setFormData({ nom: '', email: '', role: 'VENDEUR', magasin_id: userStore || 'magasin_1', password: '' }); setIsModalOpen(true); }}
+          onClick={() => { setFormData({ nom: '', email: '', role: 'VENDEUR', magasinId: userStore || '', motDePasse: '' }); setIsModalOpen(true); }}
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-indigo-500/20"
         >
           <Plus size={20} />
@@ -71,7 +117,6 @@ export default function Utilisateurs({ userRole, userStore }) {
         </button>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -80,17 +125,17 @@ export default function Utilisateurs({ userRole, userStore }) {
                 <th className="px-6 py-4 font-medium">Utilisateur</th>
                 <th className="px-6 py-4 font-medium">Rôle</th>
                 {userRole === 'SUPERADMIN' && <th className="px-6 py-4 font-medium">Magasin</th>}
-                <th className="px-6 py-4 font-medium">Statut</th>
+                <th className="px-6 py-4 font-medium">Date Création</th>
                 <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
+                <tr key={user.idUtilisateur} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
-                        {user.nom.charAt(0).toUpperCase()}
+                        {(user.nom || "?").charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <div className="font-medium text-gray-900">{user.nom}</div>
@@ -105,21 +150,18 @@ export default function Utilisateurs({ userRole, userStore }) {
                   </td>
                   {userRole === 'SUPERADMIN' && (
                     <td className="px-6 py-4 text-sm text-gray-600">
-                      {magasinsMap[user.magasin_id] || 'Inconnu'}
+                      {magasinsMap[user.magasinId] || user.magasinId || 'Aucun'}
                     </td>
                   )}
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${user.statut === 'Actif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${user.statut === 'Actif' ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                      {user.statut}
-                    </span>
+                  <td className="px-6 py-4 text-sm text-gray-500">
+                    {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       <button onClick={() => handleEdit(user)} className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
                         <Edit2 size={16} />
                       </button>
-                      <button onClick={() => handleDelete(user.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                      <button onClick={() => handleDelete(user.idUtilisateur)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -139,12 +181,11 @@ export default function Utilisateurs({ userRole, userStore }) {
         </div>
       </div>
 
-      {/* Modal Form */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-slide-up">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-800">{formData.id ? 'Modifier' : 'Ajouter'} un Utilisateur</h2>
+              <h2 className="text-lg font-bold text-gray-800">{formData.idUtilisateur ? 'Modifier' : 'Ajouter'} un Utilisateur</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
             
@@ -178,17 +219,20 @@ export default function Utilisateurs({ userRole, userStore }) {
                         className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
                       >
                         <option value="VENDEUR">Vendeur</option>
-                        <option value="ADMIN">Admin (Gérant)</option>
+                        <option value="GERANT">Gérant (Admin)</option>
+                        <option value="MAGASINIER">Magasinier</option>
+                        <option value="RESPONSABLE_ACHAT">Resp. Achat</option>
                         <option value="SUPERADMIN">Super Admin</option>
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Magasin</label>
                       <select
-                        value={formData.magasin_id} onChange={e => setFormData({...formData, magasin_id: e.target.value})}
+                        value={formData.magasinId || ''} onChange={e => setFormData({...formData, magasinId: e.target.value})}
                         disabled={formData.role === 'SUPERADMIN'}
                         className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all disabled:opacity-50"
                       >
+                        <option value="">Sélectionnez un magasin...</option>
                         {Object.entries(magasinsMap).map(([id, nom]) => (
                           <option key={id} value={id}>{nom}</option>
                         ))}
@@ -200,13 +244,13 @@ export default function Utilisateurs({ userRole, userStore }) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Mot de passe {formData.id && <span className="text-xs font-normal text-gray-400">(Laisser vide pour ne pas modifier)</span>}
+                  Mot de passe {formData.idUtilisateur && <span className="text-xs font-normal text-gray-400">(Laisser vide pour ne pas modifier)</span>}
                 </label>
                 <div className="relative">
                   <Key className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
-                    type="password" required={!formData.id}
-                    value={formData.password || ''} onChange={e => setFormData({...formData, password: e.target.value})}
+                    type="password" required={!formData.idUtilisateur}
+                    value={formData.motDePasse || ''} onChange={e => setFormData({...formData, motDePasse: e.target.value})}
                     className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
                     placeholder="••••••••"
                   />
@@ -214,9 +258,10 @@ export default function Utilisateurs({ userRole, userStore }) {
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">Annuler</button>
-                <button type="submit" className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors shadow-md shadow-indigo-500/20 text-sm font-medium">
-                  {formData.id ? 'Mettre à jour' : 'Créer'}
+                <button type="button" disabled={actionLoading} onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">Annuler</button>
+                <button type="submit" disabled={actionLoading} className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors shadow-md shadow-indigo-500/20 text-sm font-medium flex items-center gap-2">
+                  {actionLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {formData.idUtilisateur ? 'Mettre à jour' : 'Créer'}
                 </button>
               </div>
             </form>

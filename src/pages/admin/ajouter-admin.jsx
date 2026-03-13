@@ -24,7 +24,7 @@ export default function AjouterAdmin() {
     setSuccess("");
     setLoading(true);
     try {
-      await createUser({ nom, email, motDePasse, role: "ADMIN" });
+      await createUser({ nom, email, motDePasse, role: "GERANT" });
       setSuccess("Nouvel administrateur ajouté !");
       setTimeout(() => navigate("/admin"), 1500);
     } catch (err) {

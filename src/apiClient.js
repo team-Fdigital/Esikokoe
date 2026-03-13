@@ -33,6 +33,9 @@ export const refreshToken = () => {
 
 // USERS
 export const createUser = (data) => apiClient.post('/users', data);
+export const getAllUsers = () => apiClient.get('/users');
+export const updateUser = (id, data) => apiClient.patch(`/users/${id}`, data);
+export const deleteUser = (id) => apiClient.delete(`/users/${id}`);
 
 // CLIENTS
 export const createClient = (data) => apiClient.post('/clients', data);

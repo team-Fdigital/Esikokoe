@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Store, MapPin } from "lucide-react";
 import { getAllMagasins, createMagasin, updateMagasin, deleteMagasin } from "../../../apiClient";
 
-export default function Magasins() {
+export default function Magasins({ userRole }) {
   const [magasins, setMagasins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,13 +85,15 @@ export default function Magasins() {
           <h1 className="text-2xl font-bold border-b-2 border-blue-500 pb-2 inline-block text-gray-800">Gestion des Magasins</h1>
           <p className="text-gray-500 text-sm mt-2">Gérez vos différentes succursales et points de vente.</p>
         </div>
-        <button
-          onClick={() => { setFormData({ nom: '', ville: '', adresse: '', telephone: '' }); setIsModalOpen(true); }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-blue-500/20"
-        >
-          <Plus size={20} />
-          Nouveau Magasin
-        </button>
+        {userRole === 'SUPERADMIN' && (
+          <button
+            onClick={() => { setFormData({ nom: '', ville: '', adresse: '', telephone: '' }); setIsModalOpen(true); }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-blue-500/20"
+          >
+            <Plus size={20} />
+            Nouveau Magasin
+          </button>
+        )}
       </div>
 
       {/* Grid */}
@@ -102,14 +104,16 @@ export default function Magasins() {
               <div className="p-3 bg-blue-50 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
                 <Store size={24} />
               </div>
-              <div className="flex gap-2">
-                <button onClick={() => handleEdit(magasin)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                  <Edit2 size={16} />
-                </button>
-                <button onClick={() => handleDelete(magasin.idMagasin)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                  <Trash2 size={16} />
-                </button>
-              </div>
+              {userRole === 'SUPERADMIN' && (
+                <div className="flex gap-2">
+                  <button onClick={() => handleEdit(magasin)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                    <Edit2 size={16} />
+                  </button>
+                  <button onClick={() => handleDelete(magasin.idMagasin)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              )}
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-2 truncate" title={magasin.nom}>{magasin.nom}</h3>
             <div className="space-y-2 text-sm text-gray-600">

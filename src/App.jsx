@@ -35,7 +35,7 @@ import ClientsReport from './pages/admin/rapports/ClientsReport'
 
 
 function AppContent() {
-  const [userRole, setUserRole] = useState(null) // 'SUPERADMIN', 'ADMIN', 'VENDEUR', null
+  const [userRole, setUserRole] = useState(null) // 'SUPERADMIN', 'GERANT', 'VENDEUR', null
   const [userStore, setUserStore] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [userEmail, setUserEmail] = useState("")
@@ -119,7 +119,7 @@ function AppContent() {
             <Route path="/admin" element={<AdminLayout title="Tableau de bord" userEmail={userEmail} userRole={userRole} userStore={userStore} />}>
               <Route index element={<Dashboard />} />
               {/* Entités Globales */}
-              <Route path="magasins" element={<Magasins />} />
+              <Route path="magasins" element={<Magasins userRole={userRole} />} />
               <Route path="utilisateurs" element={<Utilisateurs userRole={userRole} userStore={userStore} />} />
               {/* Stocks */}
               <Route path="stocks" element={<StocksIndex />} />
