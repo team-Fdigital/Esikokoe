@@ -8,7 +8,7 @@ import { Box, ShoppingCart, BarChart2, Users, TrendingUp } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 export default function Dashboard() {
-  const { userRole } = useOutletContext();
+  const { userRole, userStore } = useOutletContext();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ ventes: null, stock: null, clients: null });
   const [alertes, setAlertes] = useState([]);
@@ -18,31 +18,43 @@ export default function Dashboard() {
   const isAdmin = userRole === 'SUPERADMIN' || userRole === 'GERANT';
 
   useEffect(() => {
-    Promise.all([
-      getVentesStats(),
-      getProduitsDashboardMetrics(),
-      getAllClients(),
-      getCriticalStocks(),
-      getAllVentes()
-    ]).then(([ventesRes, stockRes, clientsRes, alertesRes, ventesListRes]) => {
-      setStats({
-        ventes: ventesRes.data,
-        stock: stockRes.data,
-        clients: clientsRes.data,
-      });
-      setAlertes((alertesRes.data.produitsEnAlerte || []).map(
-        p => `Stock faible : ${p.nomProduit} (${p.stockActuel} unités restantes)`
-      ));
-      setRecentSales(
-        (ventesListRes.data.ventes || []).slice(0, 5).map(v => ({
-          client: v.numeroFacture,
-          product: v.client,
-          date: new Date(v.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }),
-          amount: v.montant?.toLocaleString() + ' FCFA',
-        }))
-      );
-    }).finally(() => setLoading(false));
-  }, []);
+    const fetchStats = async () => {
+      try {
+        const [ventesRes, stockRes, clientsRes, alertesRes, ventesListRes] = await Promise.all([
+          getVentesStats().catch(err => ({ data: { montantTotal: 0, nombreVentes: 0 } })),
+          getProduitsDashboardMetrics().catch(err => ({ data: { valeurTotalStock: 0, totalProduits: 0 } })),
+          getAllClients().catch(err => ({ data: { total: 0 } })),
+          getCriticalStocks().catch(err => ({ data: { produitsEnAlerte: [] } })),
+          getAllVentes().catch(err => ({ data: { ventes: [] } }))
+        ]);
+
+        setStats({
+          ventes: ventesRes.data,
+          stock: stockRes.data,
+          clients: clientsRes.data,
+        });
+        
+        setAlertes((alertesRes.data.produitsEnAlerte || []).map(
+          p => `Stock faible : ${p.nomProduit} (${p.stockActuel} unités restantes)`
+        ));
+
+        setRecentSales(
+          (ventesListRes.data.ventes || []).slice(0, 5).map(v => ({
+            client: v.numeroFacture || 'N/A',
+            product: v.client || 'Passant',
+            date: v.date ? new Date(v.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '-',
+            amount: v.montant !== undefined ? `${v.montant.toLocaleString()} FCFA` : '-',
+          }))
+        );
+      } catch (err) {
+        console.error("Erreur chargement dashboard:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [userRole, userStore]);
 
   if (loading) {
     return <Loader />;

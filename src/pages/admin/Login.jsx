@@ -3,7 +3,7 @@ import { Lock, Mail, AlertCircle, Eye, EyeOff, CheckCircle, XCircle } from 'luci
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../apiClient'
 
-export default function Login({ setUserRole }) {
+export default function Login({ onLoginSucceeded }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -56,7 +56,7 @@ export default function Login({ setUserRole }) {
         localStorage.removeItem('mockStore')
         
         const payload = JSON.parse(atob(response.data.accessToken.split('.')[1]))
-        if (setUserRole) setUserRole(payload.role || 'SUPERADMIN')
+        if (onLoginSucceeded) onLoginSucceeded(payload, response.data.accessToken)
         navigate('/admin')
       } else if (response.data && response.data.error) {
         setError(response.data.error)

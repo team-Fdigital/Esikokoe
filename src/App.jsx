@@ -41,6 +41,13 @@ function AppContent() {
   const [userEmail, setUserEmail] = useState("")
   const location = useLocation()
 
+  const loginUser = (payload, token) => {
+    localStorage.setItem('token', token)
+    setUserRole(payload.role || 'SUPERADMIN')
+    setUserStore(payload.magasinId || 'magasin_1')
+    setUserEmail(payload.email || "test@admin.com")
+  }
+
   useEffect(() => {
     const checkAuth = async () => {
       const mockRole = localStorage.getItem('mockRole')
@@ -51,9 +58,7 @@ function AppContent() {
         try {
           if (token) {
             const payload = JSON.parse(atob(token.split('.')[1]))
-            setUserEmail(payload.email || "test@admin.com")
-            setUserRole(mockRole || payload.role || 'SUPERADMIN')
-            setUserStore(mockStore || payload.magasinId || 'magasin_1')
+            loginUser(payload, token)
           } else {
             setUserEmail("test@admin.com")
             setUserRole(mockRole || 'SUPERADMIN')
@@ -66,17 +71,14 @@ function AppContent() {
         setIsLoading(false)
       } else {
         // Tenter de rafraîchir le token si refreshToken existe
-        const refreshToken = localStorage.getItem('refreshToken')
-        if (refreshToken) {
+        const refreshTokenVal = localStorage.getItem('refreshToken')
+        if (refreshTokenVal) {
           try {
             const { refreshToken: refreshTokenApi } = await import('./apiClient')
             const res = await refreshTokenApi()
             if (res.data && res.data.accessToken) {
-              localStorage.setItem('token', res.data.accessToken)
               const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]))
-              setUserRole(mockRole || payload.role || 'SUPERADMIN')
-              setUserStore(mockStore || payload.magasinId || 'magasin_1')
-              setUserEmail(payload.email || "test@admin.com")
+              loginUser(payload, res.data.accessToken)
             } else {
               setUserRole(null)
             }
@@ -114,7 +116,7 @@ function AppContent() {
           <Route path="/contact" element={<Contact />} />
 
           {/* LOGIN */}
-          <Route path="/admin/login" element={<Login setUserRole={setUserRole} />} />
+          <Route path="/admin/login" element={<Login onLoginSucceeded={loginUser} />} />
 
           {/* ADMIN */}
           {userRole ? (

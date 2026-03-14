@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 
 
-export default function AdminLayout({ userEmail, userRole }) {
+export default function AdminLayout({ userEmail, userRole, userStore }) {
   const location = useLocation();
   const isDashboard = location.pathname === "/admin" || location.pathname === "/admin/";
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -34,7 +34,7 @@ export default function AdminLayout({ userEmail, userRole }) {
         <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} userEmail={userEmail} userRole={userRole} />
         <div className="flex-1 flex flex-col min-w-0">
           <main className="p-4 md:p-8 space-y-8 w-full">
-            <Outlet context={{ userRole }} />
+            <Outlet context={{ userRole, userStore }} />
           </main>
         </div>
       </div>
