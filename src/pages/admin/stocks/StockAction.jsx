@@ -24,22 +24,24 @@ export default function Stock() {
 
   const fetchData = async () => {
     setLoading(true);
+    
+    // Charger les produits séparément
     try {
-      const [produitsRes, magasinsRes] = await Promise.all([
-        getAllProduits(),
-        getAllMagasins()
-      ]);
-
-      // Mapping des produits (vérification de la structure { produits: [...] } ou [...])
-      const prodData = produitsRes.data.produits || (Array.isArray(produitsRes.data) ? produitsRes.data : []);
+      const prodRes = await getAllProduits();
+      const prodData = prodRes.data.produits || (Array.isArray(prodRes.data) ? prodRes.data : []);
       setProduits(prodData);
-
-      // Mapping des magasins (vérification de la structure { magasins: [...] } ou [...])
-      const magData = magasinsRes.data.magasins || (Array.isArray(magasinsRes.data) ? magasinsRes.data : []);
-      setMagasins(magData);
-
     } catch (error) {
-      console.error("Erreur lors du chargement des données:", error);
+      console.error("Erreur produits:", error);
+    }
+
+    // Charger les magasins séparément
+    try {
+      const magRes = await getAllMagasins();
+      const magData = magRes.data.magasins || (Array.isArray(magRes.data) ? magRes.data : []);
+      setMagasins(magData);
+    } catch (error) {
+      console.error("Erreur magasins:", error);
+      // Optionnel: afficher une alerte si c'est une erreur critique (403, etc)
     } finally {
       setLoading(false);
     }
