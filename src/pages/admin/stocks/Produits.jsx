@@ -62,13 +62,25 @@ export default function Produits() {
       return;
     }
 
-    // Préparer les données à envoyer
+    // Préparer les données à envoyer (Alignement DTO Backend)
     const dataToSend = {
-      ...formData,
+      nomProduit: formData.nomProduit,
+      format: formData.format,
+      categorie: formData.categorie,
+      type: formData.type.toUpperCase(), // Convertir en VENTE ou ACHAT
       stockInitial,
       stockMinimum,
       prixUnitaire,
+      fournisseur: formData.fournisseur || null,
     };
+
+    // Validation spécifique pour le fournisseur (Règles métier)
+    if (dataToSend.type === 'ACHAT' && !formData.fournisseur.trim()) {
+      alert("Le fournisseur est obligatoire pour les produits de type 'Achat'.");
+      setActionLoading(false);
+      return;
+    }
+
     try {
       await createProduit(dataToSend);
       setShowModal(false);
@@ -122,12 +134,25 @@ export default function Produits() {
       return;
     }
 
+    // Préparer les données à envoyer (Alignement DTO Backend)
     const dataToSend = {
-      ...formData,
+      nomProduit: formData.nomProduit,
+      format: formData.format,
+      categorie: formData.categorie,
+      type: formData.type.toUpperCase(), // Convertir en VENTE ou ACHAT
       stockInitial,
       stockMinimum,
       prixUnitaire,
+      fournisseur: formData.fournisseur || null,
     };
+
+    // Validation spécifique pour le fournisseur (Règles métier)
+    if (dataToSend.type === 'ACHAT' && !formData.fournisseur.trim()) {
+      alert("Le fournisseur est obligatoire pour les produits de type 'Achat'.");
+      setActionLoading(false);
+      return;
+    }
+
     try {
       await updateProduit(editingProductId, dataToSend);
       setEditingProductId(null);
@@ -619,7 +644,7 @@ export default function Produits() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
-                    Fournisseur
+                    Fournisseur {formData.type === 'Achat' ? <span className="text-red-500">(Obligatoire) *</span> : <span className="text-gray-400 font-normal">(Optionnel)</span>}
                   </label>
                   <input
                     type="text"
