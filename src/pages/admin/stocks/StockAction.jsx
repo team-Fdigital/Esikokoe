@@ -24,21 +24,31 @@ export default function Stock() {
 
   const fetchData = async () => {
     setLoading(true);
+    console.log("Fetching stock data...");
     try {
       const [produitsRes, magasinsRes] = await Promise.all([
         getAllProduits(),
         getAllMagasins()
       ]);
       
+      console.log("Produits Res:", produitsRes.data);
+      console.log("Magasins Res:", magasinsRes.data);
+
       if (produitsRes.data && Array.isArray(produitsRes.data.produits)) {
         setProduits(produitsRes.data.produits);
       } else {
         setProduits(Array.isArray(produitsRes.data) ? produitsRes.data : []);
       }
 
-      setMagasins(Array.isArray(magasinsRes.data) ? magasinsRes.data : (magasinsRes.data.magasins || []));
+      const magasinsData = Array.isArray(magasinsRes.data) ? magasinsRes.data : (magasinsRes.data.magasins || []);
+      console.log("Magasins processed:", magasinsData);
+      setMagasins(magasinsData);
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error);
+      if (error.response) {
+        console.error("Status:", error.response.status);
+        console.error("Data:", error.response.data);
+      }
     } finally {
       setLoading(false);
     }
