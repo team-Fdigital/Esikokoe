@@ -43,6 +43,7 @@ export const getAllClients = () => apiClient.get('/clients');
 export const updateClient = (id, data) => apiClient.put(`/clients/${id}`, data);
 export const deleteClient = (id) => apiClient.delete(`/clients/${id}`);
 export const getClientById = (id) => apiClient.get(`/clients/${id}`);
+export const getClientStats = () => apiClient.get('/clients/stats/dashboard');
 
 // MAGASINS
 export const createMagasin = (data) => apiClient.post('/magasins', data);
