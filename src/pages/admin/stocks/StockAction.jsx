@@ -11,7 +11,7 @@ export default function Stock() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [currentAction, setCurrentAction] = useState(""); // "ENTREE" or "SORTIE"
-  
+
   const [formData, setFormData] = useState({
     codeProduit: "",
     quantite: "",
@@ -19,36 +19,27 @@ export default function Stock() {
     motif: ""
   });
 
-  const userRole = localStorage.getItem('mockRole') || (localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role : null) || 'SUPERADMIN';
-  const userStore = localStorage.getItem('mockStore') || (localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).magasinId : null) || 'magasin_1';
+  const userRole = localStorage.getItem('mockRole') || (localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role : 'SUPERADMIN');
+  const userStore = localStorage.getItem('mockStore') || (localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).magasinId : null);
 
   const fetchData = async () => {
     setLoading(true);
-    console.log("Fetching stock data...");
     try {
       const [produitsRes, magasinsRes] = await Promise.all([
         getAllProduits(),
         getAllMagasins()
       ]);
-      
-      console.log("Produits Res:", produitsRes.data);
-      console.log("Magasins Res:", magasinsRes.data);
 
-      if (produitsRes.data && Array.isArray(produitsRes.data.produits)) {
-        setProduits(produitsRes.data.produits);
-      } else {
-        setProduits(Array.isArray(produitsRes.data) ? produitsRes.data : []);
-      }
+      // Mapping des produits (vérification de la structure { produits: [...] } ou [...])
+      const prodData = produitsRes.data.produits || (Array.isArray(produitsRes.data) ? produitsRes.data : []);
+      setProduits(prodData);
 
-      const magasinsData = Array.isArray(magasinsRes.data) ? magasinsRes.data : (magasinsRes.data.magasins || []);
-      console.log("Magasins processed:", magasinsData);
-      setMagasins(magasinsData);
+      // Mapping des magasins (vérification de la structure { magasins: [...] } ou [...])
+      const magData = magasinsRes.data.magasins || (Array.isArray(magasinsRes.data) ? magasinsRes.data : []);
+      setMagasins(magData);
+
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error);
-      if (error.response) {
-        console.error("Status:", error.response.status);
-        console.error("Data:", error.response.data);
-      }
     } finally {
       setLoading(false);
     }
@@ -69,34 +60,36 @@ export default function Stock() {
     setActionLoading(true);
     try {
       if (currentAction === "ENTREE") {
-        await registerStockEntry({ 
-          codeProduit: formData.codeProduit, 
+        await registerStockEntry({
+          codeProduit: formData.codeProduit,
           quantite: Number(formData.quantite),
-          motif: "Entrée manuelle"
+          motif: formData.motif || "Entrée en stock",
+          magasinId: userStore // Ajout si nécessaire par le DTO
         });
       } else {
         // Pour une "SORTIE" (Distribution), on utilise l'API de transfert
         await transferStock({
           codeProduit: formData.codeProduit,
-          sourceMagasinId: userStore, 
+          sourceMagasinId: userStore,
           destinationMagasinId: formData.idMagasin,
           quantite: Number(formData.quantite),
           motif: formData.motif || "Distribution stock"
         });
       }
-      
+
       await fetchData(); // Refresh data from server
       setIsModalOpen(false);
     } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'enregistrement de l'opération");
+      console.error("Erreur lors de l'opération:", err);
+      alert(err.response?.data?.message || "Erreur lors de l'enregistrement de l'opération");
+    } finally {
+      setActionLoading(false);
     }
-    setActionLoading(false);
   };
 
   const filteredProduits = produits.filter((p) => {
-    return p.nomProduit?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-           p.codeProduit?.toLowerCase().includes(searchTerm.toLowerCase());
+    return p.nomProduit?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.codeProduit?.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   const materiaux = filteredProduits.filter(p => p.type === 'ACHAT');
@@ -127,7 +120,7 @@ export default function Stock() {
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-red-500/20"
           >
             <ArrowUp size={20} />
-            Distribution 
+            Distribution
           </button>
         </div>
       </div>
@@ -161,62 +154,62 @@ export default function Stock() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         {loading ? (
-             <div className="text-center py-20">Chargement...</div>
+          <div className="text-center py-20">Chargement...</div>
         ) : (
-            <>
+          <>
             <div className="mb-6 relative max-w-md">
-                <Search className="absolute left-3 top-3 text-gray-400" size={18} />
-                <input
-                    type="text"
-                    placeholder="Rechercher un produit ou matériel..."
-                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+              <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+              <input
+                type="text"
+                placeholder="Rechercher un produit ou matériel..."
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
 
             {/* Matériaux d'Achat */}
             <div className="mb-8">
-                <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-orange-500"></span>
-                    Matériaux / Achat
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {materiaux.map(p => (
-                    <ProductCard 
-                        key={p.codeProduit} 
-                        produit={p} 
-                        onStockage={() => openModal("ENTREE", p.codeProduit)}
-                        onDestockage={() => openModal("SORTIE", p.codeProduit)}
-                    />
-                    ))}
-                    {materiaux.length === 0 && (
-                    <p className="text-sm text-gray-500 italic col-span-full">Aucun matériel trouvé.</p>
-                    )}
-                </div>
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                Matériaux / Achat
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {materiaux.map(p => (
+                  <ProductCard
+                    key={p.codeProduit}
+                    produit={p}
+                    onStockage={() => openModal("ENTREE", p.codeProduit)}
+                    onDestockage={() => openModal("SORTIE", p.codeProduit)}
+                  />
+                ))}
+                {materiaux.length === 0 && (
+                  <p className="text-sm text-gray-500 italic col-span-full">Aucun matériel trouvé.</p>
+                )}
+              </div>
             </div>
 
             {/* Produits de Vente */}
             <div>
-                <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                    Produits Finis / Vente
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {produitsVente.map(p => (
-                    <ProductCard 
-                        key={p.codeProduit} 
-                        produit={p} 
-                        onStockage={() => openModal("ENTREE", p.codeProduit)}
-                        onDestockage={() => openModal("SORTIE", p.codeProduit)}
-                    />
-                    ))}
-                    {produitsVente.length === 0 && (
-                    <p className="text-sm text-gray-500 italic col-span-full">Aucun produit trouvé.</p>
-                    )}
-                </div>
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                Produits Finis / Vente
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {produitsVente.map(p => (
+                  <ProductCard
+                    key={p.codeProduit}
+                    produit={p}
+                    onStockage={() => openModal("ENTREE", p.codeProduit)}
+                    onDestockage={() => openModal("SORTIE", p.codeProduit)}
+                  />
+                ))}
+                {produitsVente.length === 0 && (
+                  <p className="text-sm text-gray-500 italic col-span-full">Aucun produit trouvé.</p>
+                )}
+              </div>
             </div>
-            </>
+          </>
         )}
       </div>
 
@@ -251,7 +244,7 @@ export default function Stock() {
                 >
                   <option value="">Sélectionnez un produit...</option>
                   {produits.map(p => (
-                      <option key={p.codeProduit} value={p.codeProduit}>{p.nomProduit} ({p.format})</option>
+                    <option key={p.codeProduit} value={p.codeProduit}>{p.nomProduit} ({p.format})</option>
                   ))}
                 </select>
               </div>
@@ -339,13 +332,13 @@ function ProductCard({ produit, onStockage, onDestockage }) {
         </div>
       </div>
       <div className="flex gap-2">
-        <button 
+        <button
           onClick={onStockage}
           className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
         >
           <ArrowDown size={14} /> Entrée
         </button>
-        <button 
+        <button
           onClick={onDestockage}
           className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
         >
