@@ -67,7 +67,7 @@ export default function Stock() {
       } else {
         // Pour une "SORTIE" (Distribution), on utilise l'API de transfert
         await transferStock({
-          produitId: formData.codeProduit,
+          codeProduit: formData.codeProduit,
           sourceMagasinId: userStore, 
           destinationMagasinId: formData.idMagasin,
           quantite: Number(formData.quantite),
