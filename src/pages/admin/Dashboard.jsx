@@ -1,3 +1,10 @@
+import React, { useEffect, useState } from 'react';
+import { getVentesStats, getProduitsDashboardMetrics, getAllClients, getCriticalStocks, getAllVentes } from '../../apiClient';
+import StatCard from '../../components/admin/StatCard';
+import AlertCard from '../../components/admin/AlertCard';
+import RecentSalesTable from '../../components/admin/RecentSalesTable';
+import Loader from '../../components/ui/Loader';
+import { Box, ShoppingCart, BarChart2, Users, TrendingUp } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 export default function Dashboard() {
