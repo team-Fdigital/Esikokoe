@@ -73,7 +73,7 @@ function AppContent() {
               localStorage.setItem('token', res.data.accessToken)
               const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]))
               setUserRole(mockRole || payload.role || 'SUPERADMIN')
-              setUserStore(mockStore || payload.magasin_id || 'magasin_1')
+              setUserStore(mockStore || payload.magasinId || 'magasin_1')
               setUserEmail(payload.email || "test@admin.com")
             } else {
               setUserRole(null)
