@@ -1,19 +1,14 @@
-// src/pages/admin/Dashboard.jsx
-import React, { useEffect, useState } from 'react';
-import { getVentesStats, getProduitsDashboardMetrics, getAllClients, getCriticalStocks, getAllVentes } from '../../apiClient';
-import StatCard from '../../components/admin/StatCard';
-import AlertCard from '../../components/admin/AlertCard';
-import RecentSalesTable from '../../components/admin/RecentSalesTable';
-import Loader from '../../components/ui/Loader';
-import { Box, ShoppingCart, BarChart2, Users, TrendingUp, TrendingDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 export default function Dashboard() {
+  const { userRole } = useOutletContext();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ ventes: null, stock: null, clients: null });
   const [alertes, setAlertes] = useState([]);
   const [recentSales, setRecentSales] = useState([]);
   const navigate = useNavigate();
+
+  const isAdmin = userRole === 'SUPERADMIN' || userRole === 'GERANT';
 
   useEffect(() => {
     Promise.all([
@@ -46,17 +41,19 @@ export default function Dashboard() {
     return <Loader />;
   }
 
-  const modules = [
+  const allModules = [
     { id: 1, icon: <Box className="text-blue-500" size={20} />, title: "Gestion des Stocks", subtitle: "Inventaire et approvisionnement", path: "/admin/stocks/produits" },
     { id: 2, icon: <ShoppingCart className="text-green-600" size={20} />, title: "Module de Vente", subtitle: "Factures et commandes", path: "/admin/ventes/ventes" },
-    { id: 3, icon: <BarChart2 className="text-purple-600" size={20} />, title: "Comptabilité", subtitle: "Finances et rapports", path: "/admin/comptabilite/transactions" },
-    { id: 4, icon: <TrendingUp className="text-orange-500" size={20} />, title: "Rapports", subtitle: "Analyses et statistiques", path: "/admin/rapports/financial" },
+    { id: 3, icon: <BarChart2 className="text-purple-600" size={20} />, title: "Comptabilité", subtitle: "Finances et rapports", path: "/admin/comptabilite/transactions", adminOnly: true },
+    { id: 4, icon: <TrendingUp className="text-orange-500" size={20} />, title: "Rapports", subtitle: "Analyses et statistiques", path: "/admin/rapports/financial", adminOnly: true },
   ];
+
+  const modules = allModules.filter(m => !m.adminOnly || isAdmin);
 
   return (
     <div className="w-full space-y-8">
       {/* Cards d'accès rapide */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${modules.length} gap-4`}>
         {modules.map((module) => (
           <QuickAccessCard
             key={module.id}
@@ -71,14 +68,14 @@ export default function Dashboard() {
       {/* Statistiques principales */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Ventes du jour"
+          title={isAdmin ? "Ventes du jour" : "Mes ventes (Jour)"}
           value={stats.ventes?.montantTotal?.toLocaleString() + ' FCFA' || '-'}
           trend={stats.ventes ? `${stats.ventes.nombreVentes} ventes` : ''}
           trendUp={true}
           icon={<span className="text-green-600 text-lg ml-1">$</span>}
         />
         <StatCard
-          title="Stock total"
+          title={isAdmin ? "Stock total" : "Stock du magasin"}
           value={stats.stock?.valeurTotalStock?.toLocaleString() + ' FCFA' || '-'}
           trend={stats.stock ? `${stats.stock.totalProduits} produits` : ''}
           trendUp={true}
