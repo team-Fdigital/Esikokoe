@@ -76,14 +76,14 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title={isAdmin ? "Ventes du jour" : "Mes ventes (Jour)"}
-          value={stats.ventes?.montantTotal?.toLocaleString() + ' FCFA' || '-'}
+          value={stats.ventes?.montantTotal !== undefined ? `${stats.ventes.montantTotal.toLocaleString()} FCFA` : '-'}
           trend={stats.ventes ? `${stats.ventes.nombreVentes} ventes` : ''}
           trendUp={true}
           icon={<span className="text-green-600 text-lg ml-1">$</span>}
         />
         <StatCard
           title={isAdmin ? "Stock total" : "Stock du magasin"}
-          value={stats.stock?.valeurTotalStock?.toLocaleString() + ' FCFA' || '-'}
+          value={stats.stock?.valeurTotalStock !== undefined ? `${stats.stock.valeurTotalStock.toLocaleString()} FCFA` : '-'}
           trend={stats.stock ? `${stats.stock.totalProduits} produits` : ''}
           trendUp={true}
           icon={<Box className="text-blue-500 text-lg ml-1" size={20} />}

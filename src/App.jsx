@@ -52,11 +52,13 @@ function AppContent() {
           if (token) {
             const payload = JSON.parse(atob(token.split('.')[1]))
             setUserEmail(payload.email || "test@admin.com")
+            setUserRole(mockRole || payload.role || 'SUPERADMIN')
+            setUserStore(mockStore || payload.magasinId || 'magasin_1')
           } else {
             setUserEmail("test@admin.com")
+            setUserRole(mockRole || 'SUPERADMIN')
+            setUserStore(mockStore || 'magasin_1')
           }
-          setUserRole(mockRole || 'SUPERADMIN')
-          setUserStore(mockStore || 'magasin_1')
         } catch (e) {
           setUserRole(null)
           setUserEmail("")
@@ -121,7 +123,6 @@ function AppContent() {
               {/* Entités Globales */}
               <Route path="magasins" element={<Magasins userRole={userRole} />} />
               <Route path="utilisateurs" element={<Utilisateurs userRole={userRole} userStore={userStore} />} />
-              {/* Stocks */}
               <Route path="stocks" element={<StocksIndex />} />
               <Route path="stocks/produits" element={<Produits />} />
               <Route path="stocks/mouvements" element={<Mouvements />} />
