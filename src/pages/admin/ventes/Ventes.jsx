@@ -464,8 +464,7 @@ export default function Ventes() {
 
                 <div className="space-y-2">
                   {produits.map((p, i) => {
-                    // Trouver le produit sélectionné pour afficher le prix par défaut si besoin
-                    const produitObj = listeProduits.find(lp => lp.codeProduit === p.produit);
+                    // On mappe les produits sélectionnés
                     return (
                       <div key={p.id} className="grid grid-cols-4 gap-2">
                         <select

@@ -18,9 +18,9 @@ export default function Utilisateurs({ userRole, userStore }) {
         getAllMagasins()
       ]);
       
-      setUsers(Array.isArray(usersRes.data) ? usersRes.data : []);
+      setUsers(Array.isArray(usersRes.data) ? usersRes.data : (usersRes.data?.users || []));
       
-      const mArray = Array.isArray(magasinsRes.data) ? magasinsRes.data : (magasinsRes.data.magasins || []);
+      const mArray = Array.isArray(magasinsRes.data) ? magasinsRes.data : (magasinsRes.data?.magasins || []);
       const mMap = {};
       mArray.forEach(m => {
         mMap[m.idMagasin] = m.nom;
@@ -35,6 +35,7 @@ export default function Utilisateurs({ userRole, userStore }) {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredUsers = userRole === 'SUPERADMIN' 
@@ -46,6 +47,7 @@ export default function Utilisateurs({ userRole, userStore }) {
     setActionLoading(true);
     try {
       if (formData.idUtilisateur) {
+        // eslint-disable-next-line no-unused-vars
         const { idUtilisateur, createdAt, magasin, ...updateData } = formData;
         if (!updateData.motDePasse) delete updateData.motDePasse;
         await updateUser(idUtilisateur, updateData);
@@ -105,7 +107,7 @@ export default function Utilisateurs({ userRole, userStore }) {
           <p className="text-gray-500 text-sm mt-2">
             {userRole === 'SUPERADMIN' 
               ? "Gérez l'ensemble du personnel, gérants et vendeurs de tous les magasins."
-              : "Gérez les membres de votre magasin."}
+              : "Gérez les vendeurs assignés à votre magasin."}
           </p>
         </div>
         <button
@@ -154,7 +156,7 @@ export default function Utilisateurs({ userRole, userStore }) {
                     </td>
                   )}
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
