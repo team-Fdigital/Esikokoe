@@ -75,7 +75,7 @@ export default function Mouvements() {
           </Link>
         </div>
         <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b flex justify-between items-center">
+          <div className="p-6 border-b flex flex-col items-center text-center">
             <div>
               <h2 className="text-xl font-semibold">
                 Historique des mouvements
@@ -92,8 +92,10 @@ export default function Mouvements() {
                 <tr>
                   <th className="text-left py-3">Produit</th>
                   <th className="text-left">Format</th>
-                  <th className="text-left">Type</th>
+                  <th className="text-left">Catégorie</th>
+                  <th className="text-left">Action</th>
                   <th className="text-left">Quantité</th>
+                  <th className="text-left">Motif</th>
                   <th className="text-left">Date</th>
                   <th className="text-left">Utilisateur</th>
                 </tr>
@@ -103,7 +105,12 @@ export default function Mouvements() {
                 {mouvements.map((m) => (
                   <tr key={m.id} className="border-b hover:bg-gray-50">
                     <td className="py-3 font-medium">{m.produit}</td>
-                    <td></td>
+                    <td>{m.format}</td>
+                    <td>
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-semibold ${m.produitType === 'Achat' || m.produitType === 'ACHAT' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
+                        {m.produitType === 'ACHAT' ? 'Achat' : m.produitType === 'VENTE' ? 'Vente' : m.produitType || 'Vente'}
+                      </span>
+                    </td>
                     <td>
                       {m.type === "+" ? (
                         <span className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium w-fit">
@@ -118,6 +125,7 @@ export default function Mouvements() {
                       )}
                     </td>
                     <td className="font-semibold">{m.quantite}</td>
+                    <td className="text-gray-500 max-w-[150px] truncate" title={m.motif}>{m.motif || '-'}</td>
                     <td>{m.date ? new Date(m.date).toLocaleDateString() : ''}</td>
                     <td>{m.utilisateur || ''}</td>
                   </tr>
