@@ -59,6 +59,15 @@ export default function Stock() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (currentAction === "SORTIE") {
+      const selectedProduct = produits.find(p => p.codeProduit === formData.codeProduit);
+      if (!selectedProduct || Number(formData.quantite) > (selectedProduct.stock || 0)) {
+        alert(`Stock insuffisant. Le stock actuel de ce produit est de ${selectedProduct ? selectedProduct.stock : 0}.`);
+        return;
+      }
+    }
+
     setActionLoading(true);
     try {
       if (currentAction === "ENTREE") {
@@ -66,7 +75,7 @@ export default function Stock() {
           codeProduit: formData.codeProduit,
           quantite: Number(formData.quantite),
           motif: formData.motif || "Entrée en stock",
-          magasinId: userStore // Ajout si nécessaire par le DTO
+          magasinId: userStore 
         });
       } else {
         // Pour une "SORTIE" (Distribution), on utilise l'API de transfert
@@ -79,7 +88,7 @@ export default function Stock() {
         });
       }
 
-      await fetchData(); // Refresh data from server
+      await fetchData(); 
       setIsModalOpen(false);
     } catch (err) {
       console.error("Erreur lors de l'opération:", err);
@@ -174,7 +183,7 @@ export default function Stock() {
             <div className="mb-8">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-orange-500"></span>
-                Matériaux / Achat
+                Achat
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {materiaux.map(p => (
@@ -195,7 +204,7 @@ export default function Stock() {
             <div>
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                Produits Finis / Vente
+                 Vente
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {produitsVente.map(p => (
@@ -245,9 +254,17 @@ export default function Stock() {
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                 >
                   <option value="">Sélectionnez un produit...</option>
-                  {produits.map(p => (
-                    <option key={p.codeProduit} value={p.codeProduit}>{p.nomProduit} ({p.format})</option>
-                  ))}
+                  {produits.map(p => {
+                    // Si on est en "SORTIE" (distribution), on ne montre que les produits avec stock > 0
+                    if (currentAction === 'SORTIE' && (p.stock || 0) <= 0) {
+                      return null;
+                    }
+                    return (
+                      <option key={p.codeProduit} value={p.codeProduit}>
+                        {p.nomProduit} ({p.format}) - En stock: {p.stock || 0}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
 
@@ -258,6 +275,7 @@ export default function Stock() {
                 <div className="relative">
                   <input
                     type="number" required min="1"
+                    max={currentAction === 'SORTIE' ? (produits.find(p => p.codeProduit === formData.codeProduit)?.stock || 0) : undefined}
                     value={formData.quantite}
                     onChange={(e) => setFormData({ ...formData, quantite: e.target.value })}
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all pl-12"
@@ -342,7 +360,14 @@ function ProductCard({ produit, onStockage, onDestockage }) {
         </button>
         <button
           onClick={onDestockage}
-          className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
+          disabled={(produit.stock || 0) <= 0}
+          className={`flex-1 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors border
+            ${(produit.stock || 0) <= 0 
+              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
+              : 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
+            }
+          `}
+          title={(produit.stock || 0) <= 0 ? "Stock épuisé" : "Distribuer"}
         >
           <ArrowUp size={14} /> Distribuer
         </button>

@@ -208,7 +208,7 @@ const ContactSlider = () => {
                       </div>
 
                       {/*  ZONE IMAGE EN GRAND FORMAT  */}
-                      <div className="relative hidden lg:block h-[600px] w-full">
+                      <div className="relative hidden lg:block h-[400px] max-w-md mx-auto w-full">
                         <div className="w-full h-full rounded-2xl border bg-card overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-500">
                           <img
                             src={slide.image}
@@ -236,8 +236,8 @@ const ContactSlider = () => {
                       </div>
 
                       {/* 📱 VERSION MOBILE - Image en grand */}
-                      <div className="lg:hidden w-full mt-8">
-                        <div className="w-full h-64 rounded-2xl border bg-card overflow-hidden shadow-2xl">
+                      <div className="lg:hidden w-full max-w-xs mx-auto mt-8">
+                        <div className="w-full h-56 rounded-2xl border bg-card overflow-hidden shadow-2xl">
                           <img
                             src={slide.image}
                             alt={slide.altImage}
