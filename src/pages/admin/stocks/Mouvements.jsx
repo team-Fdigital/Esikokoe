@@ -105,7 +105,7 @@ export default function Mouvements() {
                     <td className="py-3 font-medium">{m.produit}</td>
                     <td></td>
                     <td>
-                      {m.typeLabel === "ENTREE" ? (
+                      {m.type === "+" ? (
                         <span className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium w-fit">
                           <ArrowDown size={14} />
                           Entrée
