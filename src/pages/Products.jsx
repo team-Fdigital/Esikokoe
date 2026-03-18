@@ -16,9 +16,9 @@ export default function Products() {
     {
       id: 1,
       title: 'Sachets d\'Eau Pure',
-      badge: 'Promo -17%',
-      price: '250 FCFA',
-      originalPrice: '300 FCFA',
+      badge: 'Populaire',
+      price: '300 FCFA',
+      originalPrice: '',
       format: 'Format Pratique',
       description: 'Nos sachets d\'eau pure de 500ml sont parfaits pour tous vos déplacements. Conditionnés dans un emballage hygiénique et pratique.',
       volume: '500ml',
@@ -462,7 +462,7 @@ export default function Products() {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-gray-500">Prix unitaire</span>
                     <div className="text-right">
-                      <span className="text-3xl font-bold text-gray-800">25</span>
+                      <span className="text-3xl font-bold text-gray-800">300</span>
                       <span className="text-lg text-gray-600 ml-1">FCFA</span>
                     </div>
                   </div>
@@ -534,7 +534,7 @@ export default function Products() {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-gray-500">Prix unitaire</span>
                     <div className="text-right">
-                      <span className="text-3xl font-bold text-gray-800">1,500</span>
+                      <span className="text-3xl font-bold text-gray-800">2,300</span>
                       <span className="text-lg text-gray-600 ml-1">FCFA</span>
                     </div>
                   </div>

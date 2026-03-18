@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Star, Droplets, Package, Phone, Mail, MapPin, Clock } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Star, Droplets, Package, Phone, Mail, MapPin, Clock, CalendarDays, Target, Heart, Users } from 'lucide-react'
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -73,7 +73,7 @@ export default function Home() {
     {
       id: 1,
       name: 'Sachets 500ml',
-      price: '25 FCFA',
+      price: '300 FCFA',
       description: 'Parfait pour vos déplacements quotidiens. Eau pure et hygiénique dans un format pratique.',
       gradient: 'from-blue-400 to-cyan-500',
       badge: 'Bestseller',
@@ -85,7 +85,7 @@ export default function Home() {
     {
       id: 2,
       name: 'Bonbonnes 22L',
-      price: '1,500 FCFA',
+      price: '2,300 FCFA',
       description: 'Idéal pour les familles et bureaux. Solution économique avec livraison gratuite.',
       gradient: 'from-green-400 to-emerald-500',
       badge: 'Économique',
@@ -97,10 +97,10 @@ export default function Home() {
   ]
 
   const stats = [
-    { icon: '📅', title: 'Notre Histoire', description: 'Plus de 2 ans d\'expérience dans la production d\'eau pure au Togo' },
-    { icon: '🎯', title: 'Notre Mission', description: 'Fournir une eau pure et accessible à tous les Togolais' },
-    { icon: '❤️', title: 'Nos Valeurs', description: 'Qualité, transparence et respect de nos clients' },
-    { icon: '👥', title: 'Notre Équipe', description: '10+ professionnels dévoués à votre service' },
+    { icon: CalendarDays, title: 'Notre Histoire', description: 'Plus de 2 ans d\'expérience dans la production d\'eau pure au Togo' },
+    { icon: Target, title: 'Notre Mission', description: 'Fournir une eau pure et accessible à tous les Togolais' },
+    { icon: Heart, title: 'Nos Valeurs', description: 'Qualité, transparence et respect de nos clients' },
+    { icon: Users, title: 'Notre Équipe', description: '10+ professionnels dévoués à votre service' },
   ]
 
   const contact = [
@@ -316,8 +316,8 @@ export default function Home() {
             {stats.map((stat, idx) => (
               <div key={idx} className="rounded-lg bg-card text-card-foreground shadow-sm text-center p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-gradient-to-br from-gray-50 to-white">
                 <div className="p-6 pt-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-3xl">
-                    {stat.icon}
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-white">
+                    <stat.icon className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-gray-800">{stat.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{stat.description}</p>
