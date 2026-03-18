@@ -204,6 +204,9 @@ export default function Products() {
                                   src={slide.image}
                                   alt={slide.title}
                                   className="w-full h-40 sm:h-72 object-contain p-4"
+                                  loading={index === 0 ? "eager" : "lazy"}
+                                  fetchPriority={index === 0 ? "high" : "auto"}
+                                  decoding="async"
                                 />
                                 <div className={`absolute inset-0 bg-gradient-to-t ${slide.gradient} opacity-20`}></div>
                               </div>
@@ -345,6 +348,8 @@ export default function Products() {
                 src="/assets/fontaineb.jpg"
                 alt="Fontaine à Eau Dispenser"
                 className="w-full h-auto max-h-[500px] object-contain rounded-2xl"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -416,6 +421,8 @@ export default function Products() {
                   src="/eau.jpg"
                   alt="Sachets d'eau Intercontinental Eau"
                   className="w-80 h-80 object-contain animate-float relative z-10"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute top-4 left-4">
                   <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-blue-500 text-white hover:bg-blue-600 animate-pulse">
@@ -488,6 +495,8 @@ export default function Products() {
                   alt="Bonbonnes 22L Intercontinental Eau"
                   className="w-60 h-96 object-contain animate-float relative z-10"
                   style={{ animationDelay: '2s' }}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute top-4 left-4">
                   <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 text-white hover:bg-green-600 animate-pulse">

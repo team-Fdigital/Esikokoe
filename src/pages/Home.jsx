@@ -198,6 +198,9 @@ export default function Home() {
                             src={slide.image}
                             alt={slide.title}
                             className="w-full h-auto rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
+                            decoding="async"
                           />
                         </div>
                         <div className="absolute -top-3 right-4 w-24 h-24 bg-white/20 rounded-full animate-pulse"></div>
@@ -257,7 +260,7 @@ export default function Home() {
             {products.map((product) => (
               <div key={product.id} className="rounded-lg border bg-white shadow-sm overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
                 <div className={`relative h-60 w-full bg-gradient-to-br ${product.gradient} flex items-center justify-center`}>
-                  <img src={product.image} alt={product.name} className="w-auto h-auto max-w-[80%] max-h-[70%] object-contain drop-shadow-xl transform hover:scale-110 transition-transform duration-500" onError={(e) => { e.target.src = '/placeholder.svg?height=200&width=200' }} />
+                  <img src={product.image} alt={product.name} className="w-auto h-auto max-w-[80%] max-h-[70%] object-contain drop-shadow-xl transform hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" onError={(e) => { e.target.src = '/placeholder.svg?height=200&width=200' }} />
                   <div className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold absolute top-4 right-4 ${product.badgeColor} shadow-md`}>
                     {product.badge}
                   </div>

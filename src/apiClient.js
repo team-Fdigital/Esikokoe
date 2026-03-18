@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Crée une instance Axios configurée pour le backend
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // Utilise la variable d'environnement VITE_API_URL
+  // Utilise la variable d'environnement (Vercel ou .env) ou le port local 9000 par défaut
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:9000',
   headers: {
     'Content-Type': 'application/json',
   },

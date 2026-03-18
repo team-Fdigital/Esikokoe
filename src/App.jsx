@@ -10,6 +10,8 @@ import Footer from './components/Footer'
 import AdminLayout from './layouts/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
 import Login from './pages/admin/Login'
+import Profile from './pages/admin/Profile'
+import Settings from './pages/admin/Settings'
 import AjouterAdmin from './pages/admin/ajouter-admin'
 import Magasins from './pages/admin/magasins/index'
 import Utilisateurs from './pages/admin/utilisateurs/index'
@@ -149,6 +151,10 @@ function AppContent() {
               <Route path="rapports/clients" element={<ClientsReport />} />
               {/* Ajouter admin */}
               <Route path="ajouter-admin" element={<AjouterAdmin />} />
+              
+              {/* Profile & Paramètres */}
+              <Route path="profile" element={<Profile userEmail={userEmail} userRole={userRole} userStore={userStore} />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
           ) : (
             <Route path="/admin/*" element={<Navigate to="/admin/login" />} />

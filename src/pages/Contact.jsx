@@ -53,7 +53,7 @@ const ContactSlider = () => {
       badge: 'Ils Nous Font Confiance',
       icone: MessageCircle,
       degrade: 'from-violet-600 to-pink-600',
-      description: 'Plus de 10,000 familles nous font confiance au quotidien.',
+      description: 'Plus de 2,000 familles nous font confiance au quotidien.',
       image: '/assets/b75cl.jpg',
       altImage: 'Témoignages Clients',
       temoignages: [
@@ -115,7 +115,7 @@ const ContactSlider = () => {
         <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center space-x-3">
             <div className={`p-2 rounded-lg bg-gradient-to-r ${slides[currentSlide].degrade} opacity-20`}>
-              <IconComponent className="w-5 h-5 text-gray-700" />
+              <IconComponent className="w-5 h-5 text-white" />
             </div>
             <div className="min-w-0">
               <p className={`font-semibold text-gray-900 ${contact.type === 'mail' ? 'text-xs break-words break-all' : ''}`}>{contact.titre}</p>
@@ -213,7 +213,10 @@ const ContactSlider = () => {
                           <img
                             src={slide.image}
                             alt={slide.altImage}
-                            className="w-full h-full object-cover" // ← object-cover + h-full
+                            className="w-full h-full object-contain" // ← object-contain + h-full
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
+                            decoding="async"
                             onError={(e) => {
                               e.target.src = 'https://via.placeholder.com/600x500/3b82f6/ffffff?text=Eau.png';
                             }}
@@ -241,7 +244,10 @@ const ContactSlider = () => {
                           <img
                             src={slide.image}
                             alt={slide.altImage}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
+                            decoding="async"
                           />
                           <div className={`absolute inset-0 bg-gradient-to-t ${slide.degrade} opacity-20`}></div>
                         </div>

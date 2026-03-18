@@ -177,7 +177,7 @@ export default function About() {
                             <img
                               src={slide.image}
                               alt={slide.title}
-                              className="w-full h-48 sm:h-64 lg:h-[500px] object-cover"
+                              className="w-full h-48 sm:h-64 lg:h-[500px] object-contain p-4 bg-white/50 backdrop-blur-sm"
                             />
                           </div>
                           <div className={`absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-r ${slide.gradient} rounded-full opacity-20 animate-pulse`} />
