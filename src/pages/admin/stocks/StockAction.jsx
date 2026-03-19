@@ -11,7 +11,6 @@ export default function Stock() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [currentAction, setCurrentAction] = useState(""); // "ENTREE" or "SORTIE"
-  const [selectedMagasin, setSelectedMagasin] = useState(""); // Filtre d'affichage pour Admin
 
   const [formData, setFormData] = useState({
     codeProduit: "",
@@ -25,10 +24,10 @@ export default function Stock() {
 
   const fetchData = async () => {
     setLoading(true);
-    
-    // Charger les produits filtrés par le magasin sélectionné
+
+    // Charger les produits séparément
     try {
-      const prodRes = await getAllProduits(selectedMagasin);
+      const prodRes = await getAllProduits();
       const prodData = prodRes.data.produits || (Array.isArray(prodRes.data) ? prodRes.data : []);
       setProduits(prodData);
     } catch (error) {
@@ -50,7 +49,7 @@ export default function Stock() {
 
   useEffect(() => {
     fetchData();
-  }, [selectedMagasin]);
+  }, []);
 
   const openModal = (action, codeProduit = "") => {
     setCurrentAction(action);
@@ -76,7 +75,7 @@ export default function Stock() {
           codeProduit: formData.codeProduit,
           quantite: Number(formData.quantite),
           motif: formData.motif || "Entrée en stock",
-          magasinId: userStore 
+          magasinId: userStore
         });
       } else {
         // Pour une "SORTIE" (Distribution), on utilise l'API de transfert
@@ -89,7 +88,7 @@ export default function Stock() {
         });
       }
 
-      await fetchData(); 
+      await fetchData();
       setIsModalOpen(false);
     } catch (err) {
       console.error("Erreur lors de l'opération:", err);
@@ -119,26 +118,23 @@ export default function Stock() {
             Réalisez une entrée ou une distribution de matériel vers un autre magasin.
           </p>
         </div>
-      </div>
-
-      {/* Barre de filtrage par magasin pour Admin */}
-      {userRole === 'SUPERADMIN' && (
-        <div className="flex justify-end p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-           <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-500 italic">Voir le stock de :</span>
-              <select 
-                className="px-4 py-2 border border-blue-100 rounded-xl bg-blue-50/30 text-sm font-semibold text-blue-800 outline-none focus:ring-2 focus:ring-blue-500"
-                value={selectedMagasin}
-                onChange={(e) => setSelectedMagasin(e.target.value)}
-              >
-                <option value="">Tous les magasins (Cumulé)</option>
-                {magasins.map(m => (
-                  <option key={m.idMagasin} value={m.idMagasin}>{m.nom}</option>
-                ))}
-              </select>
-           </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => openModal("ENTREE")}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-green-500/20"
+          >
+            <ArrowDown size={20} />
+            Entrée
+          </button>
+          <button
+            onClick={() => openModal("SORTIE")}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-red-500/20"
+          >
+            <ArrowUp size={20} />
+            Distribution
+          </button>
         </div>
-      )}
+      </div>
 
       <div className="flex gap-1">
         <Link
@@ -208,7 +204,7 @@ export default function Stock() {
             <div>
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                 Vente
+                Vente
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {produitsVente.map(p => (
@@ -366,8 +362,8 @@ function ProductCard({ produit, onStockage, onDestockage }) {
           onClick={onDestockage}
           disabled={(produit.stock || 0) <= 0}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors border
-            ${(produit.stock || 0) <= 0 
-              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
+            ${(produit.stock || 0) <= 0
+              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
               : 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
             }
           `}
