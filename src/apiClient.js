@@ -68,12 +68,12 @@ export const deleteVente = (idVente) => apiClient.delete(`/ventes/${idVente}`);
 // RAPPORTS
 
 // PRODUITS
-export const searchProduits = (q) => apiClient.get('/produits/search/query', { params: { q } });
+export const searchProduits = (q, magasinId) => apiClient.get('/produits/search/query', { params: { q, magasinId } });
 export const getProduitsByFormat = (format) => apiClient.get('/produits/filter/format', { params: { format } });
 export const getStatsProduitsByFormat = () => apiClient.get('/produits/stats/by-format');
-export const getProduitsDashboardMetrics = () => apiClient.get('/produits/dashboard/metrics');
+export const getProduitsDashboardMetrics = (magasinId) => apiClient.get('/produits/dashboard/metrics', { params: { magasinId } });
 export const createProduit = (data) => apiClient.post('/produits', data);
-export const getAllProduits = () => apiClient.get('/produits');
+export const getAllProduits = (magasinId) => apiClient.get('/produits', { params: { magasinId } });
 export const getProduitByCode = (codeProduit) => apiClient.get(`/produits/${codeProduit}`);
 export const updateProduit = (codeProduit, data) => apiClient.put(`/produits/${codeProduit}`, data);
 export const deleteProduit = (codeProduit) => apiClient.delete(`/produits/${codeProduit}`);
