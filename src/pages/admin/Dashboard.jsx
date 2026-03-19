@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getVentesStats, getProduitsDashboardMetrics, getAllClients, getCriticalStocks, getAllVentes } from '../../apiClient';
+import { getVentesStats, getProduitsDashboardMetrics, getAllClients, getCriticalStocks, getAllVentes, getAllMagasins } from '../../apiClient';
 import StatCard from '../../components/admin/StatCard';
 import AlertCard from '../../components/admin/AlertCard';
 import RecentSalesTable from '../../components/admin/RecentSalesTable';
@@ -13,16 +13,27 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ ventes: null, stock: null, clients: null });
   const [alertes, setAlertes] = useState([]);
   const [recentSales, setRecentSales] = useState([]);
+  const [magasins, setMagasins] = useState([]);
+  const [selectedMagasin, setSelectedMagasin] = useState("");
   const navigate = useNavigate();
 
   const isAdmin = userRole === 'SUPERADMIN' || userRole === 'GERANT';
 
   useEffect(() => {
+    if (isAdmin && magasins.length === 0) {
+      getAllMagasins().then(res => {
+        setMagasins(res.data.magasins || (Array.isArray(res.data) ? res.data : []));
+      }).catch(err => console.error("Erreur magasins:", err));
+    }
+  }, [isAdmin]);
+
+  useEffect(() => {
     const fetchStats = async () => {
+      setLoading(true);
       try {
         const [ventesRes, stockRes, clientsRes, alertesRes, ventesListRes] = await Promise.all([
           getVentesStats().catch(err => ({ data: { montantTotal: 0, nombreVentes: 0 } })),
-          getProduitsDashboardMetrics().catch(err => ({ data: { valeurTotalStock: 0, totalProduits: 0 } })),
+          getProduitsDashboardMetrics(selectedMagasin).catch(err => ({ data: { valeurTotalStock: 0, totalProduits: 0 } })),
           getAllClients().catch(err => ({ data: { total: 0 } })),
           getCriticalStocks().catch(err => ({ data: { produitsEnAlerte: [] } })),
           getAllVentes().catch(err => ({ data: { ventes: [] } }))
@@ -54,9 +65,9 @@ export default function Dashboard() {
     };
 
     fetchStats();
-  }, [userRole, userStore]);
+  }, [userRole, userStore, selectedMagasin]);
 
-  if (loading) {
+  if (loading && !stats.stock) {
     return <Loader />;
   }
 
@@ -83,6 +94,22 @@ export default function Dashboard() {
           />
         ))}
       </div>
+
+      {/* Filtre magasin pour Admin */}
+      {isAdmin && (
+        <div className="flex justify-end mb-4">
+          <select 
+            className="px-4 py-2 border border-gray-200 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium text-gray-700"
+            value={selectedMagasin}
+            onChange={(e) => setSelectedMagasin(e.target.value)}
+          >
+            <option value="">Tous les magasins (Global)</option>
+            {magasins.map(m => (
+              <option key={m.idMagasin} value={m.idMagasin}>{m.nom}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Statistiques principales */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
