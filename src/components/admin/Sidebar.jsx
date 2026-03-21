@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   Box,
@@ -11,17 +12,19 @@ import {
   Users
 } from "lucide-react";
 
-const menu = [
-  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, end: true, roles: ['SUPERADMIN', 'GERANT', 'VENDEUR', 'MAGASINIER', 'RESPONSABLE_ACHAT'] },
-  { to: "/admin/magasins", label: "Magasins", icon: Store, roles: ['SUPERADMIN'] },
-  { to: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, roles: ['SUPERADMIN', 'GERANT'] },
-  { to: "/admin/stocks/produits", label: "Gestion des Stocks", icon: Box, roles: ['SUPERADMIN', 'GERANT', 'MAGASINIER'] },
-  { to: "/admin/ventes/ventes", label: "Module de Vente", icon: ShoppingCart, roles: ['SUPERADMIN', 'GERANT', 'VENDEUR'] },
-  { to: "/admin/comptabilite/transactions", label: "Comptabilité", icon: BarChart2, roles: ['SUPERADMIN', 'GERANT'] },
-  { to: "/admin/rapports/financial", label: "Rapports", icon: TrendingUp, roles: ['SUPERADMIN', 'GERANT'] },
+const getMenu = (t) => [
+  { to: "/admin", label: t('Dashboard') || "Tableau de bord", icon: LayoutDashboard, end: true, roles: ['SUPERADMIN', 'GERANT', 'VENDEUR', 'MAGASINIER', 'RESPONSABLE_ACHAT'] },
+  { to: "/admin/magasins", label: t('Stores') || "Magasins", icon: Store, roles: ['SUPERADMIN'] },
+  { to: "/admin/utilisateurs", label: t('Users') || "Utilisateurs", icon: Users, roles: ['SUPERADMIN', 'GERANT'] },
+  { to: "/admin/stocks/produits", label: t('Inventory') || "Gestion des Stocks", icon: Box, roles: ['SUPERADMIN', 'GERANT', 'MAGASINIER'] },
+  { to: "/admin/ventes/ventes", label: t('Sales') || "Module de Vente", icon: ShoppingCart, roles: ['SUPERADMIN', 'GERANT', 'VENDEUR'] },
+  { to: "/admin/comptabilite/transactions", label: t('Accounting') || "Comptabilité", icon: BarChart2, roles: ['SUPERADMIN', 'GERANT'] },
+  { to: "/admin/rapports/financial", label: t('Reports') || "Rapports", icon: TrendingUp, roles: ['SUPERADMIN', 'GERANT'] },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen, userEmail, userRole }) {
+  const { t } = useTranslation();
+  const menu = getMenu(t);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -101,10 +104,10 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail, userRole }) {
               <>
                 {/* Overlay for outside click */}
                 <div onClick={()=>setDropdownOpen(false)} className="fixed inset-0 z-[9998]" style={{background:'transparent'}} />
-                <div className="border p-2 rounded-md text-gray-800 bg-white animate-fade-in" style={{backgroundColor:'#fff', bottom:'100%', left:0, right:0, position:'absolute', zIndex:9999, minWidth:'180px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)'}}>
-                  <button onClick={() => navigate('/admin/profile')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">Profil</button>
-                  <button onClick={() => navigate('/admin/settings')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">Paramètres</button>
-                  <button onClick={handleLogout} className="block w-full text-left px-4 py-2 bg-white text-red-600 hover:bg-gray-100">Déconnexion</button>
+                <div className="border p-2 rounded-md text-gray-800 bg-white animate-fade-in" style={{bottom:'100%', left:0, right:0, position:'absolute', zIndex:9999, minWidth:'180px', boxShadow:'0 4px 16px rgba(0,0,0,0.08)'}}>
+                  <button onClick={() => navigate('/admin/profile')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">{t('Profile') || 'Profil'}</button>
+                  <button onClick={() => navigate('/admin/settings')} className="block w-full text-left px-4 py-2 bg-white hover:bg-gray-100">{t('Settings') || 'Paramètres'}</button>
+                  <button onClick={handleLogout} className="block w-full text-left px-4 py-2 bg-white text-red-600 hover:bg-gray-100">{t('Logout') || 'Déconnexion'}</button>
                 </div>
               </>
             )}
