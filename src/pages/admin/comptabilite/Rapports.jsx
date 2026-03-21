@@ -13,8 +13,10 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getRapports } from "../../../apiClient";
 import { getDistribution } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
 export default function Rapports() {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     type: "Recette",
@@ -52,7 +54,7 @@ export default function Rapports() {
 
   const handleAddTransaction = () => {
     if (!formData.categorie || !formData.description || !formData.montant) {
-      alert("Veuillez remplir tous les champs obligatoires");
+      alert(t("Please_Fill_All_Required_Fields"));
       return;
     }
     console.log("Nouvelle transaction:", formData);
@@ -77,20 +79,20 @@ export default function Rapports() {
                 className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
 
               <ChartColumn className="text-purple-600" size={22} />
 
               <h1 className="text-lg md:text-xl font-semibold text-gray-900">
-                Gestion Comptable
+                {t("Accounting_Management")}
               </h1>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
               <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
                 <Download size={16} />
-                Exporter
+                {t("Export")}
               </button>
 
               <button
@@ -98,8 +100,8 @@ export default function Rapports() {
                 className="flex items-center justify-center gap-1 md:gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-md"
               >
                 <Plus size={16} />
-                <span className="hidden sm:inline">Nouvelle transaction</span>
-                <span className="inline sm:hidden">Transaction</span>
+                <span className="hidden sm:inline">{t("New_Transaction")}</span>
+                <span className="inline sm:hidden">{t("Transaction")}</span>
               </button>
             </div>
           </div>
@@ -111,7 +113,7 @@ export default function Rapports() {
         {/* STATS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           <Stat
-            label="Recettes totales"
+            label={t("Total_Revenues")}
             value={
               distribution && Array.isArray(distribution.recettes)
                 ? distribution.recettes.reduce((sum, item) => sum + Number(item.montant), 0).toLocaleString() + ' FCFA'
@@ -121,7 +123,7 @@ export default function Rapports() {
             icon={<TrendingUp className="text-green-600 w-5 h-5 md:w-6 md:h-6" />}
           />
           <Stat
-            label="Dépenses totales"
+            label={t("Total_Expenses")}
             value={
               distribution && Array.isArray(distribution.depenses)
                 ? distribution.depenses.reduce((sum, item) => sum + Number(item.montant), 0).toLocaleString() + ' FCFA'
@@ -131,7 +133,7 @@ export default function Rapports() {
             icon={<TrendingDown className="text-red-600 w-5 h-5 md:w-6 md:h-6" />}
           />
           <Stat
-            label="Bénéfice net"
+            label={t("Net_Profit")}
             value={(() => {
               const recettes = distribution && Array.isArray(distribution.recettes)
                 ? distribution.recettes.reduce((sum, item) => sum + Number(item.montant), 0)
@@ -169,25 +171,25 @@ export default function Rapports() {
             to="/admin/comptabilite/transactions"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Transactions
+            {t("Transactions")}
           </Link>
           <Link
             to="/admin/comptabilite/rapports"
             className="px-2 md:px-3 py-1.5 bg-white rounded-md shadow text-xs md:text-sm font-semibold"
           >
-            Rapports
+            {t("Reports")}
           </Link>
           <Link
             to="/admin/comptabilite/bilan"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Bilan
+            {t("Balance_Sheet")}
           </Link>
           <Link
             to="/admin/comptabilite/audit"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Audit
+            {t("Audit")}
           </Link>
         </div>
 
@@ -197,7 +199,7 @@ export default function Rapports() {
           <div className="bg-white rounded-lg border p-4 md:p-6 space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
               <Clock size={16} className="w-4 h-4 md:w-5 md:h-5" />
-              <h2 className="text-base md:text-lg font-semibold">Répartition des recettes</h2>
+              <h2 className="text-base md:text-lg font-semibold">{t("Revenue_Distribution")}</h2>
             </div>
             {distribution?.recettes && Array.isArray(distribution.recettes)
               ? distribution.recettes.map((item) => (
@@ -206,19 +208,19 @@ export default function Rapports() {
                   <span className="text-green-600 font-medium">{item.montant} FCFA</span>
                 </div>
               ))
-              : <div className="text-gray-400 text-xs md:text-sm">Aucune donnée</div>}
+              : <div className="text-gray-400 text-xs md:text-sm">{t("No_Data")}</div>}
           </div>
           {/* DEPENSES */}
           <div className="bg-white rounded-lg border p-4 md:p-6 space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
               <Clock size={16} className="w-4 h-4 md:w-5 md:h-5" />
-              <h2 className="text-base md:text-lg font-semibold">Répartition des dépenses</h2>
+              <h2 className="text-base md:text-lg font-semibold">{t("Expense_Distribution")}</h2>
             </div>
             {distribution?.depenses && Array.isArray(distribution.depenses)
               ? distribution.depenses.map((item) => (
                 <Row key={item.categorie} label={item.categorie} value={item.montant + ' FCFA'} />
               ))
-              : <div className="text-gray-400 text-xs md:text-sm">Aucune donnée</div>}
+              : <div className="text-gray-400 text-xs md:text-sm">{t("No_Data")}</div>}
           </div>
         </div>
 
@@ -232,9 +234,9 @@ export default function Rapports() {
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
               <div>
-                <h2 className="text-lg font-bold">Ajouter une transaction</h2>
+                <h2 className="text-lg font-bold">{t("Add_Transaction")}</h2>
                 <p className="text-xs text-gray-600 mt-0.5">
-                  Enregistrez une nouvelle entrée ou sortie d'argent.
+                  {t("Record_New_Entry_Exit")}
                 </p>
               </div>
               <button
@@ -250,7 +252,7 @@ export default function Rapports() {
               {/* Type de transaction */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Type de transaction
+                  {t("Transaction_Type")}
                 </label>
                 <select
                   value={formData.type}
@@ -259,15 +261,15 @@ export default function Rapports() {
                   }}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                 >
-                  <option>Recette</option>
-                  <option>Dépense</option>
+                  <option value="Recette">{t("Revenue")}</option>
+                  <option value="Dépense">{t("Expense")}</option>
                 </select>
               </div>
 
               {/* Catégorie */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Catégorie
+                  {t("Category")}
                 </label>
                 <select
                   value={formData.categorie}
@@ -276,7 +278,7 @@ export default function Rapports() {
                   }
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                 >
-                  <option value="">Sélectionner une catégorie</option>
+                  <option value="">{t("Select_Category")}</option>
                   {categoriesByType[formData.type]?.map((cat) => (
                     <option key={cat} value={cat}>
                       {cat}
@@ -288,14 +290,14 @@ export default function Rapports() {
               {/* Description */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Description
+                  {t("Description")}
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  placeholder="Description de la transaction"
+                  placeholder={t("Transaction_Description")}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600 resize-none"
                   rows="2"
                 />
@@ -304,7 +306,7 @@ export default function Rapports() {
               {/* Montant */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Montant (FCFA)
+                  {t("Amount_FCFA")}
                 </label>
                 <input
                   type="number"
@@ -320,7 +322,7 @@ export default function Rapports() {
               {/* Référence */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Référence (optionnel)
+                  {t("Reference_Optional")}
                 </label>
                 <input
                   type="text"
@@ -328,7 +330,7 @@ export default function Rapports() {
                   onChange={(e) =>
                     setFormData({ ...formData, reference: e.target.value })
                   }
-                  placeholder="Ex: F-2024-001, BON-2024-012"
+                  placeholder={t("Reference_Example")}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                 />
               </div>
@@ -341,7 +343,7 @@ export default function Rapports() {
                 onClick={handleAddTransaction}
                 className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
               >
-                Ajouter la transaction
+                {t("Add_Transaction_Button")}
               </button>
             </div>
           </div>

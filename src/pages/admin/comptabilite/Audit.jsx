@@ -11,8 +11,10 @@ import {
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAuditStatus, getAuditLogs, getAuditEquilibration, getAuditTrend } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
 export default function Audit() {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     type: "Recette",
@@ -48,7 +50,7 @@ export default function Audit() {
 
   const handleAddTransaction = () => {
     if (!formData.categorie || !formData.description || !formData.montant) {
-      alert("Veuillez remplir tous les champs obligatoires");
+      alert(t("Please_Fill_All_Required_Fields"));
       return;
     }
     console.log("Nouvelle transaction:", formData);
@@ -73,20 +75,20 @@ export default function Audit() {
                 className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
 
               <ChartColumn className="text-purple-600" size={22} />
 
               <h1 className="text-lg md:text-xl font-semibold text-gray-900">
-                Gestion Comptable
+                {t("Accounting_Management")}
               </h1>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
               <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
                 <Download size={16} />
-                Exporter
+                {t("Export")}
               </button>
 
               <button
@@ -94,8 +96,8 @@ export default function Audit() {
                 className="flex items-center justify-center gap-1 md:gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-md"
               >
                 <Plus size={16} />
-                <span className="hidden sm:inline">Nouvelle transaction</span>
-                <span className="inline sm:hidden">Transaction</span>
+                <span className="hidden sm:inline">{t("New_Transaction")}</span>
+                <span className="inline sm:hidden">{t("Transaction")}</span>
               </button>
             </div>
           </div>
@@ -110,25 +112,25 @@ export default function Audit() {
             to="/admin/comptabilite/transactions"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Transactions
+            {t("Transactions")}
           </Link>
           <Link
             to="/admin/comptabilite/rapports"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Rapports
+            {t("Reports")}
           </Link>
           <Link
             to="/admin/comptabilite/bilan"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Bilan
+            {t("Balance_Sheet")}
           </Link>
           <Link
             to="/admin/comptabilite/audit"
             className="px-2 md:px-3 py-1.5 bg-white rounded-md shadow text-xs md:text-sm font-semibold"
           >
-            Audit
+            {t("Audit")}
           </Link>
         </div>
 
@@ -137,22 +139,22 @@ export default function Audit() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <FileText size={20} />
-              <h2 className="text-lg md:text-xl font-semibold">Audit et contrôle</h2>
+              <h2 className="text-lg md:text-xl font-semibold">{t("Audit_And_Control")}</h2>
             </div>
 
             <p className="text-xs md:text-sm text-gray-500">
-              Vérification et équilibrage des comptes
+              {t("Verification_Account_Balancing")}
             </p>
           </div>
 
           {/* STATS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-            <Stat title="Transactions vérifiées" value={auditStatus?.transactionsVerifiees ?? 0} color="text-green-600" />
-            <Stat title="Écarts détectés" value={auditStatus?.ecartsDetectes ?? 0} color="text-yellow-600" />
+            <Stat title={t("Verified_Transactions")} value={auditStatus?.transactionsVerifiees ?? 0} color="text-green-600" />
+            <Stat title={t("Detected_Discrepancies")} value={auditStatus?.ecartsDetectes ?? 0} color="text-yellow-600" />
             <div className="border rounded-lg p-3 md:p-4 text-center">
-              <p className="text-xs md:text-sm text-gray-600 mb-2">Statut audit</p>
+              <p className="text-xs md:text-sm text-gray-600 mb-2">{t("Audit_Status")}</p>
               <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm ${auditStatus?.statut === 'Conforme' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                {auditStatus?.statut || 'Inconnu'}
+                {auditStatus?.statut === 'Conforme' ? t("Compliant") : (auditStatus?.statut || t("Unknown"))}
               </span>
             </div>
           </div>
@@ -160,14 +162,14 @@ export default function Audit() {
           {/* ACTIONS */}
           <div>
             <h3 className="text-sm md:text-base font-semibold mb-3">
-              Actions d'audit disponibles
+              {t("Available_Audit_Actions")}
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-              <Action icon={<FileText size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Générer rapport d'audit" />
-              <Action icon={<Calculator size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Vérifier équilibrage" />
-              <Action icon={<Download size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Exporter pour expert-comptable" />
-              <Action icon={<BarChart3 size={16} className="w-4 h-4 md:w-5 md:h-5" />} label="Analyser tendances" />
+              <Action icon={<FileText size={16} className="w-4 h-4 md:w-5 md:h-5" />} label={t("Generate_Audit_Report")} />
+              <Action icon={<Calculator size={16} className="w-4 h-4 md:w-5 md:h-5" />} label={t("Verify_Balancing")} />
+              <Action icon={<Download size={16} className="w-4 h-4 md:w-5 md:h-5" />} label={t("Export_For_Accountant")} />
+              <Action icon={<BarChart3 size={16} className="w-4 h-4 md:w-5 md:h-5" />} label={t("Analyze_Trends")} />
             </div>
           </div>
         </div>
@@ -180,9 +182,9 @@ export default function Audit() {
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
               <div>
-                <h2 className="text-lg font-bold">Ajouter une transaction</h2>
+                <h2 className="text-lg font-bold">{t("Add_Transaction")}</h2>
                 <p className="text-xs text-gray-600 mt-1">
-                  Enregistrez une nouvelle entrée ou sortie d'argent.
+                  {t("Record_New_Entry_Exit")}
                 </p>
               </div>
               <button
@@ -198,7 +200,7 @@ export default function Audit() {
               {/* Type de transaction */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Type de transaction
+                  {t("Transaction_Type")}
                 </label>
                 <select
                   value={formData.type}
@@ -207,15 +209,15 @@ export default function Audit() {
                   }}
                   className="w-full px-3 py-1.5 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
                 >
-                  <option>Recette</option>
-                  <option>Dépense</option>
+                  <option value="Recette">{t("Revenue")}</option>
+                  <option value="Dépense">{t("Expense")}</option>
                 </select>
               </div>
 
               {/* Catégorie */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Catégorie
+                  {t("Category")}
                 </label>
                 <select
                   value={formData.categorie}
@@ -224,7 +226,7 @@ export default function Audit() {
                   }
                   className="w-full px-3 py-1.5 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
                 >
-                  <option value="">Sélectionner une catégorie</option>
+                  <option value="">{t("Select_Category")}</option>
                   {categoriesByType[formData.type]?.map((cat) => (
                     <option key={cat} value={cat}>
                       {cat}
@@ -236,14 +238,14 @@ export default function Audit() {
               {/* Description */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Description
+                  {t("Description")}
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  placeholder="Description de la transaction"
+                  placeholder={t("Transaction_Description")}
                   className="w-full px-3 py-1.5 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-600 resize-none"
                   rows="2"
                 />
@@ -252,7 +254,7 @@ export default function Audit() {
               {/* Montant */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Montant (FCFA)
+                  {t("Amount_FCFA")}
                 </label>
                 <input
                   type="number"
@@ -268,7 +270,7 @@ export default function Audit() {
               {/* Référence */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Référence (optionnel)
+                  {t("Reference_Optional")}
                 </label>
                 <input
                   type="text"
@@ -276,25 +278,24 @@ export default function Audit() {
                   onChange={(e) =>
                     setFormData({ ...formData, reference: e.target.value })
                   }
-                  placeholder="Ex: F-2024-001, BON-2024-012"
+                  placeholder={t("Reference_Example")}
                   className="w-full px-3 py-1.5 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
                 />
               </div>
             </div>
 
-            {/* FOOTER */}
             <div className="sticky bottom-0 bg-white flex gap-3 p-4 border-t">
               <button
                 onClick={() => setShowModal(false)}
                 className="flex-1 px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
               >
-                Annuler
+                {t("Cancel")}
               </button>
               <button
                 onClick={handleAddTransaction}
                 className="flex-1 px-4 py-2 text-sm bg-black hover:bg-gray-800 text-white rounded-lg font-medium"
               >
-                Ajouter la transaction
+                {t("Add_Transaction_Button")}
               </button>
             </div>
           </div>

@@ -13,8 +13,10 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAllVentes, createVente, getAllProduits } from "../../../apiClient";
 import { getVenteDetail } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
 export default function Ventes() {
+  const { t } = useTranslation();
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -114,12 +116,12 @@ export default function Ventes() {
                 className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
 
               <ShoppingCart className="text-green-600" size={22} />
               <h1 className="text-xl font-semibold text-gray-900">
-                Module de Vente
+                {t("Sales_Module_Title")}
               </h1>
             </div>
 
@@ -128,8 +130,8 @@ export default function Ventes() {
               className="flex items-center gap-1 md:gap-2 text-xs md:text-sm bg-green-600 hover:bg-green-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-md"
             >
               <Plus size={16} className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="hidden sm:inline">Nouvelle vente</span>
-              <span className="inline sm:hidden">Vente</span>
+              <span className="hidden sm:inline">{t("New_Sale")}</span>
+              <span className="inline sm:hidden">{t("Sale")}</span>
             </button>
           </div>
         </div>
@@ -139,7 +141,7 @@ export default function Ventes() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {loading && (
           <div className="flex justify-center py-10">
-            <span>Chargement des ventes...</span>
+            <span>{t("Loading_Sales")}</span>
           </div>
         )}
         {/* TABS */}
@@ -148,21 +150,21 @@ export default function Ventes() {
             to="/admin/ventes/ventes"
             className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-white hover:bg-gray-50"
           >
-            Ventes
+            {t("Sales")}
           </Link>
 
           <Link
             to="/admin/ventes/factures"
             className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
-            Factures
+            {t("Invoices")}
           </Link>
 
           <Link
             to="/admin/ventes/clients"
             className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
           >
-            Clients
+            {t("Customers")}
           </Link>
         </div>
 
@@ -171,9 +173,9 @@ export default function Ventes() {
           <div className="p-4 md:p-6 border-b">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
               <div>
-                <h2 className="text-lg md:text-xl font-semibold">Historique des ventes</h2>
+                <h2 className="text-lg md:text-xl font-semibold">{t("Sales_History")}</h2>
                 <p className="text-xs md:text-sm text-gray-500">
-                  Toutes les transactions effectuées
+                  {t("All_Transactions")}
                 </p>
               </div>
 
@@ -184,7 +186,7 @@ export default function Ventes() {
                     size={16}
                   />
                   <input
-                    placeholder="Rechercher..."
+                    placeholder={t("Search")}
                     className="border rounded-md pl-9 pr-3 py-2 text-sm w-64"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
@@ -194,12 +196,12 @@ export default function Ventes() {
                 <button
                   className="border p-2 rounded-md text-gray-800 bg-white"
                   onClick={() => {
-                    const date = prompt("Entrez la date au format YYYY-MM-DD pour filtrer :");
+                    const date = prompt(t("Enter_Date_Filter"));
                     if (date) setDateFilter(date);
                   }}
                 >
                   <Calendar size={16} />
-                  Filtrer par date
+                  {t("Filter_By_Date")}
                 </button>
               </div>
             </div>
@@ -209,13 +211,13 @@ export default function Ventes() {
             <table className="w-full text-xs md:text-sm min-w-[800px]">
               <thead className="border-b text-gray-500">
                 <tr>
-                  <th className="text-left py-3">N° Facture</th>
-                  <th className="text-left">Date</th>
-                  <th className="text-left">Client</th>
-                  <th className="text-left">Montant</th>
-                  <th className="text-left">Paiement</th>
-                  <th className="text-left">Statut</th>
-                  <th className="text-left">Actions</th>
+                  <th className="text-left py-3">{t("Invoice_No")}</th>
+                  <th className="text-left">{t("Date")}</th>
+                  <th className="text-left">{t("Customer")}</th>
+                  <th className="text-left">{t("Amount")}</th>
+                  <th className="text-left">{t("Payment")}</th>
+                  <th className="text-left">{t("Status")}</th>
+                  <th className="text-left">{t("Actions")}</th>
                 </tr>
               </thead>
 
@@ -238,7 +240,7 @@ export default function Ventes() {
                       </td>
                       <td>
                         <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
-                          {v.statut || 'Payée'}
+                          {v.statut || t("Paid")}
                         </span>
                       </td>
                       <td>
@@ -253,8 +255,8 @@ export default function Ventes() {
                                 const res = await getVenteDetail(v.idVente || v.id);
                                 setSelectedSale(res.data || res);
                               } catch (err) {
-                                console.log("Impossible de charger le détail de la vente", err);
-                                alert("Impossible de charger le détail de la vente");
+                                console.log(t("Cannot_Load_Sale_Detail"), err);
+                                alert(t("Cannot_Load_Sale_Detail"));
                               }
                               setLoadingDetail(false);
                             }}
@@ -267,7 +269,7 @@ export default function Ventes() {
                               try {
                                 const venteId = v.idVente ? v.idVente : v.id;
                                 if (!venteId) {
-                                  alert("Identifiant de vente manquant.");
+                                  alert(t("Missing_Sale_ID"));
                                   return;
                                 }
                                 // Utilise la même logique que le bouton Eye
@@ -285,47 +287,48 @@ export default function Ventes() {
                                 // Correction : accepte idVente ou id ou numeroFacture
                                 if (!venteDetail || !(venteDetail.idVente || venteDetail.id || venteDetail.numeroFacture)) {
                                   console.log('Réponse API:', res);
-                                  alert("Impossible de charger le détail de la vente pour impression. Vérifiez la structure de la réponse API.");
+                                  alert(t("Print_Error_API"));
                                   return;
                                 }
                                 // Mapping robuste pour les produits
                                 const produitsList = Array.isArray(venteDetail.produits) ? venteDetail.produits : (Array.isArray(venteDetail.items) ? venteDetail.items : (Array.isArray(venteDetail.lignes) ? venteDetail.lignes : (Array.isArray(venteDetail.details) ? venteDetail.details : [])));
                                 const printWindow = window.open('', '', 'width=800,height=600');
                                 if (!printWindow) {
-                                  alert("Impossible d'ouvrir la fenêtre d'impression. Vérifiez que les popups ne sont pas bloquées.");
+                                  alert(t("Print_Popup_Blocked"));
                                   return;
                                 }
-                                printWindow.document.write('<html><head><title>Impression Vente</title>');
+                                printWindow.document.write('<html><head><title>' + t("Print_Sale") + '</title>');
                                 printWindow.document.write('<style>body{font-family:sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #ccc;padding:8px;} th{background:#f3f3f3;}</style>');
                                 printWindow.document.write('</head><body>');
                                 printWindow.document.write(`
-                                  <h2 style='font-size:1.2em;font-weight:bold;margin-bottom:1em;'>Détail de la vente ${venteDetail.numeroFacture || venteDetail.idVente || venteDetail.id || ''}</h2>
+                                  <h2 style='font-size:1.2em;font-weight:bold;margin-bottom:1em;'>${t("Sale_Detail")} ${venteDetail.numeroFacture || venteDetail.idVente || venteDetail.id || ''}</h2>
                                   <div style='display:flex;justify-content:space-between;margin-bottom:1em;'>
                                     <div>
-                                      <h3 style='font-weight:bold;'>Informations client</h3>
-                                      <div>Nom: <b>${venteDetail.client || '-'}</b></div>
-                                      <div>Téléphone: <b>${venteDetail.telephone || '-'}</b></div>
-                                      <div>Adresse: <b>${venteDetail.adresse || '-'}</b></div>
+                                      <h3 style='font-weight:bold;'>${t("Customer_Info")}</h3>
+                                      <div>${t("Name_Colon")} <b>${venteDetail.client || '-'}</b></div>
+                                      <div>${t("Phone_Colon")} <b>${venteDetail.telephone || '-'}</b></div>
+                                      <div>${t("Address_Colon")} <b>${venteDetail.adresse || '-'}</b></div>
                                     </div>
                                     <div style='text-align:right;'>
-                                      <h3 style='font-weight:bold;'>Informations vente</h3>
-                                      <div>Date: <b>${venteDetail.date ? new Date(venteDetail.date).toLocaleString('fr-FR') : '-'}</b></div>
-                                      <div>Paiement: <b>${venteDetail.modePaiement || venteDetail.paiement || '-'}</b></div>
-                                      <div>Statut: <b>${venteDetail.statut || 'Payée'}</b></div>
+                                      <h3 style='font-weight:bold;'>${t("Sale_Info")}</h3>
+                                      <div>${t("Date_Colon")} <b>${venteDetail.date ? new Date(venteDetail.date).toLocaleString('fr-FR') : '-'}</b></div>
+                                      <div>${t("Payment_Colon")} <b>${venteDetail.modePaiement || venteDetail.paiement || '-'}</b></div>
+                                      <div>${t("Status_Colon")} <b>${venteDetail.statut || t("Paid")}</b></div>
                                     </div>
                                   </div>
-                                  <h3 style='font-weight:bold;margin-bottom:0.5em;'>Produits vendus</h3>
+                                  <h3 style='font-weight:bold;margin-bottom:0.5em;'>${t("Products_Sold")}</h3>
                                   <table>
                                     <thead>
                                       <tr>
-                                        <th>Produit</th>
-                                        <th>Quantité</th>
-                                        <th>Prix unitaire</th>
-                                        <th>Total</th>
+                                        <th>${t("Product")}</th>
+                                        <th>${t("Quantity")}</th>
+                                        <th>${t("Unit_Price")}</th>
+                                        <th>${t("Total")}</th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      ${produitsList.length === 0 ? `<tr><td colspan='4' style='text-align:center;color:#888;padding:1em;'>Aucun produit</td></tr>` : produitsList.map((p, idx) => `
+                                      ${produitsList.length === 0 ? `<tr><td colspan='4' style='text-align:center;color:#888;padding:1em;'>${t("No_Product")}</td></tr>` : produitsList.map((p, idx) => `
+
                                       <tr key="prod-${p.id || p.codeProduit || idx}">
                                         <td>${p.nomProduit || p.productName || p.produit || p.name || '-'}</td>
                                         <td>${p.quantite ?? p.qty ?? p.qte ?? '-'}</td>
@@ -337,9 +340,9 @@ export default function Ventes() {
                                   </table>
                                   <div style='margin-top:1em;display:flex;justify-content:space-between;'>
                                     <div>
-                                      <div><b>Sous-total:</b></div>
-                                      <div><b>TVA:</b></div>
-                                      <div style='font-size:1.1em;font-weight:bold;'>Total:</div>
+                                      <div><b>${t("Subtotal_Colon")}</b></div>
+                                      <div><b>${t("VAT_Colon")}</b></div>
+                                      <div style='font-size:1.1em;font-weight:bold;'>${t("Total")}:</div>
                                     </div>
                                     <div style='text-align:right;'>
                                       <div>${venteDetail.sousTotal?.toLocaleString() || venteDetail.montant || '-'} FCFA</div>
@@ -353,10 +356,10 @@ export default function Ventes() {
                                 printWindow.focus();
                                 setTimeout(() => printWindow.print(), 500);
                               } catch (err) {
-                                alert("Erreur impression : " + (err.message || err));
+                                alert(t("Print_Error") + " " + (err.message || err));
                               }
                             }}
-                            title="Imprimer la vente"
+                            title={t("Print_Sale_Tooltip")}
                           >
                             <Printer size={16} />
                           </button>
@@ -370,7 +373,7 @@ export default function Ventes() {
 
             {ventes.length === 0 && (
               <div className="text-center text-gray-500 py-10">
-                Aucune vente enregistrée
+                {t("No_Sales_Recorded")}
               </div>
             )}
           </div>
@@ -384,9 +387,9 @@ export default function Ventes() {
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
               <div>
-                <h2 className="text-lg font-bold">Créer une nouvelle vente</h2>
+                <h2 className="text-lg font-bold">{t("Create_New_Sale")}</h2>
                 <p className="text-xs text-gray-600 mt-1">
-                  Informations de la vente
+                  {t("Sale_Information")}
                 </p>
               </div>
 
@@ -400,12 +403,12 @@ export default function Ventes() {
               {/* CLIENT */}
               <div>
                 <h3 className="text-sm font-semibold mb-3">
-                  Informations client
+                  {t("Customer_Info")}
                 </h3>
 
                 <div className="grid grid-cols-2 gap-3">
                   <input
-                    placeholder="Nom"
+                    placeholder={t("Name")}
                     value={clientInfo.nom}
                     onChange={(e) =>
                       setClientInfo({ ...clientInfo, nom: e.target.value })
@@ -414,7 +417,7 @@ export default function Ventes() {
                   />
 
                   <input
-                    placeholder="Téléphone"
+                    placeholder={t("Phone")}
                     value={clientInfo.telephone}
                     onChange={(e) =>
                       setClientInfo({
@@ -427,7 +430,7 @@ export default function Ventes() {
                 </div>
 
                 <textarea
-                  placeholder="Adresse"
+                  placeholder={t("Address")}
                   value={clientInfo.adresse}
                   onChange={(e) =>
                     setClientInfo({
@@ -442,7 +445,7 @@ export default function Ventes() {
               {/* PRODUITS */}
               <div>
                 <div className="flex justify-between mb-2">
-                  <h3 className="text-sm font-semibold">Produits</h3>
+                  <h3 className="text-sm font-semibold">{t("Products")}</h3>
 
                   <button
                     onClick={() =>
@@ -458,7 +461,7 @@ export default function Ventes() {
                     }
                     className="text-white text-sm flex gap-1 items-center"
                   >
-                    <Plus size={14} /> Ajouter
+                    <Plus size={14} /> {t("Add")}
                   </button>
                 </div>
 
@@ -484,7 +487,7 @@ export default function Ventes() {
                           }}
                           className="border rounded px-2 py-1 text-sm"
                         >
-                          <option value="">Produit</option>
+                          <option value="">{t("Product")}</option>
                           {listeProduits.map((lp) => (
                             <option key={lp.codeProduit} value={lp.codeProduit}>{lp.nomProduit}</option>
                           ))}
@@ -492,7 +495,7 @@ export default function Ventes() {
 
                         <input
                           type="number"
-                          placeholder="Qté"
+                          placeholder={t("Qty")}
                           value={p.quantite}
                           onChange={(e) => {
                             const copy = [...produits];
@@ -504,7 +507,7 @@ export default function Ventes() {
 
                         <input
                           type="number"
-                          placeholder="Prix"
+                          placeholder={t("Price")}
                           value={p.prixUnitaire}
                           onChange={(e) => {
                             const copy = [...produits];
@@ -525,32 +528,32 @@ export default function Ventes() {
 
               {/* PAIEMENT */}
               <div>
-                <h3 className="text-sm font-semibold mb-2">Paiement</h3>
+                <h3 className="text-sm font-semibold mb-2">{t("Payment")}</h3>
 
                 <select
                   value={modePaiement}
                   onChange={(e) => setModePaiement(e.target.value)}
                   className="border rounded-lg px-3 py-2 text-sm w-full"
                 >
-                  <option value="">Mode de paiement</option>
-                  <option>Espèces</option>
-                  <option>Carte bancaire</option>
-                  <option>Mobile Money</option>
-                  <option>Virement</option>
+                  <option value="">{t("Payment_Method")}</option>
+                  <option>{t("Cash")}</option>
+                  <option>{t("Credit_Card")}</option>
+                  <option>{t("Mobile_Money")}</option>
+                  <option>{t("Bank_Transfer")}</option>
                 </select>
               </div>
 
               {/* TOTAL */}
               <div className="border-t pt-3 space-y-1 text-sm">
                 <div className="flex justify-between">
-                  <span>Sous-total</span>
+                  <span>{t("Subtotal")}</span>
                   <span>{produits.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0).toLocaleString()} FCFA</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>TVA (18%):</span> <span>{(produits.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0) * 0.18).toLocaleString()} FCFA</span>
+                  <span>{t("VAT_18")}</span> <span>{(produits.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0) * 0.18).toLocaleString()} FCFA</span>
                 </div>
                 <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
+                  <span>{t("Total")}</span>
                   <span>{(produits.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0) * 1.18).toLocaleString()} FCFA</span>
                 </div>
               </div>
@@ -592,12 +595,12 @@ export default function Ventes() {
                       })
                       .finally(() => setLoading(false));
                   } catch (err) {
-                    console.log("Erreur lors de la création de la vente : " + (err?.response?.data?.message || err.message || err));
+                    console.log(t("Create_Sale_Error") + " " + (err?.response?.data?.message || err.message || err));
                   }
                 }}
                 className="flex-1 bg-black text-white rounded-lg py-2"
               >
-                Créer la vente
+                {t("Create_Sale_Button")}
               </button>
             </div>
           </div>
@@ -610,7 +613,7 @@ export default function Ventes() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b gap-2">
-              <h2 className="text-lg font-bold">Détail de la vente {selectedSale?.numeroFacture || selectedSale?.id || ''}</h2>
+              <h2 className="text-lg font-bold">{t("Sale_Detail")} {selectedSale?.numeroFacture || selectedSale?.id || ''}</h2>
               <button onClick={() => { setShowDetailModal(false); setSelectedSale(null); }} className="border p-2 rounded-md text-gray-800 bg-white">
                 <X size={20} />
               </button>
@@ -618,31 +621,31 @@ export default function Ventes() {
             <div className="p-4 space-y-6">
               {loadingDetail && (
                 <div className="text-center text-blue-600 font-semibold py-8">
-                  Chargement des détails de la vente...
+                  {t("Loading_Sale_Details")}
                 </div>
               )}
               {!loadingDetail && selectedSale && (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col justify-center items-start">
-                      <h3 className="font-semibold mb-2">Informations client</h3>
+                      <h3 className="font-semibold mb-2">{t("Customer_Info")}</h3>
                       <div className="text-sm space-y-1">
-                        <div><span className="font-bold">Nom:</span> {selectedSale.client || '-'}</div>
-                        <div><span className="font-bold">Téléphone:</span> {selectedSale.telephone || '-'}</div>
-                        <div><span className="font-bold">Adresse:</span> {selectedSale.adresse || '-'}</div>
+                        <div><span className="font-bold">{t("Name_Colon")}</span> {selectedSale.client || '-'}</div>
+                        <div><span className="font-bold">{t("Phone_Colon")}</span> {selectedSale.telephone || '-'}</div>
+                        <div><span className="font-bold">{t("Address_Colon")}</span> {selectedSale.adresse || '-'}</div>
                       </div>
                     </div>
                     <div className="flex flex-col justify-center items-end">
-                      <h3 className="font-semibold mb-2">Informations vente</h3>
+                      <h3 className="font-semibold mb-2">{t("Sale_Info")}</h3>
                       <div className="text-sm space-y-1 text-right">
-                        <div><span className="font-bold">Date:</span> {selectedSale.date ? new Date(selectedSale.date).toLocaleString('fr-FR') : '-'}</div>
-                        <div><span className="font-bold">Paiement:</span> {selectedSale.modePaiement || selectedSale.paiement || '-'}</div>
-                        <div><span className="font-bold">Statut:</span> <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">{selectedSale.statut || 'Payée'}</span></div>
+                        <div><span className="font-bold">{t("Date_Colon")}</span> {selectedSale.date ? new Date(selectedSale.date).toLocaleString('fr-FR') : '-'}</div>
+                        <div><span className="font-bold">{t("Payment_Colon")}</span> {selectedSale.modePaiement || selectedSale.paiement || '-'}</div>
+                        <div><span className="font-bold">{t("Status_Colon")}</span> <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">{selectedSale.statut || t("Paid")}</span></div>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Produits vendus</h3>
+                    <h3 className="font-semibold mb-1">{t("Products_Sold")}</h3>
                     <div className="overflow-x-auto">
                       {(() => {
                         // Cherche le bon tableau de produits
@@ -651,15 +654,15 @@ export default function Ventes() {
                           <table className="w-full min-w-[400px] text-sm border rounded-lg overflow-hidden">
                             <thead>
                               <tr className="bg-gray-100">
-                                <th className="text-left px-2 py-1">Produit</th>
-                                <th className="text-right px-2 py-1">Quantité</th>
-                                <th className="text-right px-2 py-1">Prix unitaire</th>
-                                <th className="text-right px-2 py-1">Total</th>
+                                <th className="text-left px-2 py-1">{t("Product")}</th>
+                                <th className="text-right px-2 py-1">{t("Quantity")}</th>
+                                <th className="text-right px-2 py-1">{t("Unit_Price")}</th>
+                                <th className="text-right px-2 py-1">{t("Total")}</th>
                               </tr>
                             </thead>
                             <tbody>
                               {produitsList.length === 0 ? (
-                                <tr><td colSpan={4} className="text-center py-4 text-gray-400">Aucun produit</td></tr>
+                                <tr><td colSpan={4} className="text-center py-4 text-gray-400">{t("No_Product")}</td></tr>
                               ) : produitsList.map((p, i) => (
                                 <tr key={i}>
                                   <td className="px-2 py-1">{p.nomProduit || p.productName || p.produit || p.name || '-'}</td>
@@ -675,9 +678,9 @@ export default function Ventes() {
                     </div>
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                       <div className="flex flex-col items-start space-y-2">
-                        <div className="font-medium">Sous-total:</div>
-                        <div className="font-medium">TVA:</div>
-                        <div className="font-bold text-lg">Total:</div>
+                        <div className="font-medium">{t("Subtotal_Colon")}</div>
+                        <div className="font-medium">{t("VAT_Colon")}</div>
+                        <div className="font-bold text-lg">{t("Total")}:</div>
                       </div>
                       <div className="flex flex-col items-end space-y-2">
                         <div>{selectedSale.sousTotal?.toLocaleString() || selectedSale.montant || '-'} FCFA</div>

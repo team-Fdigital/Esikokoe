@@ -3,8 +3,10 @@ import { getAllClients, getClientStats } from '../../../apiClient';
 import { Users, ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import Loader from '../../../components/ui/Loader';
+import { useTranslation } from "react-i18next";
 
 export default function ClientsReport() {
+  const { t } = useTranslation();
   const [clients, setClients] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,15 +29,15 @@ export default function ClientsReport() {
     .map((c, idx) => ({
       rank: idx + 1,
       name: c.nomClient,
-      orders: `${c.nombreCommandes || 0} commandes`,
-      amount: c.totalDepense ? c.totalDepense.toLocaleString() + " FCFA" : "N/A",
-      average: c.montantMoyen ? c.montantMoyen.toLocaleString() + " FCFA/commande" : "N/A"
+      orders: `${c.nombreCommandes || 0} ${t("Orders_Lower")}`,
+      amount: c.totalDepense ? c.totalDepense.toLocaleString() + " FCFA" : t("N/A") || "N/A",
+      average: c.montantMoyen ? c.montantMoyen.toLocaleString() + ` FCFA/${t("Order_Lower")}` : t("N/A") || "N/A"
     }));
 
   const kpis = [
-    { label: "Total Clients", value: stats?.totalClients || clients.length || "0", subtext: "Inscrits", color: "text-blue-600" },
-    { label: "Dépense Totale", value: (stats?.totalDepense?.toLocaleString() || "0") + " FCFA", subtext: "Cumulé", color: "text-green-600" },
-    { label: "Panier Moyen", value: (stats?.montantMoyenParClient?.toLocaleString() || "0") + " FCFA", subtext: "Par client", color: "text-orange-500" },
+    { label: t("Total_Clients"), value: stats?.totalClients || clients.length || "0", subtext: t("Registered"), color: "text-blue-600" },
+    { label: t("Total_Spent"), value: (stats?.totalDepense?.toLocaleString() || "0") + " FCFA", subtext: t("Accumulated"), color: "text-green-600" },
+    { label: t("Average_Basket_Report"), value: (stats?.montantMoyenParClient?.toLocaleString() || "0") + " FCFA", subtext: t("Per_Client"), color: "text-orange-500" },
   ];
 
   return (
@@ -50,22 +52,22 @@ export default function ClientsReport() {
                 className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
               <Users className="text-orange-500" size={24} />
               <h1 className="text-lg md:text-xl font-semibold text-gray-900">
-                Rapports et Analyses
+                {t("Reports_And_Analysis")}
               </h1>
             </div>
 
             <div className="flex items-center gap-2 md:gap-3">
               <select className="border rounded-md px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm">
-                <option>Ce mois</option>
+                <option value="Ce mois">{t("This_Month")}</option>
               </select>
               <button className="flex items-center gap-1 md:gap-2 border px-2 md:px-3 py-1.5 md:py-2 rounded-md text-xs md:text-sm hover:bg-gray-50">
                 <Download size={16} />
-                <span className="hidden sm:inline">Exporter PDF</span>
-                <span className="inline sm:hidden">PDF</span>
+                <span className="hidden sm:inline">{t("Export_PDF")}</span>
+                <span className="inline sm:hidden">{t("PDF")}</span>
               </button>
             </div>
           </div>
@@ -76,17 +78,17 @@ export default function ClientsReport() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {/* TABS */}
         <div className="flex flex-wrap md:flex-nowrap gap-1 border-b">
-          <Link to="/admin/rapports/sales" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">Ventes</Link>
-          <Link to="/admin/rapports/products" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">Produits</Link>
-          <Link to="/admin/rapports/clients" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-orange-500 hover:bg-gray-50">Clients</Link>
-          <Link to="/admin/rapports/financial" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">Financier</Link>
+          <Link to="/admin/rapports/sales" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">{t("Sales")}</Link>
+          <Link to="/admin/rapports/products" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">{t("Products")}</Link>
+          <Link to="/admin/rapports/clients" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-orange-500 hover:bg-gray-50">{t("Clients")}</Link>
+          <Link to="/admin/rapports/financial" className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50">{t("Financial")}</Link>
         </div>
 
         {/* MEILLEURS CLIENTS */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-4 md:p-6 border-b">
-            <h2 className="text-lg md:text-xl font-semibold">Meilleurs clients</h2>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">Clients classés par nombre de commandes</p>
+            <h2 className="text-lg md:text-xl font-semibold">{t("Top_Clients")}</h2>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">{t("Clients_Ranked_By_Orders")}</p>
           </div>
 
           <div className="p-4 md:p-6 space-y-3 md:space-y-4">
@@ -107,7 +109,7 @@ export default function ClientsReport() {
                 </div>
               </div>
             )) : (
-              <p className="text-center text-gray-400 py-4">Aucun client trouvé</p>
+              <p className="text-center text-gray-400 py-4">{t("No_Client_Found")}</p>
             )}
           </div>
         </div>

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Store, MapPin } from "lucide-react";
 import { getAllMagasins, createMagasin, updateMagasin, deleteMagasin } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
 export default function Magasins({ userRole }) {
+  const { t } = useTranslation();
   const [magasins, setMagasins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,7 +48,7 @@ export default function Magasins({ userRole }) {
       setFormData({ nom: '', ville: '', adresse: '', telephone: '' });
     } catch (error) {
       console.error("Erreur lors de l'enregistrement du magasin:", error);
-      alert("Erreur lors de l'enregistrement. Vérifiez si le nom existe déjà.");
+      alert(t("Save_Error"));
     }
   };
 
@@ -64,26 +66,26 @@ export default function Magasins({ userRole }) {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Voulez-vous vraiment supprimer ce magasin ?')) {
+    if (window.confirm(t("Confirm_Delete_Store"))) {
       try {
         await deleteMagasin(id);
         fetchMagasins();
       } catch (error) {
         console.error("Erreur lors de la suppression:", error);
-        alert("Impossible de supprimer ce magasin. Il contient peut-être encore des stocks.");
+        alert(t("Delete_Store_Error"));
       }
     }
   };
 
-  if (loading) return <div className="text-center py-10">Chargement des magasins...</div>;
+  if (loading) return <div className="text-center py-10">{t("Loading_Stores")}</div>;
 
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-          <h1 className="text-2xl font-bold border-b-2 border-blue-500 pb-2 inline-block text-gray-800">Gestion des Magasins</h1>
-          <p className="text-gray-500 text-sm mt-2">Gérez vos différentes succursales et points de vente.</p>
+          <h1 className="text-2xl font-bold border-b-2 border-blue-500 pb-2 inline-block text-gray-800">{t("Stores_Management")}</h1>
+          <p className="text-gray-500 text-sm mt-2">{t("Stores_Desc")}</p>
         </div>
         {userRole === 'SUPERADMIN' && (
           <button
@@ -91,7 +93,7 @@ export default function Magasins({ userRole }) {
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-blue-500/20"
           >
             <Plus size={20} />
-            Nouveau Magasin
+            {t("New_Store")}
           </button>
         )}
       </div>
@@ -126,7 +128,7 @@ export default function Magasins({ userRole }) {
         ))}
         {magasins.length === 0 && (
             <div className="col-span-full text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-                <p className="text-gray-400">Aucun magasin trouvé. Commencez par en créer un.</p>
+                <p className="text-gray-400">{t("No_Stores_Found")}</p>
             </div>
         )}
       </div>
@@ -136,54 +138,54 @@ export default function Magasins({ userRole }) {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-slide-up">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-800">{formData.idMagasin ? 'Modifier' : 'Ajouter'} un Magasin</h2>
+              <h2 className="text-lg font-bold text-gray-800">{formData.idMagasin ? t("Edit_Store") : t("Add_Store")}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nom du magasin</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Store_Name")}</label>
                 <input
                    type="text" required
                   value={formData.nom} onChange={e => setFormData({...formData, nom: e.target.value})}
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                  placeholder="Ex: Magasin Principal"
+                  placeholder={t("Ex_Main_Store")}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("City")}</label>
                   <input
                     type="text" required
                     value={formData.ville} onChange={e => setFormData({...formData, ville: e.target.value})}
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                    placeholder="Ex: Lomé"
+                    placeholder={t("Ex_City")}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("Phone")}</label>
                   <input
                     type="text"
                     value={formData.telephone} onChange={e => setFormData({...formData, telephone: e.target.value})}
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                    placeholder="Ex: 228 90..."
+                    placeholder={t("Ex_Phone")}
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Adresse complète</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Full_Address")}</label>
                 <textarea
                   required rows={2}
                   value={formData.adresse} onChange={e => setFormData({...formData, adresse: e.target.value})}
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
-                  placeholder="Quartier, Rue..."
+                  placeholder={t("Neighborhood_Street")}
                 />
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">Annuler</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
                 <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors shadow-md shadow-blue-500/20 text-sm font-medium">
-                  {formData.idMagasin ? 'Mettre à jour' : 'Créer'}
+                  {formData.idMagasin ? t("Update") : t("Create")}
                 </button>
               </div>
             </form>

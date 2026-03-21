@@ -2,8 +2,10 @@ import { Package, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCriticalStocks } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
 export default function Alertes() {
+  const { t } = useTranslation();
   const [alertes, setAlertes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,13 +33,13 @@ export default function Alertes() {
                 className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
 
               <Package className="text-blue-600" size={22} />
 
               <h1 className="text-xl font-semibold text-gray-900">
-                Alertes de Stock
+                {t("Stock_Alerts")}
               </h1>
             </div>
           </div>
@@ -52,19 +54,19 @@ export default function Alertes() {
             to="/admin/stocks/produits"
             className="px-3 md:px-4 py-2 bg-white rounded-t-md text-xs md:text-sm font-medium text-black hover:bg-gray-50"
           >
-            Inventaire
+            {t("Inventory_Tab")}
           </Link>
           <Link
             to="/admin/stocks/action"
             className="px-3 md:px-4 py-2 bg-white rounded-t-md text-xs md:text-sm font-medium text-black hover:bg-gray-50"
           >
-            Stock
+            {t("Stock_Tab")}
           </Link>
           <Link
             to="/admin/stocks/alertes"
             className="px-3 md:px-4 py-2 rounded-t-md text-xs md:text-sm font-medium bg-white text-black hover:bg-gray-50 relative border-b-2 border-white"
           >
-            Alertes
+            {t("Alerts_Tab")}
             <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center text-[10px] md:text-xs font-bold">
               1
             </span>
@@ -73,16 +75,16 @@ export default function Alertes() {
             to="/admin/stocks/mouvements"
             className="px-3 md:px-4 py-2 rounded-t-md text-xs md:text-sm font-medium bg-white text-black hover:bg-gray-50"
           >
-            Mouvements
+            {t("Movements_Tab")}
           </Link>
         </div>
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b">
             <h2 className="text-xl font-semibold">
-              Produits en alerte
+              {t("Products_In_Alert")}
             </h2>
             <p className="text-sm text-gray-500">
-              Produits dont le stock est inférieur au minimum
+              {t("Products_In_Alert_Desc")}
             </p>
           </div>
 
@@ -90,13 +92,13 @@ export default function Alertes() {
             <table className="w-full text-xs md:text-sm min-w-[600px]">
               <thead className="border-b text-gray-500">
                 <tr>
-                  <th className="text-left py-3">Code</th>
-                  <th className="text-left">Produit</th>
-                  <th className="text-left">Format</th>
-                  <th className="text-left">Stock actuel</th>
-                  <th className="text-left">Stock minimum</th>
-                  <th className="text-left">Fournisseur</th>
-                  <th className="text-left">Statut</th>
+                  <th className="text-left py-3">{t("Code")}</th>
+                  <th className="text-left">{t("Product")}</th>
+                  <th className="text-left">{t("Format")}</th>
+                  <th className="text-left">{t("Current_Stock")}</th>
+                  <th className="text-left">{t("Min_Stock")}</th>
+                  <th className="text-left">{t("Supplier")}</th>
+                  <th className="text-left">{t("Status")}</th>
                 </tr>
               </thead>
 
@@ -112,7 +114,7 @@ export default function Alertes() {
                     <td>
                       <span className="flex items-center gap-1 bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium w-fit">
                         <AlertTriangle size={14} />
-                        Stock faible
+                        {t("Low_Stock_Status")}
                       </span>
                     </td>
                   </tr>
@@ -122,7 +124,7 @@ export default function Alertes() {
 
             {alertes.length === 0 && (
               <div className="text-center text-gray-500 py-10">
-                Aucun produit en alerte
+                {t("No_Alert_Products")}
               </div>
             )}
           </div>
