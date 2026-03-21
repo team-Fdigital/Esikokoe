@@ -1,8 +1,10 @@
 import { ArrowLeft, TrendingUp, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Rapports() {
+  const { t } = useTranslation();
   const [periode, setPeriode] = useState("Cette semaine");
   return (
     <div className="min-h-screen bg-gray-50">
@@ -16,20 +18,20 @@ export default function Rapports() {
                 className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
 
               <TrendingUp className="text-orange-600" size={22} />
 
               <h1 className="text-lg md:text-xl font-semibold">
-                Rapports et Analyses
+                {t("Reports_And_Analysis")}
               </h1>
             </div>
 
             <button className="flex items-center gap-1 md:gap-2 border px-2 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm hover:bg-white-50">
               <Download size={16} />
-              <span className="hidden sm:inline">Exporter PDF</span>
-              <span className="inline sm:hidden">PDF</span>
+              <span className="hidden sm:inline">{t("Export_PDF")}</span>
+              <span className="inline sm:hidden">{t("PDF")}</span>
             </button>
           </div>
         </div>
@@ -41,11 +43,11 @@ export default function Rapports() {
         {/* TABS */}
         <div className="flex flex-wrap md:flex-nowrap gap-1 md:gap-2 bg-gray-100 p-1 md:p-1.5 rounded-md w-fit">
           <button className="px-2 md:px-3 py-1.5 bg-white rounded-md shadow text-xs md:text-sm">
-            Ventes
+            {t("Sales")}
           </button>
-          <button className="px-2 md:px-3 py-1.5 text-xs md:text-sm">Produits</button>
-          <button className="px-2 md:px-3 py-1.5 text-xs md:text-sm">Clients</button>
-          <button className="px-2 md:px-3 py-1.5 text-xs md:text-sm">Financier</button>
+          <button className="px-2 md:px-3 py-1.5 text-xs md:text-sm">{t("Products")}</button>
+          <button className="px-2 md:px-3 py-1.5 text-xs md:text-sm">{t("Clients")}</button>
+          <button className="px-2 md:px-3 py-1.5 text-xs md:text-sm">{t("Financial")}</button>
         </div>
 
         {/* PERIOD FILTER */}
@@ -56,33 +58,33 @@ export default function Rapports() {
             onChange={(e) => setPeriode(e.target.value)}
             className="border px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm focus:outline-none focus:border-orange-600"
           >
-            <option>Cette semaine</option>
-            <option>Ce mois</option>
-            <option>Ce trimestre</option>
-            <option>Cette année</option>
+            <option value="Cette semaine">{t("This_Week")}</option>
+            <option value="Ce mois">{t("This_Month")}</option>
+            <option value="Ce trimestre">{t("This_Quarter")}</option>
+            <option value="Cette année">{t("This_Year")}</option>
           </select>
         </div>
 
         {/* KPI */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           <KPI
-            title="CA du mois"
+            title={t("Monthly_Turnover")}
             value="2,847,500 FCFA"
-            sub="+12.5% vs mois dernier"
+            sub={`+12.5% ${t("Vs_Last_Month")}`}
           />
-          <KPI title="Commandes" value="89" sub="+8.1% vs mois dernier" />
-          <KPI title="Panier moyen" value="31,989 FCFA" sub="+4.2%" />
-          <KPI title="Taux de croissance" value="12.5%" sub="Objectif: 10%" />
+          <KPI title={t("Orders")} value="89" sub={`+8.1% ${t("Vs_Last_Month")}`} />
+          <KPI title={t("Average_Basket")} value="31,989 FCFA" sub="+4.2%" />
+          <KPI title={t("Growth_Rate")} value="12.5%" sub={`${t("Objective")} 10%`} />
         </div>
 
         {/* SALES EVOLUTION */}
         <div className="bg-white border rounded-lg">
           <div className="p-4 md:p-6 border-b">
             <h2 className="text-lg md:text-xl font-semibold">
-              Évolution des ventes
+              {t("Sales_Evolution")}
             </h2>
             <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2">
-              Comparaison sur les 3 derniers mois
+              {t("Comparison_Last_3_Months")}
             </p>
           </div>
 
@@ -126,12 +128,13 @@ function KPI({ title, value, sub }) {
 }
 
 function Month({ name, orders, clients, amount, current }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between border rounded-lg p-3 md:p-4 gap-2 md:gap-4 hover:bg-gray-50">
       <div>
         <h4 className="font-semibold text-sm md:text-base">{name}</h4>
         <p className="text-xs md:text-sm text-gray-600">
-          {orders} commandes • {clients} clients
+          {orders} {t("Orders_Lower")} • {clients} {t("Clients_Lower")}
         </p>
       </div>
 
@@ -139,7 +142,7 @@ function Month({ name, orders, clients, amount, current }) {
         <p className="font-bold text-sm md:text-base">{amount} FCFA</p>
         {current && (
           <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-medium">
-            Mois actuel
+            {t("Current_Month")}
           </span>
         )}
       </div>

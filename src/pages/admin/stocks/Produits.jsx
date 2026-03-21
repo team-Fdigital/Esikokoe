@@ -6,11 +6,13 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAllProduits, createProduit } from "../../../apiClient";
 import { updateProduit, deleteProduit } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
 export default function Produits() {
+  const { t } = useTranslation();
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Toutes les catégories");
+  const [selectedCategory, setSelectedCategory] = useState(t("All_Categories"));
   const [editingProductId, setEditingProductId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,14 +53,14 @@ export default function Produits() {
 
     // Validation détaillée
     let errorMsg = "";
-    if (!formData.nomProduit.trim()) errorMsg += "Nom du produit\n";
-    if (!formData.format.trim()) errorMsg += "Format\n";
-    if (!formData.categorie.trim()) errorMsg += "Catégorie\n";
-    if (formData.stockInitial === "" || isNaN(stockInitial)) errorMsg += "Stock initial (nombre)\n";
-    if (formData.prixUnitaire === "" || isNaN(prixUnitaire)) errorMsg += "Prix unitaire (nombre)\n";
+    if (!formData.nomProduit.trim()) errorMsg += t("Product_Name_Field");
+    if (!formData.format.trim()) errorMsg += t("Format_Field");
+    if (!formData.categorie.trim()) errorMsg += t("Category_Field");
+    if (formData.stockInitial === "" || isNaN(stockInitial)) errorMsg += t("Initial_Stock_Field");
+    if (formData.prixUnitaire === "" || isNaN(prixUnitaire)) errorMsg += t("Unit_Price_Field");
 
     if (errorMsg) {
-      alert("Veuillez remplir correctement les champs suivants :\n" + errorMsg);
+      alert(t("Fill_Fields_Correctly") + errorMsg);
       return;
     }
 
@@ -105,7 +107,7 @@ export default function Produits() {
         })
         .finally(() => setLoading(false));
     } catch (err) {
-      let msg = "Erreur lors de la création du produit";
+      let msg = t("Create_Product_Error");
       if (err?.response?.data?.message) {
         msg += " : " + err.response.data.message;
       } else if (err?.message) {
@@ -123,14 +125,14 @@ export default function Produits() {
     const prixUnitaire = Number(formData.prixUnitaire);
 
     let errorMsg = "";
-    if (!formData.nomProduit.trim()) errorMsg += "Nom du produit\n";
-    if (!formData.format.trim()) errorMsg += "Format\n";
-    if (!formData.categorie.trim()) errorMsg += "Catégorie\n";
-    if (formData.stockInitial === "" || isNaN(stockInitial)) errorMsg += "Stock initial (nombre)\n";
-    if (formData.prixUnitaire === "" || isNaN(prixUnitaire)) errorMsg += "Prix unitaire (nombre)\n";
+    if (!formData.nomProduit.trim()) errorMsg += t("Product_Name_Field");
+    if (!formData.format.trim()) errorMsg += t("Format_Field");
+    if (!formData.categorie.trim()) errorMsg += t("Category_Field");
+    if (formData.stockInitial === "" || isNaN(stockInitial)) errorMsg += t("Initial_Stock_Field");
+    if (formData.prixUnitaire === "" || isNaN(prixUnitaire)) errorMsg += t("Unit_Price_Field");
 
     if (errorMsg) {
-      alert("Veuillez remplir correctement les champs suivants :\n" + errorMsg);
+      alert(t("Fill_Fields_Correctly") + errorMsg);
       return;
     }
 
@@ -178,7 +180,7 @@ export default function Produits() {
         })
         .finally(() => setLoading(false));
     } catch (err) {
-      let msg = "Erreur lors de la modification du produit";
+      let msg = t("Edit_Product_Error");
       if (err?.response?.data?.message) {
         msg += " : " + err.response.data.message;
       } else if (err?.message) {
@@ -200,7 +202,7 @@ export default function Produits() {
   // Filtrage dynamique
   const filteredProduits = produits.filter((p) => {
     const matchSearch = p.nomProduit?.toLowerCase().includes(searchTerm.toLowerCase()) || p.codeProduit?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchCategory = selectedCategory === "Toutes les catégories" || !selectedCategory || (p.categorie && p.categorie.trim().toLowerCase() === selectedCategory.trim().toLowerCase());
+    const matchCategory = selectedCategory === t("All_Categories") || !selectedCategory || (p.categorie && p.categorie.trim().toLowerCase() === selectedCategory.trim().toLowerCase());
     return matchSearch && matchCategory;
   });
 
@@ -227,7 +229,7 @@ export default function Produits() {
   const handleExportPDF = () => {
     console.log('Export PDF called');
     if (!filteredProduits.length) {
-      alert("Aucun produit à exporter.");
+      alert(t("No_Product_Export"));
       return;
     }
     try {
@@ -266,13 +268,13 @@ export default function Produits() {
                 className="flex items-center gap-2 text-sm font-medium hover:bg-gray-100 px-3 py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
 
               <Package className="text-blue-600" size={22} />
 
               <h1 className="text-xl font-semibold text-gray-900">
-                Gestion des Stocks
+                {t("Inventory")}
               </h1>
             </div>
 
@@ -294,7 +296,7 @@ export default function Produits() {
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
             >
               <Plus size={16} />
-              Ajouter un produit
+              {t("Add_Product")}
             </button>
           </div>
         </div>
@@ -308,19 +310,19 @@ export default function Produits() {
             to="/admin/stocks/produits"
             className="px-4 py-2 bg-white rounded-t-md text-sm font-medium border-b-2 border-white text-black hover:bg-gray-50"
           >
-            Inventaire
+            {t("Inventory_Tab")}
           </Link>
           <Link
             to="/admin/stocks/action"
             className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50"
           >
-            Stock
+            {t("Stock_Tab")}
           </Link>
           <Link
             to="/admin/stocks/alertes"
             className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50 relative"
           >
-            Alertes
+            {t("Alerts_Tab")}
             <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
               1
             </span>
@@ -329,7 +331,7 @@ export default function Produits() {
             to="/admin/stocks/mouvements"
             className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50"
           >
-            Mouvements
+            {t("Movements_Tab")}
           </Link>
         </div>
 
@@ -340,10 +342,10 @@ export default function Produits() {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-semibold">
-                  Inventaire des produits
+                  {t("Products_Inventory")}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  Gérez votre stock de produits en temps réel
+                  {t("Products_Inventory_Desc")}
                 </p>
               </div>
 
@@ -353,7 +355,7 @@ export default function Produits() {
                   onClick={() => setExportMenuOpen((v) => !v)}
                 >
                   <Download size={16} />
-                  Exporter
+                  {t("Export")}
                 </button>
                 {exportMenuOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
@@ -361,13 +363,13 @@ export default function Produits() {
                       className="border p-2 rounded-md text-gray-800 bg-white"
                       onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
                     >
-                      Exporter en Excel
+                      {t("Export_Excel")}
                     </button>
                     <button
                       className="border p-2 rounded-md text-gray-800 bg-white"
                       onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
                     >
-                      Exporter en PDF
+                      {t("Export_PDF")}
                     </button>
                   </div>
                 )}
@@ -383,7 +385,7 @@ export default function Produits() {
                 />
                 <input
                   type="text"
-                  placeholder="Rechercher un produit..."
+                  placeholder={t("Search_Product")}
                   className="w-full border rounded-md pl-9 pr-3 py-2 text-sm"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -394,7 +396,7 @@ export default function Produits() {
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                <option>Toutes les catégories</option>
+                <option value={t("All_Categories")}>{t("All_Categories")}</option>
                 {formCategories.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
@@ -407,15 +409,15 @@ export default function Produits() {
             <table className="w-full text-sm">
               <thead className="border-b text-gray-500">
                 <tr>
-                  <th className="text-left py-3">Code</th>
-                  <th className="text-left">Produit</th>
-                  <th className="text-left">Format</th>
-                  <th className="text-left">Type</th>
-                  <th className="text-left">Stock</th>
-                  <th className="text-left">Statut</th>
-                  <th className="text-left">Prix</th>
-                  <th className="text-left">Fournisseur</th>
-                  <th className="text-left">Actions</th>
+                  <th className="text-left py-3">{t("Code")}</th>
+                  <th className="text-left">{t("Product")}</th>
+                  <th className="text-left">{t("Format")}</th>
+                  <th className="text-left">{t("Type")}</th>
+                  <th className="text-left">{t("Stock_Tab")}</th>
+                  <th className="text-left">{t("Status")}</th>
+                  <th className="text-left">{t("Price")}</th>
+                  <th className="text-left">{t("Supplier")}</th>
+                  <th className="text-left">{t("Actions")}</th>
                 </tr>
               </thead>
 
@@ -427,13 +429,13 @@ export default function Produits() {
                     <td>{p.format}</td>
                     <td>
                       <span className={`px-2 py-1 rounded-full text-[10px] font-semibold ${p.type === 'Achat' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
-                        {p.type || 'Vente'}
+                        {p.type === 'Achat' ? t("Purchase") : p.type === 'Vente' ? t("Sale") : p.type || t("Sale")}
                       </span>
                     </td>
                     <td>
                       <span className="font-semibold">{p.stock}</span>
                       <span className="text-gray-500 text-xs">
-                        {" "}/ min
+                        {t("Per_Min")}
                       </span>
                     </td>
                     <td>
@@ -444,8 +446,8 @@ export default function Produits() {
                           }`}
                       >
                         {p.statut === "En stock" || p.stock > (p.stockMinimum || 0)
-                          ? "Stock bon"
-                          : "Stock faible"}
+                          ? t("Good_Stock")
+                          : t("Low_Stock_Status")}
                       </span>
                     </td>
                     <td>{p.prixUnitaire} FCFA</td>
@@ -474,20 +476,20 @@ export default function Produits() {
                         <button
                           className="border p-2 rounded-md text-gray-800 bg-white"
                           onClick={async () => {
-                            if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+                            if (window.confirm(t("Confirm_Delete_Product"))) {
                               setDeleteLoadingId(p.codeProduit);
                               try {
                                 await deleteProduit(p.codeProduit);
                                 setProduits(produits.filter(prod => prod.codeProduit !== p.codeProduit));
                               } catch (err) {
-                                alert("Erreur lors de la suppression du produit");
+                                alert(t("Delete_Product_Error"));
                               }
                               setDeleteLoadingId(null);
                             }
                           }}
                           disabled={deleteLoadingId === p.codeProduit}
                         >
-                          {deleteLoadingId === p.codeProduit ? "Suppression en cours..." : <Trash2 size={16} />}
+                          {deleteLoadingId === p.codeProduit ? t("Deleting") : <Trash2 size={16} />}
                         </button>
                       </div>
                     </td>
@@ -507,12 +509,12 @@ export default function Produits() {
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
               <div>
                 <h2 className="text-lg font-bold">
-                  {editingProductId ? "Modifier le produit" : "Ajouter un nouveau produit"}
+                  {editingProductId ? t("Edit_Product_Title") : t("Add_New_Product_Title")}
                 </h2>
                 <p className="text-xs text-gray-600 mt-0.5">
                   {editingProductId
-                    ? "Modifiez les informations du produit puis validez."
-                    : "Remplissez les informations du produit à ajouter au stock."}
+                    ? t("Edit_Product_Desc")
+                    : t("Add_Product_Desc")}
                 </p>
               </div>
               <button
@@ -532,7 +534,7 @@ export default function Produits() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
-                    Nom du produit
+                    {t("Product_Name")}
                   </label>
                   <input
                     type="text"
@@ -540,13 +542,13 @@ export default function Produits() {
                     onChange={(e) =>
                       setFormData({ ...formData, nomProduit: e.target.value })
                     }
-                    placeholder="Ex: Eau Pure"
+                    placeholder={t("Ex_Pure_Water")}
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
-                    Format
+                    {t("Format")}
                   </label>
                   <input
                     type="text"
@@ -554,7 +556,7 @@ export default function Produits() {
                     onChange={(e) =>
                       setFormData({ ...formData, format: e.target.value })
                     }
-                    placeholder="Ex: Bouteille 1.5L"
+                    placeholder={t("Ex_Bottle_1_5L")}
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
                   />
                 </div>
@@ -563,7 +565,7 @@ export default function Produits() {
               {/* Catégorie */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Catégorie
+                  {t("Category")}
                 </label>
                 <select
                   value={formData.categorie}
@@ -572,7 +574,7 @@ export default function Produits() {
                   }
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
                 >
-                  <option value="">Sélectionner une catégorie</option>
+                  <option value="">{t("Select_Category")}</option>
                   {formCategories.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
@@ -582,15 +584,15 @@ export default function Produits() {
               {/* Type (Achat/Vente) */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Type de Produit
+                  {t("Product_Type")}
                 </label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
                 >
-                  <option value="Vente"> Vente</option>
-                  <option value="Achat"> Achat</option>
+                  <option value="Vente"> {t("Sale")}</option>
+                  <option value="Achat"> {t("Purchase")}</option>
                 </select>
               </div>
 
@@ -598,7 +600,7 @@ export default function Produits() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
-                    Stock initial
+                    {t("Initial_Stock")}
                   </label>
                   <input
                     type="number"
@@ -612,7 +614,7 @@ export default function Produits() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
-                    Stock minimum
+                    {t("Min_Stock")}
                   </label>
                   <input
                     type="number"
@@ -630,7 +632,7 @@ export default function Produits() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
-                    Prix unitaire (FCFA)
+                    {t("Unit_Price_FCFA")}
                   </label>
                   <input
                     type="number"
@@ -644,7 +646,7 @@ export default function Produits() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5">
-                    Fournisseur {formData.type === 'Achat' ? <span className="text-red-500">(Obligatoire) *</span> : <span className="text-gray-400 font-normal">(Optionnel)</span>}
+                    {t("Supplier")} {formData.type === 'Achat' ? <span className="text-red-500">{t("Required_Star")}</span> : <span className="text-gray-400 font-normal">{t("Optional")}</span>}
                   </label>
                   <input
                     type="text"
@@ -652,14 +654,13 @@ export default function Produits() {
                     onChange={(e) =>
                       setFormData({ ...formData, fournisseur: e.target.value })
                     }
-                    placeholder="Nom du fournisseur"
+                    placeholder={t("Supplier_Name")}
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
             </div>
 
-            {/* FOOTER */}
             <div className="sticky bottom-0 bg-white flex gap-3 p-4 border-t">
               {editingProductId ? (
                 <button
@@ -667,7 +668,7 @@ export default function Produits() {
                   className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
                   disabled={actionLoading}
                 >
-                  {actionLoading ? "Enregistrement en cours..." : "Enregistrer les modifications"}
+                  {actionLoading ? t("Saving") : t("Save_Changes")}
                 </button>
               ) : (
                 <button
@@ -675,7 +676,7 @@ export default function Produits() {
                   className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
                   disabled={actionLoading}
                 >
-                  {actionLoading ? "Ajout en cours..." : "Ajouter le produit"}
+                  {actionLoading ? t("Adding") : t("Add_Product_Button")}
                 </button>
               )}
             </div>

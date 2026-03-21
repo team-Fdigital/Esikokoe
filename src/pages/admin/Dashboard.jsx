@@ -6,8 +6,10 @@ import RecentSalesTable from '../../components/admin/RecentSalesTable';
 import Loader from '../../components/ui/Loader';
 import { Box, ShoppingCart, BarChart2, Users, TrendingUp } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { userRole, userStore } = useOutletContext();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ ventes: null, stock: null, clients: null });
@@ -22,7 +24,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (isAdmin && magasins.length === 0) {
       getAllMagasins().then(res => {
-        setMagasins(res.data.magasins || (Array.isArray(res.data) ? res.data : []));
+        const fetchMagasins = res.data.magasins || (Array.isArray(res.data) ? res.data : []);
+        setMagasins(fetchMagasins);
+        if (fetchMagasins.length > 0 && !selectedMagasin) {
+          setSelectedMagasin(fetchMagasins[0].idMagasin);
+        }
       }).catch(err => console.error("Erreur magasins:", err));
     }
   }, [isAdmin]);
@@ -46,13 +52,13 @@ export default function Dashboard() {
         });
         
         setAlertes((alertesRes.data.produitsEnAlerte || []).map(
-          p => `Stock faible : ${p.nomProduit} (${p.stockActuel} unités restantes)`
+          p => `${t("Low_Stock")} ${p.nomProduit} (${p.stockActuel} ${t("Units_Left")})`
         ));
 
         setRecentSales(
           (ventesListRes.data.ventes || []).slice(0, 5).map(v => ({
             client: v.numeroFacture || 'N/A',
-            product: v.client || 'Passant',
+            product: v.client || t("Passant"),
             date: v.date ? new Date(v.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '-',
             amount: v.montant !== undefined ? `${v.montant.toLocaleString()} FCFA` : '-',
           }))
@@ -72,10 +78,10 @@ export default function Dashboard() {
   }
 
   const allModules = [
-    { id: 1, icon: <Box className="text-blue-500" size={20} />, title: "Gestion des Stocks", subtitle: "Inventaire et approvisionnement", path: "/admin/stocks/produits" },
-    { id: 2, icon: <ShoppingCart className="text-green-600" size={20} />, title: "Module de Vente", subtitle: "Factures et commandes", path: "/admin/ventes/ventes" },
-    { id: 3, icon: <BarChart2 className="text-purple-600" size={20} />, title: "Comptabilité", subtitle: "Finances et rapports", path: "/admin/comptabilite/transactions", adminOnly: true },
-    { id: 4, icon: <TrendingUp className="text-orange-500" size={20} />, title: "Rapports", subtitle: "Analyses et statistiques", path: "/admin/rapports/financial", adminOnly: true },
+    { id: 1, icon: <Box className="text-blue-500" size={20} />, title: t("Inventory"), subtitle: t("Inventory_Desc"), path: "/admin/stocks/produits" },
+    { id: 2, icon: <ShoppingCart className="text-green-600" size={20} />, title: t("Sales"), subtitle: t("Sales_Desc"), path: "/admin/ventes/ventes" },
+    { id: 3, icon: <BarChart2 className="text-purple-600" size={20} />, title: t("Accounting"), subtitle: t("Accounting_Desc"), path: "/admin/comptabilite/transactions", adminOnly: true },
+    { id: 4, icon: <TrendingUp className="text-orange-500" size={20} />, title: t("Reports"), subtitle: t("Reports_Desc"), path: "/admin/rapports/financial", adminOnly: true },
   ];
 
   const modules = allModules.filter(m => !m.adminOnly || isAdmin);
@@ -95,49 +101,35 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Filtre magasin pour Admin */}
-      {isAdmin && (
-        <div className="flex justify-end mb-4">
-          <select 
-            className="px-4 py-2 border border-gray-200 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium text-gray-700"
-            value={selectedMagasin}
-            onChange={(e) => setSelectedMagasin(e.target.value)}
-          >
-            <option value="">Tous les magasins (Global)</option>
-            {magasins.map(m => (
-              <option key={m.idMagasin} value={m.idMagasin}>{m.nom}</option>
-            ))}
-          </select>
-        </div>
-      )}
+
 
       {/* Statistiques principales */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title={isAdmin ? "Ventes du jour" : "Mes ventes (Jour)"}
+          title={isAdmin ? t("Daily_Sales") : t("My_Sales_Daily")}
           value={stats.ventes?.montantTotal !== undefined ? `${stats.ventes.montantTotal.toLocaleString()} FCFA` : '-'}
-          trend={stats.ventes ? `${stats.ventes.nombreVentes} ventes` : ''}
+          trend={stats.ventes ? `${stats.ventes.nombreVentes} ${t("Sales_Count")}` : ''}
           trendUp={true}
           icon={<span className="text-green-600 text-lg ml-1">$</span>}
         />
         <StatCard
-          title={isAdmin ? "Stock total" : "Stock du magasin"}
+          title={isAdmin ? t("Total_Stock") : t("Store_Stock")}
           value={stats.stock?.valeurTotalStock !== undefined ? `${stats.stock.valeurTotalStock.toLocaleString()} FCFA` : '-'}
-          trend={stats.stock ? `${stats.stock.totalProduits} produits` : ''}
+          trend={stats.stock ? `${stats.stock.totalProduits} ${t("Products_Count")}` : ''}
           trendUp={true}
           icon={<Box className="text-blue-500 text-lg ml-1" size={20} />}
         />
         <StatCard
-          title="Commandes"
+          title={t("Orders")}
           value={stats.ventes?.nombreVentes || '-'}
-          trend={stats.ventes ? `Moy: ${stats.ventes.montantMoyen?.toLocaleString()} F` : ''}
+          trend={stats.ventes ? `${t("Average")}${stats.ventes.montantMoyen?.toLocaleString()} F` : ''}
           trendUp={true}
           icon={<ShoppingCart className="text-purple-600 text-lg ml-1" size={20} />}
         />
         <StatCard
-          title="Clients actifs"
+          title={t("Active_Clients")}
           value={stats.clients?.total || '-'}
-          trend={stats.clients ? `${stats.clients.total} clients` : ''}
+          trend={stats.clients ? `${stats.clients.total} ${t("Clients_Count")}` : ''}
           trendUp={true}
           icon={<Users className="text-orange-500 text-lg ml-1" size={20} />}
         />
@@ -146,13 +138,13 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Alertes et Notifications */}
         <AlertCard
-          title="Alertes et Notifications"
-          alerts={alertes.length > 0 ? alertes : ["Aucune alerte"]}
+          title={t("Alerts_Notifications")}
+          alerts={alertes.length > 0 ? alertes : [t("No_Alerts")]}
         />
         {/* Ventes récentes */}
         <RecentSalesTable
-          title="Ventes Récentes"
-          subtitle="Dernières transactions effectuées"
+          title={t("Recent_Sales")}
+          subtitle={t("Recent_Transactions")}
           sales={recentSales}
         />
       </div>

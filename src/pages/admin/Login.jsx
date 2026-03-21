@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Lock, Mail, AlertCircle, Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import apiClient from '../../apiClient'
 
 export default function Login({ onLoginSucceeded }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -13,23 +15,23 @@ export default function Login({ onLoginSucceeded }) {
   // Validation avancée du mot de passe
   const passwordChecks = [
     {
-      label: 'Au moins 8 caractères',
+      label: t("Min_8_Chars"),
       valid: password.length >= 8,
     },
     {
-      label: 'Une minuscule',
+      label: t("One_Lowercase"),
       valid: /[a-z]/.test(password),
     },
     {
-      label: 'Une majuscule',
+      label: t("One_Uppercase"),
       valid: /[A-Z]/.test(password),
     },
     {
-      label: 'Un chiffre',
+      label: t("One_Number"),
       valid: /[0-9]/.test(password),
     },
     {
-      label: 'Un caractère spécial',
+      label: t("One_Special_Char"),
       valid: /[^A-Za-z0-9]/.test(password),
     },
   ];
@@ -61,10 +63,10 @@ export default function Login({ onLoginSucceeded }) {
       } else if (response.data && response.data.error) {
         setError(response.data.error)
       } else {
-        setError('Email ou mot de passe incorrect')
+        setError(t("Invalid_Credentials"))
       }
     } catch (err) {
-      setError('Erreur de connexion ou identifiants invalides')
+      setError(t("Connection_Error"))
     }
     setLoading(false)
   }
@@ -80,8 +82,8 @@ export default function Login({ onLoginSucceeded }) {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full shadow mb-3">
               <Lock className="text-blue-600" size={32} />
             </div>
-            <h1 className="text-2xl font-bold text-blue-900 mb-1">Admin Connexion</h1>
-            <p className="text-blue-600 text-sm">Accédez au tableau de bord</p>
+            <h1 className="text-2xl font-bold text-blue-900 mb-1">{t("Admin_Login")}</h1>
+            <p className="text-blue-600 text-sm">{t("Access_Dashboard")}</p>
           </div>
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
@@ -90,12 +92,12 @@ export default function Login({ onLoginSucceeded }) {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-3">
+            <form onSubmit={handleLogin} className="space-y-3">
             {/* Email Field */}
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
                 <Mail className="inline w-4 h-4 mr-1" />
-                Email administrateur
+                {t("Admin_Email")}
               </label>
               <input
                 type="email"
@@ -112,7 +114,7 @@ export default function Login({ onLoginSucceeded }) {
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
                 <Lock className="inline w-4 h-4 mr-1" />
-                Mot de passe
+                {t("Password")}
               </label>
               <div className="relative">
                 <input
@@ -129,7 +131,7 @@ export default function Login({ onLoginSucceeded }) {
                   tabIndex={-1}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 focus:outline-none bg-transparent"
                   onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                  aria-label={showPassword ? t("Hide_Password") : t("Show_Password")}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -157,7 +159,7 @@ export default function Login({ onLoginSucceeded }) {
               disabled={loading}
               className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:opacity-90 disabled:opacity-50 text-white font-semibold py-2 px-4 rounded-lg transition text-sm"
             >
-              {loading ? 'Connexion en cours...' : 'Se connecter'}
+              {loading ? t("Connecting") : t("Login_Button")}
             </button>
           </form>
 
@@ -167,7 +169,7 @@ export default function Login({ onLoginSucceeded }) {
         {/* Footer Link */}
         <div className="text-center mt-4">
           <a href="/" className="text-blue-100 hover:text-white text-xs transition">
-            ← Retour à l'accueil
+            {t("Back_To_Home")}
           </a>
         </div>
       </div>

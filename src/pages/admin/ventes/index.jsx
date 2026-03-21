@@ -1,31 +1,33 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, FileText, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function VentesIndex() {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Module de Vente</h1>
-        <p className="text-gray-600">Gérez vos factures et commandes</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("Sales_Module_Title")}</h1>
+        <p className="text-gray-600">{t("Sales_Module_Desc")}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <VentesModule 
           icon={<ShoppingCart className="text-blue-500" size={32} />}
-          title="Ventes"
-          description="Consulter les ventes"
+          title={t("Sales")}
+          description={t("View_Sales")}
           to="ventes"
         />
         <VentesModule 
           icon={<FileText className="text-green-600" size={32} />}
-          title="Factures"
-          description="Générer et gérer les factures"
+          title={t("Invoices")}
+          description={t("Generate_Manage_Invoices")}
           to="factures"
         />
         <VentesModule 
           icon={<Users className="text-purple-600" size={32} />}
-          title="Clients"
-          description="Gérer les clients"
+          title={t("Customers")}
+          description={t("Manage_Customers")}
           to="clients"
         />
       </div>

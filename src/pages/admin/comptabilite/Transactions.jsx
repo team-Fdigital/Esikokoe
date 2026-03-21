@@ -8,8 +8,10 @@ import {
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getTransactions, createTransaction, getAllVentes, getAllFactures, getFactureById } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
 export default function Transactions() {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [ventes, setVentes] = useState([]);
   const [factures, setFactures] = useState([]);
@@ -81,7 +83,7 @@ export default function Transactions() {
 
   const handleAddTransaction = async () => {
     if (!formData.categorie || !formData.description || !formData.montant) {
-      alert("Veuillez remplir tous les champs obligatoires");
+      alert(t("Please_Fill_All_Required_Fields"));
       return;
     }
     try {
@@ -115,7 +117,7 @@ export default function Transactions() {
         })
         .finally(() => setLoading(false));
     } catch (err) {
-      alert("Erreur lors de l'ajout de la transaction" + (err?.response?.data?.message ? (": " + err.response.data.message) : ""));
+      alert(t("Error_Adding_Transaction") + (err?.response?.data?.message ? (": " + err.response.data.message) : ""));
     }
   };
 
@@ -132,20 +134,20 @@ export default function Transactions() {
                 className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
               >
                 <ArrowLeft size={16} />
-                Retour
+                {t("Back")}
               </Link>
 
               <ChartColumn className="text-purple-600" size={22} />
 
               <h1 className="text-lg md:text-xl font-semibold text-gray-900">
-                Gestion Comptable
+                {t("Accounting_Management")}
               </h1>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
               <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
                 <Download size={16} />
-                Exporter
+                {t("Export")}
               </button>
 
               <button
@@ -153,8 +155,8 @@ export default function Transactions() {
                 className="flex items-center justify-center gap-1 md:gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-md"
               >
                 <Plus size={16} />
-                <span className="hidden sm:inline">Nouvelle transaction</span>
-                <span className="inline sm:hidden">Transaction</span>
+                <span className="hidden sm:inline">{t("New_Transaction")}</span>
+                <span className="inline sm:hidden">{t("Transaction")}</span>
               </button>
             </div>
           </div>
@@ -166,32 +168,32 @@ export default function Transactions() {
         {/* STATS dynamiques */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Stat
-            label="Recettes totales"
+            label={t("Total_Revenues")}
             value={(() => {
-              const recettes = transactions.filter(t => t.typeTransaction === "RECETTE").reduce((sum, t) => sum + Number(t.montant), 0);
+              const recettes = transactions.filter(transaction => transaction.typeTransaction === "RECETTE").reduce((sum, transaction) => sum + Number(transaction.montant), 0);
               return recettes.toLocaleString() + ' FCFA';
             })()}
             color="green"
           />
           <Stat
-            label="Dépenses totales"
+            label={t("Total_Expenses")}
             value={(() => {
-              const depenses = transactions.filter(t => t.typeTransaction === "DEPENSE").reduce((sum, t) => sum + Number(t.montant), 0);
+              const depenses = transactions.filter(transaction => transaction.typeTransaction === "DEPENSE").reduce((sum, transaction) => sum + Number(transaction.montant), 0);
               return depenses.toLocaleString() + ' FCFA';
             })()}
             color="red"
           />
           <Stat
-            label="Bénéfice net"
+            label={t("Net_Profit")}
             value={(() => {
-              const recettes = transactions.filter(t => t.typeTransaction === "RECETTE").reduce((sum, t) => sum + Number(t.montant), 0);
-              const depenses = transactions.filter(t => t.typeTransaction === "DEPENSE").reduce((sum, t) => sum + Number(t.montant), 0);
+              const recettes = transactions.filter(transaction => transaction.typeTransaction === "RECETTE").reduce((sum, transaction) => sum + Number(transaction.montant), 0);
+              const depenses = transactions.filter(transaction => transaction.typeTransaction === "DEPENSE").reduce((sum, transaction) => sum + Number(transaction.montant), 0);
               const benefice = recettes - depenses;
               return benefice.toLocaleString() + ' FCFA';
             })()}
             color={(() => {
-              const recettes = transactions.filter(t => t.typeTransaction === "RECETTE").reduce((sum, t) => sum + Number(t.montant), 0);
-              const depenses = transactions.filter(t => t.typeTransaction === "DEPENSE").reduce((sum, t) => sum + Number(t.montant), 0);
+              const recettes = transactions.filter(transaction => transaction.typeTransaction === "RECETTE").reduce((sum, transaction) => sum + Number(transaction.montant), 0);
+              const depenses = transactions.filter(transaction => transaction.typeTransaction === "DEPENSE").reduce((sum, transaction) => sum + Number(transaction.montant), 0);
               return recettes - depenses >= 0 ? "green" : "red";
             })()}
           />
@@ -203,25 +205,25 @@ export default function Transactions() {
             to="/admin/comptabilite/transactions"
             className="px-2 md:px-3 py-1.5 bg-white rounded-md shadow text-xs md:text-sm font-semibold"
           >
-            Transactions
+            {t("Transactions")}
           </Link>
           <Link
             to="/admin/comptabilite/rapports"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Rapports
+            {t("Reports")}
           </Link>
           <Link
             to="/admin/comptabilite/bilan"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Bilan
+            {t("Balance_Sheet")}
           </Link>
           <Link
             to="/admin/comptabilite/audit"
             className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            Audit
+            {t("Audit")}
           </Link>
         </div>
 
@@ -229,10 +231,10 @@ export default function Transactions() {
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b">
             <h2 className="text-xl font-semibold">
-              Journal des transactions
+              {t("Transactions_Journal")}
             </h2>
             <p className="text-sm text-gray-500">
-              Historique de toutes les entrées et sorties d'argent
+              {t("Transactions_History_Desc")}
             </p>
           </div>
 
@@ -240,42 +242,42 @@ export default function Transactions() {
             <table className="w-full text-xs md:text-sm min-w-[700px]">
               <thead className="border-b text-gray-500">
                 <tr>
-                  <th className="text-left py-3">Date</th>
-                  <th className="text-left">Type</th>
-                  <th className="text-left">Catégorie</th>
-                  <th className="text-left">Description</th>
-                  <th className="text-left">Référence</th>
-                  <th className="text-right">Montant</th>
+                  <th className="text-left py-3">{t("Date")}</th>
+                  <th className="text-left">{t("Type")}</th>
+                  <th className="text-left">{t("Category")}</th>
+                  <th className="text-left">{t("Description")}</th>
+                  <th className="text-left">{t("Reference")}</th>
+                  <th className="text-right">{t("Amount")}</th>
                 </tr>
               </thead>
 
               <tbody>
-                {transactions.map((t, i) => (
+                {transactions.map((transaction, i) => (
                   <tr key={i} className="border-b hover:bg-gray-50">
-                    <td className="py-3">{t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ""}</td>
+                    <td className="py-3">{transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : ""}</td>
 
                     <td>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${t.typeTransaction === "RECETTE"
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${transaction.typeTransaction === "RECETTE"
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
                           }`}
                       >
-                        {t.typeTransaction === "RECETTE" ? "Recette" : "Dépense"}
+                        {transaction.typeTransaction === "RECETTE" ? t("Revenue") : t("Expense")}
                       </span>
                     </td>
 
-                    <td>{t.categorie}</td>
-                    <td>{t.description}</td>
-                    <td>{t.reference}</td>
+                    <td>{transaction.categorie}</td>
+                    <td>{transaction.description}</td>
+                    <td>{transaction.reference}</td>
 
                     <td
-                      className={`text-right font-semibold ${t.typeTransaction === "RECETTE"
+                      className={`text-right font-semibold ${transaction.typeTransaction === "RECETTE"
                           ? "text-green-600"
                           : "text-red-600"
                         }`}
                     >
-                      {t.montant} FCFA
+                      {transaction.montant} FCFA
                     </td>
                   </tr>
                 ))}
@@ -292,9 +294,9 @@ export default function Transactions() {
             {/* HEADER */}
             <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
               <div>
-                <h2 className="text-lg font-bold">Ajouter une transaction</h2>
+                <h2 className="text-lg font-bold">{t("Add_Transaction")}</h2>
                 <p className="text-xs text-gray-600 mt-0.5">
-                  Enregistrez une nouvelle entrée ou sortie d'argent.
+                  {t("Record_New_Entry_Exit")}
                 </p>
               </div>
               <button
@@ -310,7 +312,7 @@ export default function Transactions() {
               {/* Type de transaction */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Type de transaction
+                  {t("Transaction_Type")}
                 </label>
                 <select
                   value={formData.type}
@@ -319,15 +321,15 @@ export default function Transactions() {
                   }}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                 >
-                  <option>Recette</option>
-                  <option>Dépense</option>
+                  <option value="Recette">{t("Revenue")}</option>
+                  <option value="Dépense">{t("Expense")}</option>
                 </select>
               </div>
 
               {/* Catégorie */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Catégorie
+                  {t("Category")}
                 </label>
                 <select
                   value={formData.categorie}
@@ -336,7 +338,7 @@ export default function Transactions() {
                   }
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                 >
-                  <option value="">Sélectionner une catégorie</option>
+                  <option value="">{t("Select_Category")}</option>
                   {categoriesByType[formData.type]?.map((cat) => (
                     <option key={cat} value={cat}>
                       {cat}
@@ -348,14 +350,14 @@ export default function Transactions() {
               {/* Description */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Description
+                  {t("Description")}
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  placeholder="Description de la transaction"
+                  placeholder={t("Transaction_Description")}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600 resize-none"
                   rows="2"
                 />
@@ -364,7 +366,7 @@ export default function Transactions() {
               {/* Montant */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5">
-                  Montant (FCFA)
+                  {t("Amount_FCFA")}
                 </label>
                 <input
                   type="number"
@@ -380,13 +382,13 @@ export default function Transactions() {
               {/* Sélection vente (affichée uniquement si aucune facture n'est sélectionnée et aucune facture n'existe) */}
               {!formData.reference && factures.length === 0 && (
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5">Vente liée (optionnel)</label>
+                  <label className="block text-xs font-semibold mb-1.5">{t("Linked_Sale_Optional")}</label>
                   <select
                     value={formData.venteId}
                     onChange={(e) => setFormData({ ...formData, venteId: e.target.value })}
                     className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                   >
-                    <option value="">Sélectionner une vente</option>
+                    <option value="">{t("Select_Sale")}</option>
                     {ventes.map((v) => (
                       <option key={v.idVente || v.id} value={v.idVente || v.id}>
                         {v.numeroFacture ? `${v.numeroFacture} - ${v.nomClient}` : v.idVente || v.id}
@@ -398,13 +400,13 @@ export default function Transactions() {
 
               {/* Sélection référence facture (optionnelle, uniquement liste déroulante) */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5">Référence facture (optionnel)</label>
+                <label className="block text-xs font-semibold mb-1.5">{t("Invoice_Reference_Optional")}</label>
                 <select
                   value={formData.reference}
                   onChange={(e) => setFormData({ ...formData, reference: e.target.value })}
                   className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
                 >
-                  <option value="">Aucune</option>
+                  <option value="">{t("None")}</option>
                   {factures.map((f) => (
                     <option key={f.id} value={f.id}>
                       {f.numeroFacture ? f.numeroFacture : f.id}
@@ -421,7 +423,7 @@ export default function Transactions() {
                 onClick={handleAddTransaction}
                 className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
               >
-                Ajouter la transaction
+                {t("Add_Transaction_Button")}
               </button>
             </div>
           </div>

@@ -27,7 +27,7 @@ export default function Settings() {
       <div>
         <h2 className="text-2xl font-bold tracking-tight">{t('Settings') || 'Paramètres du système'}</h2>
         <p className="text-muted-foreground">
-          Gérez la configuration globale de votre espace d'administration.
+          {t('Manage_Global_Configuration')}
         </p>
       </div>
 
@@ -57,7 +57,7 @@ export default function Settings() {
         <div className="flex-1 bg-white border rounded-xl shadow-sm overflow-hidden">
           {activeTab === 'general' && (
             <div className="p-6">
-              <h3 className="text-lg font-bold mb-6 text-gray-900 border-b pb-4">Paramètres Généraux</h3>
+              <h3 className="text-lg font-bold mb-6 text-gray-900 border-b pb-4">{t('General_Settings')}</h3>
               <div className="space-y-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -74,13 +74,13 @@ export default function Settings() {
                 </div>
                 
                 <div className="pt-6">
-                  <h3 className="text-lg font-bold mb-4 text-gray-900 border-b pb-4">Préférences de Notification</h3>
+                  <h3 className="text-lg font-bold mb-4 text-gray-900 border-b pb-4">{t('Notification_Preferences')}</h3>
                   
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50">
                       <div className="flex-1">
-                        <h4 className="font-bold text-gray-900">Alertes de Stock Critique</h4>
-                        <p className="text-sm text-gray-500">Recevez un email quand un produit passe sous le seuil d'alerte.</p>
+                        <h4 className="font-bold text-gray-900">{t('Critical_Stock_Alerts')}</h4>
+                        <p className="text-sm text-gray-500">{t('Receive_Email_Stock_Alert')}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" className="sr-only peer" defaultChecked />
@@ -90,8 +90,8 @@ export default function Settings() {
 
                     <div className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50">
                       <div className="flex-1">
-                        <h4 className="font-bold text-gray-900">Rapport Financier Journalier</h4>
-                        <p className="text-sm text-gray-500">Recevez un résumé des ventes tous les soirs à 20h.</p>
+                        <h4 className="font-bold text-gray-900">{t('Daily_Financial_Report')}</h4>
+                        <p className="text-sm text-gray-500">{t('Receive_Daily_Sales_Summary')}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" className="sr-only peer" />
@@ -112,16 +112,16 @@ export default function Settings() {
 
           {activeTab === 'security' && (
             <div className="p-6">
-              <h3 className="text-lg font-bold mb-6 text-gray-900 border-b pb-4">Sécurité & Connexion</h3>
+              <h3 className="text-lg font-bold mb-6 text-gray-900 border-b pb-4">{t('Security_Connection')}</h3>
               <div className="space-y-6">
                 
                 <div className="p-4 border border-red-100 bg-red-50 rounded-lg flex items-start gap-4">
                   <ShieldCheck className="text-red-600 w-6 h-6 shrink-0 mt-1" />
                   <div>
-                    <h4 className="font-bold text-red-900">Mot de passe</h4>
-                    <p className="text-sm text-red-800 mt-1 mb-3">Il est recommandé de changer de mot de passe tous les 3 mois.</p>
+                    <h4 className="font-bold text-red-900">{t('Password')}</h4>
+                    <p className="text-sm text-red-800 mt-1 mb-3">{t('Recommend_Change_Password')}</p>
                     <button className="px-4 py-2 bg-white border border-red-200 text-red-700 text-sm font-medium rounded-md hover:bg-red-50">
-                      Modifier le mot de passe
+                      {t('Edit_Password')}
                     </button>
                   </div>
                 </div>
@@ -129,14 +129,14 @@ export default function Settings() {
 
 
                 <div className="p-4 border rounded-lg">
-                  <h4 className="font-bold text-gray-900 mb-2">Appareils connectés</h4>
+                  <h4 className="font-bold text-gray-900 mb-2">{t('Connected_Devices')}</h4>
                   <ul className="space-y-3 mt-3">
                     <li className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-3">
                         <MonitorSmartphone className="text-gray-400 w-5 h-5" />
                         <div>
                           <p className="font-medium text-gray-900">Windows PC - Chrome</p>
-                          <p className="text-gray-500 text-xs">Lomé, Togo • Actif maintenant</p>
+                          <p className="text-gray-500 text-xs">{t('Location_Active_Now')}</p>
                         </div>
                       </div>
                     </li>

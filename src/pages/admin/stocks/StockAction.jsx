@@ -2,8 +2,10 @@ import { ArrowDown, ArrowUp, Box, X, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAllProduits, registerStockEntry, deductStock, transferStock, getAllMagasins } from "../../../apiClient";
+import { useTranslation } from "react-i18next";
 
-export default function Stock() {
+export default function StockAction() {
+  const { t } = useTranslation();
   const [produits, setProduits] = useState([]);
   const [magasins, setMagasins] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +65,7 @@ export default function Stock() {
     if (currentAction === "SORTIE") {
       const selectedProduct = produits.find(p => p.codeProduit === formData.codeProduit);
       if (!selectedProduct || Number(formData.quantite) > (selectedProduct.stock || 0)) {
-        alert(`Stock insuffisant. Le stock actuel de ce produit est de ${selectedProduct ? selectedProduct.stock : 0}.`);
+        alert(`${t("Insufficient_Stock")} ${selectedProduct ? selectedProduct.stock : 0}.`);
         return;
       }
     }
@@ -74,7 +76,7 @@ export default function Stock() {
         await registerStockEntry({
           codeProduit: formData.codeProduit,
           quantite: Number(formData.quantite),
-          motif: formData.motif || "Entrée en stock",
+          motif: formData.motif || t("Stock_Inbound"),
           magasinId: userStore
         });
       } else {
@@ -84,7 +86,7 @@ export default function Stock() {
           sourceMagasinId: userStore,
           destinationMagasinId: formData.idMagasin,
           quantite: Number(formData.quantite),
-          motif: formData.motif || "Distribution stock"
+          motif: formData.motif || t("Stock_Distribution")
         });
       }
 
@@ -92,7 +94,7 @@ export default function Stock() {
       setIsModalOpen(false);
     } catch (err) {
       console.error("Erreur lors de l'opération:", err);
-      alert(err.response?.data?.message || "Erreur lors de l'enregistrement de l'opération");
+      alert(err.response?.data?.message || t("Operation_Error"));
     } finally {
       setActionLoading(false);
     }
@@ -112,10 +114,10 @@ export default function Stock() {
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold border-b-2 border-emerald-500 pb-2 inline-block text-gray-800">
-            Effectuer un Stockage / Distribution
+            {t("Perform_Stocking_Distribution")}
           </h1>
           <p className="text-gray-500 text-sm mt-2">
-            Réalisez une entrée ou une distribution de matériel vers un autre magasin.
+            {t("Perform_Stocking_Distribution_Desc")}
           </p>
         </div>
         <div className="flex gap-3">
@@ -124,14 +126,14 @@ export default function Stock() {
             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-green-500/20"
           >
             <ArrowDown size={20} />
-            Entrée
+            {t("Inbound")}
           </button>
           <button
             onClick={() => openModal("SORTIE")}
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md shadow-red-500/20"
           >
             <ArrowUp size={20} />
-            Distribution
+            {t("Distribution")}
           </button>
         </div>
       </div>
@@ -141,38 +143,38 @@ export default function Stock() {
           to="/admin/stocks/produits"
           className="px-4 py-2 bg-white rounded-t-md text-sm font-medium text-black hover:bg-gray-50"
         >
-          Inventaire
+          {t("Inventory_Tab")}
         </Link>
         <Link
           to="/admin/stocks/action"
           className="px-4 py-2 bg-white rounded-t-md text-sm font-medium border-b-2 border-emerald-500 text-black hover:bg-gray-50"
         >
-          Stock
+          {t("Stock_Tab")}
         </Link>
         <Link
           to="/admin/stocks/alertes"
           className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50 relative"
         >
-          Alertes
+          {t("Alerts_Tab")}
         </Link>
         <Link
           to="/admin/stocks/mouvements"
           className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50 border-b-2 border-transparent"
         >
-          Mouvements
+          {t("Movements_Tab")}
         </Link>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         {loading ? (
-          <div className="text-center py-20">Chargement...</div>
+          <div className="text-center py-20">{t("Loading")}</div>
         ) : (
           <>
             <div className="mb-6 relative max-w-md">
               <Search className="absolute left-3 top-3 text-gray-400" size={18} />
               <input
                 type="text"
-                placeholder="Rechercher un produit ou matériel..."
+                placeholder={t("Search_Product_Material")}
                 className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -183,11 +185,12 @@ export default function Stock() {
             <div className="mb-8">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-orange-500"></span>
-                Achat
+                {t("Purchase")}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {materiaux.map(p => (
                   <ProductCard
+                    t={t}
                     key={p.codeProduit}
                     produit={p}
                     onStockage={() => openModal("ENTREE", p.codeProduit)}
@@ -195,7 +198,7 @@ export default function Stock() {
                   />
                 ))}
                 {materiaux.length === 0 && (
-                  <p className="text-sm text-gray-500 italic col-span-full">Aucun matériel trouvé.</p>
+                  <p className="text-sm text-gray-500 italic col-span-full">{t("No_Material_Found")}</p>
                 )}
               </div>
             </div>
@@ -204,11 +207,12 @@ export default function Stock() {
             <div>
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                Vente
+                {t("Sale")}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {produitsVente.map(p => (
                   <ProductCard
+                    t={t}
                     key={p.codeProduit}
                     produit={p}
                     onStockage={() => openModal("ENTREE", p.codeProduit)}
@@ -216,7 +220,7 @@ export default function Stock() {
                   />
                 ))}
                 {produitsVente.length === 0 && (
-                  <p className="text-sm text-gray-500 italic col-span-full">Aucun produit trouvé.</p>
+                  <p className="text-sm text-gray-500 italic col-span-full">{t("No_Product_Found")}</p>
                 )}
               </div>
             </div>
@@ -235,7 +239,7 @@ export default function Stock() {
                 </div>
                 <div>
                   <h2 className={`text-lg font-bold ${currentAction === 'ENTREE' ? 'text-green-800' : 'text-red-800'}`}>
-                    {currentAction === "ENTREE" ? "Entrée en stock" : "Distribution"}
+                    {currentAction === "ENTREE" ? t("Stock_Inbound") : t("Distribution")}
                   </h2>
                 </div>
               </div>
@@ -246,14 +250,14 @@ export default function Stock() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Produit concerné</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Concerned_Product")}</label>
                 <select
                   required
                   value={formData.codeProduit}
                   onChange={(e) => setFormData({ ...formData, codeProduit: e.target.value })}
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                 >
-                  <option value="">Sélectionnez un produit...</option>
+                  <option value="">{t("Select_Product")}</option>
                   {produits.map(p => {
                     // Si on est en "SORTIE" (distribution), on ne montre que les produits avec stock > 0
                     if (currentAction === 'SORTIE' && (p.stock || 0) <= 0) {
@@ -261,7 +265,7 @@ export default function Stock() {
                     }
                     return (
                       <option key={p.codeProduit} value={p.codeProduit}>
-                        {p.nomProduit} ({p.format}) - En stock: {p.stock || 0}
+                        {p.nomProduit} ({p.format}) - {t("In_Stock_Colon")} {p.stock || 0}
                       </option>
                     );
                   })}
@@ -270,7 +274,7 @@ export default function Stock() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quantité
+                  {t("Quantity")}
                 </label>
                 <div className="relative">
                   <input
@@ -288,7 +292,7 @@ export default function Stock() {
               {currentAction === 'SORTIE' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Magasin de destination
+                    {t("Destination_Store")}
                   </label>
                   <select
                     required
@@ -296,7 +300,7 @@ export default function Stock() {
                     onChange={(e) => setFormData({ ...formData, idMagasin: e.target.value })}
                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                   >
-                    <option value="">Sélectionnez un magasin...</option>
+                    <option value="">{t("Select_Store")}</option>
                     {magasins.map(m => (
                       <option key={m.idMagasin} value={m.idMagasin}>{m.nom}</option>
                     ))}
@@ -305,18 +309,18 @@ export default function Stock() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Motif</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Reason")}</label>
                 <input
                   type="text"
                   value={formData.motif}
                   onChange={(e) => setFormData({ ...formData, motif: e.target.value })}
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
-                  placeholder="Ex: Réapprovisionnement"
+                  placeholder={t("Ex_Restock")}
                 />
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">Annuler</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
                 <button
                   type="submit"
                   disabled={actionLoading}
@@ -324,7 +328,7 @@ export default function Stock() {
                     ${currentAction === 'ENTREE' ? 'bg-green-600 hover:bg-green-700 shadow-green-500/20' : 'bg-red-600 hover:bg-red-700 shadow-red-500/20'}
                   `}
                 >
-                  {actionLoading ? "En cours..." : "Valider"}
+                  {actionLoading ? t("In_Progress") : t("Validate")}
                 </button>
               </div>
             </form>
@@ -335,7 +339,7 @@ export default function Stock() {
   );
 }
 
-function ProductCard({ produit, onStockage, onDestockage }) {
+function ProductCard({ produit, onStockage, onDestockage, t }) {
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col justify-between hover:shadow-md transition-shadow">
       <div>
@@ -345,7 +349,7 @@ function ProductCard({ produit, onStockage, onDestockage }) {
         </div>
         <div className="flex items-center gap-2 mb-4">
           <Box size={14} className="text-gray-400" />
-          <span className="text-sm text-gray-600">Stock :</span>
+          <span className="text-sm text-gray-600">{t("Stock_Colon")}</span>
           <span className={`font-bold ml-auto ${produit.stock <= (produit.stockMinimum || 0) ? 'text-red-500' : 'text-green-600'}`}>
             {produit.stock || 0}
           </span>
@@ -356,7 +360,7 @@ function ProductCard({ produit, onStockage, onDestockage }) {
           onClick={onStockage}
           className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
         >
-          <ArrowDown size={14} /> Entrée
+          <ArrowDown size={14} /> {t("Inbound")}
         </button>
         <button
           onClick={onDestockage}
@@ -367,9 +371,9 @@ function ProductCard({ produit, onStockage, onDestockage }) {
               : 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
             }
           `}
-          title={(produit.stock || 0) <= 0 ? "Stock épuisé" : "Distribuer"}
+          title={(produit.stock || 0) <= 0 ? t("Stock_Empty") : t("Distribute")}
         >
-          <ArrowUp size={14} /> Distribuer
+          <ArrowUp size={14} /> {t("Distribute")}
         </button>
       </div>
     </div>
