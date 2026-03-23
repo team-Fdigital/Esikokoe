@@ -38,11 +38,11 @@ export default function Dashboard() {
       setLoading(true);
       try {
         const [ventesRes, stockRes, clientsRes, alertesRes, ventesListRes] = await Promise.all([
-          getVentesStats().catch(err => ({ data: { montantTotal: 0, nombreVentes: 0 } })),
+          getVentesStats(selectedMagasin).catch(err => ({ data: { montantTotal: 0, nombreVentes: 0 } })),
           getProduitsDashboardMetrics(selectedMagasin).catch(err => ({ data: { valeurTotalStock: 0, totalProduits: 0 } })),
-          getAllClients().catch(err => ({ data: { total: 0 } })),
-          getCriticalStocks().catch(err => ({ data: { produitsEnAlerte: [] } })),
-          getAllVentes().catch(err => ({ data: { ventes: [] } }))
+          getAllClients(selectedMagasin).catch(err => ({ data: { total: 0 } })),
+          getCriticalStocks(selectedMagasin).catch(err => ({ data: { produitsEnAlerte: [] } })),
+          getAllVentes(selectedMagasin).catch(err => ({ data: { ventes: [] } }))
         ]);
 
         setStats({

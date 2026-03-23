@@ -40,11 +40,11 @@ export const deleteUser = (id) => apiClient.delete(`/users/${id}`);
 
 // CLIENTS
 export const createClient = (data) => apiClient.post('/clients', data);
-export const getAllClients = () => apiClient.get('/clients');
+export const getAllClients = (magasinId) => apiClient.get('/clients', { params: { magasinId } });
 export const updateClient = (id, data) => apiClient.put(`/clients/${id}`, data);
 export const deleteClient = (id) => apiClient.delete(`/clients/${id}`);
 export const getClientById = (id) => apiClient.get(`/clients/${id}`);
-export const getClientStats = () => apiClient.get('/clients/stats/dashboard');
+export const getClientStats = (magasinId) => apiClient.get('/clients/stats/dashboard', { params: { magasinId } });
 
 // MAGASINS
 export const createMagasin = (data) => apiClient.post('/magasins', data);
@@ -55,10 +55,10 @@ export const getMagasinById = (id) => apiClient.get(`/magasins/${id}`);
 
 // VENTES
 export const createVente = (data) => apiClient.post('/ventes', data);
-export const getAllVentes = () => apiClient.get('/ventes');
+export const getAllVentes = (magasinId) => apiClient.get('/ventes', { params: { magasinId } });
 export const searchVentes = (q) => apiClient.get('/ventes/search/query', { params: { q } });
 export const getVentesByDateRange = (debut, fin) => apiClient.get('/ventes/filter/date', { params: { debut, fin } });
-export const getVentesStats = () => apiClient.get('/ventes/stats/dashboard');
+export const getVentesStats = (magasinId) => apiClient.get('/ventes/stats/dashboard', { params: { magasinId } });
 export const getVenteDetail = (idVente) => apiClient.get(`/ventes/${idVente}`);
 export const updateVente = (idVente, data) => apiClient.patch(`/ventes/${idVente}`, data);
 export const deleteVente = (idVente) => apiClient.delete(`/ventes/${idVente}`);
@@ -85,7 +85,7 @@ export const deductStock = (data) => apiClient.post('/stock/deduct', data);
 export const transferStock = (data) => apiClient.post('/stock/transfer', data);
 export const getInventory = () => apiClient.get('/stock/inventory');
 export const getStockByFormat = () => apiClient.get('/stock/by-format');
-export const getCriticalStocks = () => apiClient.get('/stock/critical');
+export const getCriticalStocks = (magasinId) => apiClient.get('/stock/critical', { params: { magasinId } });
 export const getStockDashboardMetrics = () => apiClient.get('/stock/dashboard');
 export const getStockHistory = (limit) => apiClient.get('/stock/history', { params: { limit } });
 export const getTransferHistory = () => apiClient.get('/stock/transfers');
