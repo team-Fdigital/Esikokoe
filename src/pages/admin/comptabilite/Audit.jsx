@@ -318,9 +318,11 @@ function Stat({ title, value, color }) {
 
 function Action({ icon, label }) {
   return (
-    <button className="flex items-center gap-2 border p-2 rounded-md text-xs md:text-sm text-gray-800 bg-white hover:bg-gray-50 text-left">
-      {icon}
-      {label}
+    <button className="flex items-center gap-3 border border-gray-200 p-4 rounded-lg text-sm text-gray-700 bg-white hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700 transition-all text-left w-full group cursor-pointer shadow-sm">
+      <div className="text-gray-500 group-hover:text-purple-600 transition-colors">
+        {icon}
+      </div>
+      <span className="font-medium">{label}</span>
     </button>
   );
 }
