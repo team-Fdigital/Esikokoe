@@ -11,13 +11,16 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getRapports } from "../../../apiClient";
-import { getDistribution } from "../../../apiClient";
+import { getRapports, getDistribution } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Rapports() {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     type: "Recette",
     categorie: "",
@@ -67,6 +70,40 @@ export default function Rapports() {
       reference: "",
     });
   };
+
+  // Export Excel
+  const handleExportExcel = () => {
+    const dataRecettes = (distribution?.recettes || []).map(r => ({ Categorie: r.categorie, Montant: r.montant, Type: 'Recette' }));
+    const dataDepenses = (distribution?.depenses || []).map(d => ({ Categorie: d.categorie, Montant: d.montant, Type: 'Dépense' }));
+    const data = [...dataRecettes, ...dataDepenses];
+    
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Répartition");
+    XLSX.writeFile(wb, "rapport_distribution_comptable.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    try {
+      const doc = new jsPDF();
+      doc.text(t("Revenue_Distribution") + " & " + t("Expense_Distribution"), 14, 15);
+      
+      const body = [
+        ... (distribution?.recettes || []).map(r => [r.categorie, `${r.montant} FCFA`, t("Revenue")]),
+        ... (distribution?.depenses || []).map(d => [d.categorie, `${d.montant} FCFA`, t("Expense")])
+      ];
+
+      autoTable(doc, {
+        head: [[t("Category"), t("Amount"), t("Type")]],
+        body: body,
+        startY: 20,
+      });
+      doc.save("rapport_distribution_comptable.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -90,10 +127,33 @@ export default function Rapports() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
-              <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
-                <Download size={16} />
-                {t("Export")}
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                  className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+                >
+                  <Download size={16} />
+                  {t("Export")}
+                </button>
+                {exportMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      {t("Export_Excel")}
+                    </button>
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      {t("Export_PDF")}
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => setShowModal(true)}

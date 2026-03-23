@@ -10,10 +10,14 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getBilanSummary } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Bilan() {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     type: "Recette",
     categorie: "",
@@ -50,6 +54,56 @@ export default function Bilan() {
       reference: "",
     });
   };
+
+  // Export Excel
+  const handleExportExcel = () => {
+    const data = [
+      { Section: t("Assets"), Poste: t("Cash_Flow"), Valeur: bilan?.actifs?.tresorerie },
+      { Section: t("Assets"), Poste: t("Stock"), Valeur: bilan?.actifs?.stock },
+      { Section: t("Assets"), Poste: t("Customer_Receivables"), Valeur: bilan?.actifs?.creancesClients },
+      { Section: t("Assets"), Poste: t("Total_Assets"), Valeur: bilan?.actifs?.totalActifs },
+      { Section: "", Poste: "", Valeur: "" },
+      { Section: t("Liabilities"), Poste: t("Supplier_Debts"), Valeur: bilan?.passifs?.dettesFournisseurs },
+      { Section: t("Liabilities"), Poste: t("Expenses_To_Pay"), Valeur: bilan?.passifs?.chargesAPayer },
+      { Section: t("Liabilities"), Poste: t("Capital"), Valeur: bilan?.passifs?.capital },
+      { Section: t("Liabilities"), Poste: t("Total_Liabilities"), Valeur: bilan?.passifs?.totalPassifs },
+    ];
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Bilan");
+    XLSX.writeFile(wb, "bilan_financier.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    try {
+      const doc = new jsPDF();
+      doc.text(t("Financial_Balance"), 14, 15);
+      
+      const body = [
+        [t("Assets"), "", ""],
+        ["", t("Cash_Flow"), `${bilan?.actifs?.tresorerie} FCFA`],
+        ["", t("Stock"), `${bilan?.actifs?.stock} FCFA`],
+        ["", t("Customer_Receivables"), `${bilan?.actifs?.creancesClients} FCFA`],
+        ["", t("Total_Assets"), `${bilan?.actifs?.totalActifs} FCFA`],
+        ["", "", ""],
+        [t("Liabilities"), "", ""],
+        ["", t("Supplier_Debts"), `${bilan?.passifs?.dettesFournisseurs} FCFA`],
+        ["", t("Expenses_To_Pay"), `${bilan?.passifs?.chargesAPayer} FCFA`],
+        ["", t("Capital"), `${bilan?.passifs?.capital} FCFA`],
+        ["", t("Total_Liabilities"), `${bilan?.passifs?.totalPassifs} FCFA`],
+      ];
+
+      autoTable(doc, {
+        head: [[t("Section"), t("Item"), t("Amount")]],
+        body: body,
+        startY: 20,
+      });
+      doc.save("bilan_financier.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -73,10 +127,33 @@ export default function Bilan() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
-              <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
-                <Download size={16} />
-                {t("Export")}
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                  className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+                >
+                  <Download size={16} />
+                  {t("Export")}
+                </button>
+                {exportMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      {t("Export_Excel")}
+                    </button>
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      {t("Export_PDF")}
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => setShowModal(true)}

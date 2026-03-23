@@ -3,10 +3,15 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createVente, getAllFactures } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+import { Download } from "lucide-react";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Factures() {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [factures, setFactures] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +26,45 @@ export default function Factures() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  // Export Excel
+  const handleExportExcel = () => {
+    const data = factures.map((f) => ({
+      Facture: f.numeroFacture,
+      Date: new Date(f.dateFacture).toLocaleString(),
+      Montant: f.montant + " FCFA",
+      Client: f.client,
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Factures");
+    XLSX.writeFile(wb, "liste_factures.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    if (!factures.length) {
+      alert(t("No_Data_To_Export"));
+      return;
+    }
+    try {
+      const doc = new jsPDF();
+      doc.text(t("Invoice_Management"), 14, 15);
+      autoTable(doc, {
+        head: [[t("Invoice_No"), t("Date"), t("Amount"), t("Customer")]],
+        body: factures.map((f) => [
+          f.numeroFacture,
+          new Date(f.dateFacture).toLocaleString(),
+          `${f.montant?.toLocaleString()} FCFA`,
+          f.client
+        ]),
+        startY: 20,
+      });
+      doc.save("liste_factures.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -83,12 +127,43 @@ export default function Factures() {
         {/* CARD */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b">
-            <h2 className="text-2xl font-semibold">
-              {t("Invoice_Management")}
-            </h2>
-            <p className="text-sm text-gray-500">
-              {t("Create_Manage_Invoices")}
-            </p>
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-semibold">
+                  {t("Invoice_Management")}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {t("Create_Manage_Invoices")}
+                </p>
+              </div>
+              <div className="relative">
+                <button 
+                  onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                  className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+                >
+                  <Download size={16} />
+                  {t("Export")}
+                </button>
+                {exportMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      {t("Export_Excel")}
+                    </button>
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      {t("Export_PDF")}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           {loading ? (
