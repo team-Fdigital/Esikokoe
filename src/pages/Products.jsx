@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Droplets, Package, Building, Calendar, Star, Heart, ShoppingCart, ArrowRight, CircleCheckBig, Truck, Shield } from 'lucide-react'
 import useReveal from '../hooks/useReveal'
+import { useTranslation } from 'react-i18next'
 
 export default function Products() {
+  const { t } = useTranslation()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [autoPlay, setAutoPlay] = useState(true)
   const autoPlayRef = useRef(null)
@@ -15,14 +17,14 @@ export default function Products() {
   const slides = [
     {
       id: 1,
-      title: 'Sachets d\'Eau Pure',
-      badge: 'Populaire',
+      title: t("Prod_Sachets_Title", 'Sachets d\'Eau Pure'),
+      badge: t("Prod_Sachets_Badge", 'Populaire'),
       price: '300 FCFA',
       originalPrice: '',
-      format: 'Format Pratique',
-      description: 'Nos sachets d\'eau pure de 500ml sont parfaits pour tous vos déplacements. Conditionnés dans un emballage hygiénique et pratique.',
+      format: t("Prod_Sachets_Format", 'Format Pratique'),
+      description: t("Prod_Sachets_Desc", 'Nos sachets d\'eau pure de 500ml sont parfaits pour tous vos déplacements. Conditionnés dans un emballage hygiénique et pratique.'),
       volume: '500ml',
-      features: ['500ml', 'Hygiénique', 'Portable', 'Économique'],
+      features: [t("Prod_Sachets_F1", '500ml'), t("Prod_Sachets_F2", 'Hygiénique'), t("Prod_Sachets_F3", 'Portable'), t("Prod_Sachets_F4", 'Économique')],
       likes: '1,250',
       rating: '4.9',
       reviews: '2,340',
@@ -33,14 +35,14 @@ export default function Products() {
     },
     {
       id: 2,
-      title: 'Bonbonnes 22L',
-      badge: 'Économisez 500 FCFA',
+      title: t("Prod_22L_Title", 'Bonbonnes 22L'),
+      badge: t("Prod_22L_Badge", 'Économisez 500 FCFA'),
       price: '2,300 FCFA',
       originalPrice: '2,800 FCFA',
-      format: 'Format Familial',
-      description: 'Nos bonbonnes de 22 litres sont idéales pour les familles et les bureaux. Eau pure et fraîche pour toute la semaine.',
+      format: t("Prod_22L_Format", 'Format Familial'),
+      description: t("Prod_22L_Desc", 'Nos bonbonnes de 22 litres sont idéales pour les familles et les bureaux. Eau pure et fraîche pour toute la semaine.'),
       volume: '22 Litres',
-      features: ['22 Litres', 'Réutilisable', 'Économique', 'Livraison gratuite'],
+      features: [t("Prod_22L_F1", '22 Litres'), t("Prod_22L_F2", 'Réutilisable'), t("Prod_22L_F3", 'Économique'), t("Prod_22L_F4", 'Livraison gratuite')],
       likes: '890',
       rating: '4.9',
       reviews: '2,340',
@@ -51,14 +53,14 @@ export default function Products() {
     },
     {
       id: 3,
-      title: 'Pack Entreprise',
-      badge: 'Nouveau',
+      title: t("Prod_Enterprise_Title", 'Pack Entreprise'),
+      badge: t("Prod_Enterprise_Badge", 'Nouveau'),
       price: 'Sur devis',
       originalPrice: '',
-      format: 'Solution Professionnelle',
-      description: 'Pack spécialement conçu pour les entreprises. Livraison régulière et tarifs préférentiels pour vos équipes.',
-      volume: 'Sur devis',
-      features: ['Livraison régulière', 'Tarifs préférentiels', 'Service dédié', 'Facturation mensuelle'],
+      format: t("Prod_Enterprise_Format", 'Solution Professionnelle'),
+      description: t("Prod_Enterprise_Desc", 'Pack spécialement conçu pour les entreprises. Livraison régulière et tarifs préférentiels pour vos équipes.'),
+      volume: t("Prod_Enterprise_Volume", 'Sur devis'),
+      features: [t("Prod_Enterprise_F1", 'Livraison régulière'), t("Prod_Enterprise_F2", 'Tarifs préférentiels'), t("Prod_Enterprise_F3", 'Service dédié'), t("Prod_Enterprise_F4", 'Facturation mensuelle')],
       likes: '456',
       rating: '4.9',
       reviews: '2,340',
@@ -69,14 +71,14 @@ export default function Products() {
     },
     {
       id: 4,
-      title: 'Abonnement Mensuel',
-      badge: '2 mois gratuits',
+      title: t("Prod_Sub_Title", 'Abonnement Mensuel'),
+      badge: t("Prod_Sub_Badge", '2 mois gratuits'),
       price: '8,000 FCFA/mois',
       originalPrice: '10,000 FCFA/mois',
-      format: 'Service Premium',
-      description: 'Abonnez-vous et recevez votre eau pure chaque semaine. Service premium avec livraison garantie et prix avantageux.',
-      volume: 'Mensuel',
-      features: ['Livraison hebdomadaire', 'Prix fixe', 'Sans engagement', 'Service prioritaire'],
+      format: t("Prod_Sub_Format", 'Service Premium'),
+      description: t("Prod_Sub_Desc", 'Abonnez-vous et recevez votre eau pure chaque semaine. Service premium avec livraison garantie et prix avantageux.'),
+      volume: t("Prod_Sub_Volume", 'Mensuel'),
+      features: [t("Prod_Sub_F1", 'Livraison hebdomadaire'), t("Prod_Sub_F2", 'Prix fixe'), t("Prod_Sub_F3", 'Sans engagement'), t("Prod_Sub_F4", 'Service prioritaire')],
       likes: '2,100',
       rating: '4.9',
       reviews: '2,340',
@@ -87,14 +89,14 @@ export default function Products() {
     },
     {
       id: 5,
-      title: 'Bouteille 75cl',
-      badge: 'Populaire',
+      title: t("Prod_75cl_Title", 'Bouteille 75cl'),
+      badge: t("Prod_75cl_Badge", 'Populaire'),
       price: '250 FCFA',
       originalPrice: '300 FCFA',
-      format: 'Format Individuel',
-      description: 'Notre bouteille de 75cl est idéale pour rester hydraté tout au long de la journée. Un format élégant pour le bureau ou le sport.',
+      format: t("Prod_75cl_Format", 'Format Individuel'),
+      description: t("Prod_75cl_Desc", 'Notre bouteille de 75cl est idéale pour rester hydraté tout au long de la journée. Un format élégant pour le bureau ou le sport.'),
       volume: '75cl',
-      features: ['75cl', 'Bouchon sport', 'Recyclable', 'Format idéal'],
+      features: [t("Prod_75cl_F1", '75cl'), t("Prod_75cl_F2", 'Bouchon sport'), t("Prod_75cl_F3", 'Recyclable'), t("Prod_75cl_F4", 'Format idéal')],
       likes: '1,540',
       rating: '4.9',
       reviews: '1,820',
@@ -105,14 +107,14 @@ export default function Products() {
     },
     {
       id: 6,
-      title: 'Bouteille 35cl',
-      badge: 'Pratique',
+      title: t("Prod_35cl_Title", 'Bouteille 35cl'),
+      badge: t("Prod_35cl_Badge", 'Pratique'),
       price: '150 FCFA',
       originalPrice: '200 FCFA',
-      format: 'Petit Format',
-      description: 'La petite bouteille de 35cl se glisse partout. Parfaite pour les enfants ou les événements.',
+      format: t("Prod_35cl_Format", 'Petit Format'),
+      description: t("Prod_35cl_Desc", 'La petite bouteille de 35cl se glisse partout. Parfaite pour les enfants ou les événements.'),
       volume: '35cl',
-      features: ['35cl', 'Compacte', 'Légère', 'Pratique'],
+      features: [t("Prod_35cl_F1", '35cl'), t("Prod_35cl_F2", 'Compacte'), t("Prod_35cl_F3", 'Légère'), t("Prod_35cl_F4", 'Pratique')],
       likes: '920',
       rating: '4.8',
       reviews: '1,150',
@@ -246,7 +248,7 @@ export default function Products() {
                                 {/* Likes */}
                                 <div className="flex items-center space-x-2 text-gray-500">
                                   <Heart className="w-4 h-4" />
-                                  <span>{slide.likes} personnes aiment ce produit</span>
+                                  <span>{slide.likes} {t("Prod_Likes_Text", "personnes aiment ce produit")}</span>
                                 </div>
 
                                 {/* CTA Button */}
@@ -255,7 +257,7 @@ export default function Products() {
                                   className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 md:h-11 rounded-md px-6 md:px-8 w-full bg-gradient-to-r ${slide.gradient} hover:opacity-90 text-white text-base md:text-lg py-2 md:py-4 font-bold`}
                                 >
                                   <ShoppingCart className="w-5 h-5 mr-2" />
-                                  Commander Maintenant
+                                  {t("Prod_Order_Now", "Commander Maintenant")}
                                 </Link>
                               </div>
                             </div>
@@ -283,16 +285,16 @@ export default function Products() {
                                 <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
                               ))}
                             </div>
-                            <span className="text-gray-600 text-lg">{slide.rating}/5 ({slide.reviews} avis)</span>
+                            <span className="text-gray-600 text-lg">{slide.rating}/5 ({slide.reviews} {t("Prod_Reviews_Text", "avis")})</span>
                           </div>
 
                           {/* Contact Info Box */}
                           <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
-                            <h4 className="font-semibold text-gray-900">Commandez par téléphone</h4>
+                            <h4 className="font-semibold text-gray-900">{t("Prod_Order_Phone", "Commandez par téléphone")}</h4>
                             <div className="space-y-2">
                               <p className="text-gray-600 text-sm"> +228 91 29 99 99</p>
                               <p className="text-gray-600 text-xs break-words"> Intercontinentaleau@gmail.com</p>
-                              <p className="text-gray-600 text-sm"> Disponible 24h/24, 7j/7</p>
+                              <p className="text-gray-600 text-sm"> {t("Prod_Available_24_7", "Disponible 24h/24, 7j/7")}</p>
                             </div>
                           </div>
                         </div>
@@ -357,33 +359,31 @@ export default function Products() {
           <div className="w-full md:w-1/2 space-y-6 relative z-10 text-center md:text-left">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 font-semibold text-sm">
               <Package size={16} />
-              <span>Accessoire Indispensable</span>
+              <span>{t("Prod_Accessory_Badge", "Accessoire Indispensable")}</span>
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
-              Fontaine à Eau <span className="text-blue-600">Premium</span>
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight" dangerouslySetInnerHTML={{ __html: t("Prod_Fountain_Title", "Fontaine à Eau <span className=\"text-blue-600\">Premium</span>") }} />
 
             <p className="text-gray-600 text-lg leading-relaxed">
-              Optimisez votre consommation d'eau avec notre fontaine moderne spécialement conçue pour nos bonbonnes de 22L. Design élégant, robuste et facile à utiliser pour une eau toujours à la bonne température.
+              {t("Prod_Fountain_Desc", "Optimisez votre consommation d'eau avec notre fontaine moderne spécialement conçue pour nos bonbonnes de 22L. Design élégant, robuste et facile à utiliser pour une eau toujours à la bonne température.")}
             </p>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
                 <CircleCheckBig className="text-green-500" size={20} />
-                <span className="text-gray-700">Eau Chaude / Froide</span>
+                <span className="text-gray-700">{t("Prod_Fountain_F1", "Eau Chaude / Froide")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <CircleCheckBig className="text-green-500" size={20} />
-                <span className="text-gray-700">Facile à installer</span>
+                <span className="text-gray-700">{t("Prod_Fountain_F2", "Facile à installer")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <CircleCheckBig className="text-green-500" size={20} />
-                <span className="text-gray-700">Design Moderne</span>
+                <span className="text-gray-700">{t("Prod_Fountain_F3", "Design Moderne")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <CircleCheckBig className="text-green-500" size={20} />
-                <span className="text-gray-700">Garantie 1 an</span>
+                <span className="text-gray-700">{t("Prod_Fountain_F4", "Garantie 1 an")}</span>
               </div>
             </div>
 
@@ -392,7 +392,7 @@ export default function Products() {
                 to="/contact"
                 className="inline-flex items-center justify-center rounded-full px-8 py-4 bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-200"
               >
-                Demander un devis
+                {t("Prod_Request_Quote", "Demander un devis")}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </div>
@@ -405,10 +405,10 @@ export default function Products() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
-              Notre Gamme Complète
+              {t("Prod_Range_Title", "Notre Gamme Complète")}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choisissez parmi notre sélection de produits d'eau pure, conçus pour répondre à tous vos besoins d'hydratation.
+              {t("Prod_Range_Desc", "Choisissez parmi notre sélection de produits d'eau pure, conçus pour répondre à tous vos besoins d'hydratation.")}
             </p>
           </div>
 
@@ -427,27 +427,27 @@ export default function Products() {
                 <div className="absolute top-4 left-4">
                   <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-blue-500 text-white hover:bg-blue-600 animate-pulse">
                     <Star className="w-3 h-3 mr-1 fill-current" />
-                    Bestseller
+                    {t("Prod_Bestseller", "Bestseller")}
                   </div>
                 </div>
               </div>
               <div className="p-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-3xl font-bold text-gray-800">Sachets d'Eau</h3>
+                  <h3 className="text-3xl font-bold text-gray-800">{t("Prod_Sachets_Title_Main", "Sachets d'Eau")}</h3>
                   <div className="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-blue-100 text-blue-800 hover:bg-blue-100 text-lg px-4 py-2">
                     500ml
                   </div>
                 </div>
                 <p className="text-gray-600 mb-6 leading-relaxed text-lg">
-                  Nos sachets d'eau de 500ml sont parfaits pour une hydratation quotidienne. Pratiques, économiques et d'une pureté exceptionnelle, ils sont idéaux pour toute la famille, l'école ou le bureau.
+                  {t("Prod_Sachets_Desc_Main", "Nos sachets d'eau de 500ml sont parfaits pour une hydratation quotidienne. Pratiques, économiques et d'une pureté exceptionnelle, ils sont idéaux pour toute la famille, l'école ou le bureau.")}
                 </p>
 
                 {/* Features */}
                 <div className="space-y-4 mb-8">
                   {[
-                    { icon: Droplets, label: 'Eau purifiée par osmose inverse', color: 'blue' },
-                    { icon: Package, label: 'Emballage hygiénique et résistant', color: 'green' },
-                    { icon: Shield, label: 'Contrôle qualité rigoureux', color: 'cyan' }
+                    { icon: Droplets, label: t("Prod_Sachets_F1_Main", 'Eau purifiée par osmose inverse'), color: 'blue' },
+                    { icon: Package, label: t("Prod_Sachets_F2_Main", 'Emballage hygiénique et résistant'), color: 'green' },
+                    { icon: Shield, label: t("Prod_Sachets_F3_Main", 'Contrôle qualité rigoureux'), color: 'cyan' }
                   ].map((item, idx) => {
                     const ItemIcon = item.icon
                     const bgMap = { blue: 'bg-blue-100', green: 'bg-green-100', cyan: 'bg-cyan-100' }
@@ -467,20 +467,17 @@ export default function Products() {
                 {/* Price Info */}
                 <div className="bg-gray-50 rounded-lg p-6 mb-6">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-gray-500">Prix unitaire</span>
+                    <span className="text-gray-500">{t("Prod_Unit_Price", "Prix unitaire")}</span>
                     <div className="text-right">
                       <span className="text-3xl font-bold text-gray-800">300</span>
                       <span className="text-lg text-gray-600 ml-1">FCFA</span>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500 mb-4">
-                    • Remise dégressive à partir de 50 sachets<br />
-                    • Livraison gratuite dès 100 sachets
-                  </div>
+                  <div className="text-sm text-gray-500 mb-4" dangerouslySetInnerHTML={{ __html: t("Prod_Sachets_Info", "• Remise dégressive à partir de 50 sachets<br />• Livraison gratuite dès 100 sachets") }} />
                 </div>
 
                 <a href="/contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 w-full bg-blue-600 hover:bg-blue-700 text-lg py-4 button-ripple group font-bold text-white">
-                  Commander maintenant
+                  {t("Prod_Order_Now_Main", "Commander maintenant")}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
@@ -501,27 +498,27 @@ export default function Products() {
                 <div className="absolute top-4 left-4">
                   <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 text-white hover:bg-green-600 animate-pulse">
                     <Star className="w-3 h-3 mr-1 fill-current" />
-                    Économique
+                    {t("Prod_Economic", "Économique")}
                   </div>
                 </div>
               </div>
               <div className="p-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-3xl font-bold text-gray-800">Bonbonnes 22L</h3>
+                  <h3 className="text-3xl font-bold text-gray-800">{t("Prod_22L_Title_Main", "Bonbonnes 22L")}</h3>
                   <div className="inline-flex items-center rounded-full border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-100 text-green-800 hover:bg-green-100 text-lg px-4 py-2">
                     22 Litres
                   </div>
                 </div>
                 <p className="text-gray-600 mb-6 leading-relaxed text-lg">
-                  Nos bonbonnes de 22 litres sont parfaites pour les bureaux, les familles nombreuses et tous ceux qui consomment beaucoup d'eau. Économiques et pratiques avec notre service de livraison à domicile.
+                  {t("Prod_22L_Desc_Main", "Nos bonbonnes de 22 litres sont parfaites pour les bureaux, les familles nombreuses et tous ceux qui consomment beaucoup d'eau. Économiques et pratiques avec notre service de livraison à domicile.")}
                 </p>
 
                 {/* Features */}
                 <div className="space-y-4 mb-8">
                   {[
-                    { icon: Droplets, label: '22 litres d\'eau pure et fraîche', color: 'blue' },
-                    { icon: Truck, label: 'Livraison à domicile disponible', color: 'green' },
-                    { icon: Shield, label: 'Bonbonne réutilisable et écologique', color: 'cyan' }
+                    { icon: Droplets, label: t("Prod_22L_F1_Main", '22 litres d\'eau pure et fraîche'), color: 'blue' },
+                    { icon: Truck, label: t("Prod_22L_F2_Main", 'Livraison à domicile disponible'), color: 'green' },
+                    { icon: Shield, label: t("Prod_22L_F3_Main", 'Bonbonne réutilisable et écologique'), color: 'cyan' }
                   ].map((item, idx) => {
                     const ItemIcon = item.icon
                     const bgMap = { blue: 'bg-blue-100', green: 'bg-green-100', cyan: 'bg-cyan-100' }
@@ -541,20 +538,17 @@ export default function Products() {
                 {/* Price Info */}
                 <div className="bg-gray-50 rounded-lg p-6 mb-6">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-gray-500">Prix unitaire</span>
+                    <span className="text-gray-500">{t("Prod_Unit_Price", "Prix unitaire")}</span>
                     <div className="text-right">
                       <span className="text-3xl font-bold text-gray-800">2,300</span>
                       <span className="text-lg text-gray-600 ml-1">FCFA</span>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500 mb-4">
-                    • Consigne bonbonne: 2,000 FCFA (remboursable)<br />
-                    • Livraison gratuite dès 5 bonbonnes
-                  </div>
+                  <div className="text-sm text-gray-500 mb-4" dangerouslySetInnerHTML={{ __html: t("Prod_22L_Info", "• Consigne bonbonne: 2,000 FCFA (remboursable)<br />• Livraison gratuite dès 5 bonbonnes") }} />
                 </div>
 
                 <a href="/contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 w-full bg-green-600 hover:bg-green-700 text-lg py-4 button-ripple group font-bold text-white">
-                  Commander maintenant
+                  {t("Prod_Order_Now_Main", "Commander maintenant")}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
@@ -566,33 +560,31 @@ export default function Products() {
       {/* Why Choose Us Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-800">
-            Pourquoi Choisir <span className="text-blue-600">Intercontinental Eau</span> ?
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-800" dangerouslySetInnerHTML={{ __html: t("Prod_Why_Title", "Pourquoi Choisir <span className=\"text-blue-600\">Intercontinental Eau</span> ?") }} />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 icon: Droplets,
-                title: 'Pureté Garantie',
-                description: 'Eau filtrée par osmose inverse pour une pureté exceptionnelle',
+                title: t("Prod_Why_Purity", 'Pureté Garantie'),
+                description: t("Prod_Why_Purity_Desc", 'Eau filtrée par osmose inverse pour une pureté exceptionnelle'),
                 color: 'blue'
               },
               {
                 icon: Truck,
-                title: 'Livraison Rapide',
-                description: 'Service de livraison dans tout le Togo en moins de 24h',
+                title: t("Prod_Why_Delivery", 'Livraison Rapide'),
+                description: t("Prod_Why_Delivery_Desc", 'Service de livraison dans tout le Togo en moins de 24h'),
                 color: 'green'
               },
               {
                 icon: Shield,
-                title: 'Qualité Certifiée',
-                description: 'Contrôles qualité rigoureux selon les normes internationales',
+                title: t("Prod_Why_Quality", 'Qualité Certifiée'),
+                description: t("Prod_Why_Quality_Desc", 'Contrôles qualité rigoureux selon les normes internationales'),
                 color: 'cyan'
               },
               {
                 icon: Heart,
-                title: 'Service Client',
-                description: 'Équipe dédiée disponible 24/7 pour votre satisfaction',
+                title: t("Prod_Why_Service", 'Service Client'),
+                description: t("Prod_Why_Service_Desc", 'Équipe dédiée disponible 24/7 pour votre satisfaction'),
                 color: 'purple'
               }
             ].map((item, idx) => {
@@ -617,13 +609,13 @@ export default function Products() {
       <section className="py-20 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-            Prêt à Commander Votre Eau Pure ?
+            {t("Prod_CTA_Title", "Prêt à Commander Votre Eau Pure ?")}
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Contactez-nous dès maintenant pour passer votre commande et profiter de notre service de livraison rapide.
+            {t("Prod_CTA_Desc", "Contactez-nous dès maintenant pour passer votre commande et profiter de notre service de livraison rapide.")}
           </p>
           <a href="/contact" className="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-11 rounded-md bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 button-ripple">
-            Passer ma commande
+            {t("Prod_CTA_Btn", "Passer ma commande")}
             <ArrowRight className="ml-2 w-5 h-5" />
           </a>
         </div>

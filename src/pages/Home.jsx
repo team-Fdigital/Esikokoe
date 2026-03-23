@@ -1,40 +1,42 @@
 import React, { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Star, Droplets, Package, Phone, Mail, MapPin, Clock, CalendarDays, Target, Heart, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function Home() {
+  const { t } = useTranslation()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [progress, setProgress] = useState(0)
   const slideInterval = useRef(null)
 
   const slides = [
     {
-      title: 'Eau Pure',
-      titleHighlight: 'du Togo',
-      badge: 'Qualité Premium',
-      description: 'Découvrez notre eau pure...',
+      title: t("Pure_Water", 'Eau Pure'),
+      titleHighlight: t("Of_Togo", 'du Togo'),
+      badge: t("Premium_Quality", 'Qualité Premium'),
+      description: t("Discover_Pure_Water", 'Découvrez notre eau pure et minéralisée pour votre bien-être au quotidien.'),
       stat: '100%',
-      statLabel: 'Pure',
+      statLabel: t("Pure_Label", 'Pure'),
       gradient: 'from-blue-600 to-cyan-600',
       image: '/assets/hero-water.png',
     },
     {
-      title: 'Livraison',
-      titleHighlight: 'Rapide',
-      badge: 'Service Express',
-      description: 'Livraison gratuite dans tout Lomé en moins de 2h. Service client disponible 24/7.',
+      title: t("Delivery", 'Livraison'),
+      titleHighlight: t("Fast", 'Rapide'),
+      badge: t("Express_Service", 'Service Express'),
+      description: t("Free_Delivery_Desc", 'Livraison gratuite dans tout Lomé en moins de 2h. Service client disponible 24/7.'),
       stat: '2h',
-      statLabel: 'Livraison',
+      statLabel: t("Delivery", 'Livraison'),
       gradient: 'from-green-600 to-emerald-600',
       image: '/assets/hero-water.png',
     },
     {
-      title: 'Clients',
-      titleHighlight: 'Satisfaits',
-      badge: 'Confiance & Qualité',
-      description: 'Plus de 10,000 clients nous font confiance pour leur approvisionnement en eau pure.',
+      title: t("Clients", 'Clients'),
+      titleHighlight: t("Satisfied", 'Satisfaits'),
+      badge: t("Trust_Quality", 'Confiance & Qualité'),
+      description: t("Trust_10k_Desc", 'Plus de 10,000 clients nous font confiance pour leur approvisionnement en eau pure.'),
       stat: '10K+',
-      statLabel: 'Clients',
+      statLabel: t("Clients", 'Clients'),
       gradient: 'from-purple-600 to-pink-600',
       image: '/assets/bonbonne.png',
     },
@@ -72,42 +74,42 @@ export default function Home() {
   const products = [
     {
       id: 1,
-      name: 'Sachets 500ml',
+      name: t("Sachets_500ml", 'Sachets 500ml'),
       price: '300 FCFA',
-      description: 'Parfait pour vos déplacements quotidiens. Eau pure et hygiénique dans un format pratique.',
+      description: t("Sachet_Desc", 'Parfait pour vos déplacements quotidiens. Eau pure et hygiénique dans un format pratique.'),
       gradient: 'from-blue-400 to-cyan-500',
-      badge: 'Bestseller',
+      badge: t("Bestseller", 'Bestseller'),
       badgeColor: 'bg-yellow-500 text-black',
-      features: ['Eau purifiée', 'Hygiénique'],
+      features: [t("Purified_Water", 'Eau purifiée'), t("Hygienic", 'Hygiénique')],
       buttonColor: 'bg-blue-600 hover:bg-blue-700',
       image: '/assets/b35cl.jpg',
     },
     {
       id: 2,
-      name: 'Bonbonnes 22L',
+      name: t("Bottles_22L", 'Bonbonnes 22L'),
       price: '2,300 FCFA',
-      description: 'Idéal pour les familles et bureaux. Solution économique avec livraison gratuite.',
+      description: t("Bottle_Desc", 'Idéal pour les familles et bureaux. Solution économique avec livraison gratuite.'),
       gradient: 'from-green-400 to-emerald-500',
-      badge: 'Économique',
+      badge: t("Economical", 'Économique'),
       badgeColor: 'bg-green-600 text-white',
-      features: ['22L d\'eau pure', 'Réutilisable'],
+      features: [t("22L_Pure", "22L d'eau pure"), t("Reusable", 'Réutilisable')],
       buttonColor: 'bg-green-600 hover:bg-green-700',
       image: '/assets/bonbonne.jpg',
     },
   ]
 
   const stats = [
-    { icon: CalendarDays, title: 'Notre Histoire', description: 'Plus de 2 ans d\'expérience dans la production d\'eau pure au Togo' },
-    { icon: Target, title: 'Notre Mission', description: 'Fournir une eau pure et accessible à tous les Togolais' },
-    { icon: Heart, title: 'Nos Valeurs', description: 'Qualité, transparence et respect de nos clients' },
-    { icon: Users, title: 'Notre Équipe', description: '10+ professionnels dévoués à votre service' },
+    { icon: CalendarDays, title: t("Our_History", 'Notre Histoire'), description: t("History_Desc", "Plus de 2 ans d'expérience dans la production d'eau pure au Togo") },
+    { icon: Target, title: t("Our_Mission", 'Notre Mission'), description: t("Mission_Desc", 'Fournir une eau pure et accessible à tous les Togolais') },
+    { icon: Heart, title: t("Our_Values", 'Nos Valeurs'), description: t("Values_Desc", 'Qualité, transparence et respect de nos clients') },
+    { icon: Users, title: t("Our_Team", 'Notre Équipe'), description: t("Team_Desc", '10+ professionnels dévoués à votre service') },
   ]
 
   const contact = [
-    { icon: Phone, title: 'Téléphone', info: '+228 91 29 99 99', sub: 'Disponible 24/7', color: 'bg-green-100' },
-    { icon: Mail, title: 'Email', info: 'Intercontinentaleau@gmail.com', sub: 'Réponse sous 2h', color: 'bg-blue-100' },
-    { icon: MapPin, title: 'Adresse', info: 'Hedranawoé', sub: 'Lomé, Togo', color: 'bg-purple-100' },
-    { icon: Clock, title: 'Horaires', info: 'Lun-Sam: 8h-18h', sub: 'Livraison 24/7', color: 'bg-orange-100' },
+    { icon: Phone, title: t("Phone_Title", 'Téléphone'), info: '+228 91 29 99 99', sub: t("Available_24_7", 'Disponible 24/7'), color: 'bg-green-100' },
+    { icon: Mail, title: t("Email_Title", 'Email'), info: 'Intercontinentaleau@gmail.com', sub: t("Response_2h", 'Réponse sous 2h'), color: 'bg-blue-100' },
+    { icon: MapPin, title: t("Address_Title", 'Adresse'), info: 'Hedranawoé', sub: 'Lomé, Togo', color: 'bg-purple-100' },
+    { icon: Clock, title: t("Hours_Title", 'Horaires'), info: t("Working_Hours", 'Lun-Sam: 8h-18h'), sub: t("Delivery_24_7", 'Livraison 24/7'), color: 'bg-orange-100' },
   ]
 
   return (
@@ -179,7 +181,7 @@ export default function Home() {
                             className="inline-flex items-center justify-center rounded-full px-8 py-4 bg-white text-blue-700 font-semibold hover:bg-gray-100 transition"
                           >
                             <Droplets className="w-5 h-5 mr-2" />
-                            Commander Maintenant
+                            {t("Order_Now", "Commander Maintenant")}
                           </Link>
 
                           <a
@@ -249,10 +251,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
-              Nos Produits <span className="text-blue-600">Premium</span>
+              {t("Our_Products_Title", "Nos Produits")} <span className="text-blue-600">{t("Premium", "Premium")}</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Découvrez notre gamme complète d'eau pure, disponible en sachets pratiques et bonbonnes économiques
+              {t("Discover_Range", "Découvrez notre gamme complète d'eau pure, disponible en sachets pratiques et bonbonnes économiques")}
             </p>
           </div>
 
@@ -280,7 +282,7 @@ export default function Home() {
                     ))}
                   </div>
                   <Link to="/products" className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 w-full ${product.buttonColor} text-white`}>
-                    Voir détails
+                    {t("View_Details", "Voir détails")}
                     <ChevronRight className="w-4 h-4 ml-2" />
                   </Link>
                 </div>
@@ -293,7 +295,7 @@ export default function Home() {
               to="/products"
               className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium h-11 rounded-md px-8 bg-gradient-to-r from-blue-600 to-cyan-600 hover:opacity-90 text-white"
             >
-              Voir tous nos produits
+              {t("View_All_Products", "Voir tous nos produits")}
               <ChevronRight className="w-5 h-5 ml-2" />
             </Link>
           </div>
@@ -305,13 +307,13 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold mb-4 bg-blue-100 text-blue-800">
-              À propos de nous
+              {t("About_Us_Badge", "À propos de nous")}
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
-              Qui Sommes-<span className="text-blue-600">Nous</span> ?
+              {t("Who_Are", "Qui Sommes-")}<span className="text-blue-600">{t("We", "Nous")}</span> ?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Depuis notre création, nous nous engageons à fournir une eau d'une pureté exceptionnelle à tous les Togolais, avec un service de qualité irréprochable.
+              {t("Since_Creation_Desc", "Depuis notre création, nous nous engageons à fournir une eau d'une pureté exceptionnelle à tous les Togolais, avec un service de qualité irréprochable.")}
             </p>
           </div>
 
@@ -333,19 +335,19 @@ export default function Home() {
             <div className="grid md:grid-cols-4 gap-8 text-center">
               <div>
                 <div className="text-4xl md:text-5xl font-bold mb-2">2+</div>
-                <div className="text-blue-100">Années d'expérience</div>
+                <div className="text-blue-100">{t("Years_Experience", "Années d'expérience")}</div>
               </div>
               <div>
                 <div className="text-4xl md:text-5xl font-bold mb-2">100+</div>
-                <div className="text-blue-100">Clients satisfaits</div>
+                <div className="text-blue-100">{t("Satisfied_Clients", "Clients satisfaits")}</div>
               </div>
               <div>
                 <div className="text-4xl md:text-5xl font-bold mb-2">24/7</div>
-                <div className="text-blue-100">Service disponible</div>
+                <div className="text-blue-100">{t("Service_Available", "Service disponible")}</div>
               </div>
               <div>
                 <div className="text-4xl md:text-5xl font-bold mb-2">100%</div>
-                <div className="text-blue-100">Qualité garantie</div>
+                <div className="text-blue-100">{t("Quality_Guaranteed", "Qualité garantie")}</div>
               </div>
             </div>
           </div>
@@ -355,7 +357,7 @@ export default function Home() {
               to="/about"
               className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium h-11 rounded-md px-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white"
             >
-              En savoir plus sur nous
+              {t("Learn_More_About_Us", "En savoir plus sur nous")}
               <ChevronRight className="w-5 h-5 ml-2" />
             </Link>
           </div>
@@ -367,10 +369,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
-              Prêt à Commander Votre <span className="text-blue-600">Eau Pure</span> ?
+              {t("Ready_To_Order", "Prêt à Commander Votre")} <span className="text-blue-600">{t("Pure_Water_Blue", "Eau Pure")}</span> ?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Contactez-nous dès maintenant pour passer votre commande. Notre équipe est disponible 24h/24 pour vous servir.
+              {t("Contact_Us_Now", "Contactez-nous dès maintenant pour passer votre commande. Notre équipe est disponible 24h/24 pour vous servir.")}
             </p>
           </div>
 
@@ -393,21 +395,21 @@ export default function Home() {
           </div>
 
           <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl p-8 md:p-12 text-white text-center">
-            <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white">Commandez Maintenant !</h3>
-            <p className="text-xl mb-8 text-blue-100">Livraison gratuite dès 10 bonbonnes ou 50 sachets dans tout Lomé</p>
+            <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white">{t("Order_Now_Exc", "Commandez Maintenant !")}</h3>
+            <p className="text-xl mb-8 text-blue-100">{t("Free_Delivery_Rule", "Livraison gratuite dès 10 bonbonnes ou 50 sachets dans tout Lomé")}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="tel:+228 91 29 99 99"
                 className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium h-11 rounded-md px-8 bg-white text-blue-600 hover:bg-gray-100"
               >
                 <Phone className="w-5 h-5 mr-2" />
-                Appeler maintenant
+                {t("Call_Now", "Appeler maintenant")}
               </a>
               <Link
                 to="/contact"
                 className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium border h-11 rounded-md px-8 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
               >
-                Formulaire de contact
+                {t("Contact_Form", "Formulaire de contact")}
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Link>
             </div>

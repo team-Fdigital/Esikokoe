@@ -1,11 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn, Globe } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import { useTranslation } from "react-i18next";
 
 export default function NavBar() {
   const { pathname } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const active = (p) => (pathname === p ? "active" : "");
 
@@ -17,9 +19,14 @@ export default function NavBar() {
     setIsOpen(false);
   }, [pathname]);
 
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === 'fr' ? 'en' : 'fr';
+    i18n.changeLanguage(nextLang);
+  };
+
   return (
     <>
-      <header className="site-header fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b">
+      <header className="site-header fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b shadow-sm">
         <div className="container-wide h-14 flex items-center justify-between">
 
           {/* Logo */}
@@ -32,23 +39,31 @@ export default function NavBar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-6 text-sm font-medium">
-            <Link to="/" className={`nav-link ${active("/")}`}>Accueil</Link>
-            <Link to="/about" className={`nav-link ${active("/about")}`}>À propos</Link>
-            <Link to="/products" className={`nav-link ${active("/products")}`}>Produits</Link>
-            <Link to="/contact" className={`nav-link ${active("/contact")}`}>Contact</Link>
+            <Link to="/" className={`nav-link ${active("/")}`}>{t("Home_Nav", "Accueil")}</Link>
+            <Link to="/about" className={`nav-link ${active("/about")}`}>{t("About_Nav", "À propos")}</Link>
+            <Link to="/products" className={`nav-link ${active("/products")}`}>{t("Products_Nav", "Produits")}</Link>
+            <Link to="/contact" className={`nav-link ${active("/contact")}`}>{t("Contact_Nav", "Contact")}</Link>
           </nav>
 
           {/* Right */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
+            <button
+              onClick={toggleLanguage}
+              className="p-1.5 md:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-200 flex items-center gap-1 text-xs font-semibold"
+              title="Change Language"
+            >
+              <Globe size={18} />
+              <span className="hidden sm:inline uppercase">{i18n.language}</span>
+            </button>
             <ThemeToggle />
 
             {/* Desktop Admin */}
             <Link
               to="/admin/login"
-              className="hidden md:flex items-center gap-2 px-3 py-1.5 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 text-sm"
+              className="hidden md:flex items-center gap-2 px-3 py-1.5 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 text-sm ml-1"
             >
               <LogIn size={16} />
-              Admin
+              {t("Admin_Nav", "Admin")}
             </Link>
 
             {/* Burger Button */}
@@ -102,39 +117,47 @@ export default function NavBar() {
               className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
-              Accueil
+              {t("Home_Nav", "Accueil")}
             </Link>
             <Link
               to="/about"
               className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/about" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
-              À propos
+              {t("About_Nav", "À propos")}
             </Link>
             <Link
               to="/products"
               className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/products" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
-              Produits
+              {t("Products_Nav", "Produits")}
             </Link>
             <Link
               to="/contact"
               className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/contact" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
-              Contact
+              {t("Contact_Nav", "Contact")}
             </Link>
 
             <div className="h-px bg-gray-100 my-4 mx-4"></div>
+            
+            <button 
+              onClick={toggleLanguage}
+              className="flex items-center justify-center gap-2 m-2 px-4 py-3 text-gray-700 bg-gray-100 rounded-lg font-bold hover:bg-gray-200 transition-colors uppercase"
+            >
+              <Globe size={20} />
+              {i18n.language === 'fr' ? 'Switch to English' : 'Passer en Français'}
+            </button>
 
             <Link
               to="/admin/login"
               onClick={closeMenu}
-              className="flex items-center justify-center gap-2 m-4 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30"
+              className="flex items-center justify-center gap-2 m-2 mt-4 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30"
             >
               <LogIn size={20} />
-              Connexion Admin
+              {t("Admin_Login_Mobile", "Connexion Admin")}
             </Link>
           </nav>
         </div>
