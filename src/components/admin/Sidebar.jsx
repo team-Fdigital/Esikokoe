@@ -67,7 +67,7 @@ export default function Sidebar({ isOpen, setIsOpen, userEmail, userRole }) {
 
         <nav className="px-3 space-y-1 flex-1 overflow-y-auto py-4">
           {menu
-            .filter((item) => !item.roles || item.roles.includes(userRole || 'SUPERADMIN'))
+            .filter((item) => !item.roles || item.roles.includes(userRole?.toUpperCase() || 'SUPERADMIN'))
             .map((item) => {
             const Icon = item.icon;
             return (

@@ -19,7 +19,8 @@ export default function Dashboard() {
   const [selectedMagasin, setSelectedMagasin] = useState("");
   const navigate = useNavigate();
 
-  const isAdmin = userRole === 'SUPERADMIN' || userRole === 'GERANT';
+  const role = userRole?.toUpperCase() || "";
+  const isAdmin = role === 'SUPERADMIN' || role === 'GERANT';
 
   useEffect(() => {
     if (isAdmin && magasins.length === 0) {
@@ -88,6 +89,23 @@ export default function Dashboard() {
 
   return (
     <div className="w-full space-y-8">
+      {/* Filtre magasin pour Admin - Placé en haut pour visibilité */}
+      {isAdmin && (
+        <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-800">Vue d'ensemble</h2>
+          <select 
+            className="px-4 py-2 border border-gray-200 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium text-gray-700"
+            value={selectedMagasin}
+            onChange={(e) => setSelectedMagasin(e.target.value)}
+          >
+            <option value="">Tous les magasins (Global)</option>
+            {magasins.map(m => (
+              <option key={m.idMagasin} value={m.idMagasin}>{m.nom}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {/* Cards d'accès rapide */}
       <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${modules.length} gap-4`}>
         {modules.map((module) => (
