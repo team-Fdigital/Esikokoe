@@ -1,24 +1,23 @@
 import { TrendingUp, ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getRapports } from "../../../apiClient";
+import { getFinancialStats } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
 
 export default function FinancialReport() {
   const { t } = useTranslation();
-  const [rapports, setRapports] = useState([]);
+  const [stats, setStats] = useState({ rentabilite: [], tresorerie: [], previsions: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getRapports()
-      .then((res) => setRapports(res.data))
+    getFinancialStats()
+      .then((res) => setStats(res.data))
       .finally(() => setLoading(false));
   }, []);
 
-  // Extraction d'exemples de données dynamiques (adapter selon structure réelle)
-  const rentabiliteData = rapports[0]?.rentabilite || [];
-  const tresorerieData = rapports[0]?.tresorerie || [];
-  const previsions = rapports[0]?.previsions || [];
+  const rentabiliteData = stats.rentabilite || [];
+  const tresorerieData = stats.tresorerie || [];
+  const previsions = stats.previsions || [];
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -9,10 +9,14 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getTransactions, createTransaction, getAllVentes, getAllFactures, getFactureById } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Transactions() {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [ventes, setVentes] = useState([]);
   const [factures, setFactures] = useState([]);
   const [factureVenteId, setFactureVenteId] = useState("");
@@ -121,6 +125,49 @@ export default function Transactions() {
     }
   };
 
+  // Export Excel
+  const handleExportExcel = () => {
+    const data = transactions.map((t) => ({
+      Date: t.createdAt ? new Date(t.createdAt).toLocaleDateString() : "",
+      Type: t.typeTransaction === "RECETTE" ? "Recette" : "Dépense",
+      Catégorie: t.categorie,
+      Description: t.description,
+      Référence: t.reference || "",
+      Montant: t.montant,
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Transactions");
+    XLSX.writeFile(wb, "transactions_comptables.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    if (!transactions.length) {
+      alert(t("No_Data_To_Export"));
+      return;
+    }
+    try {
+      const doc = new jsPDF();
+      doc.text(t("Transactions_Journal"), 14, 15);
+      autoTable(doc, {
+        head: [["Date", "Type", "Catégorie", "Description", "Référence", "Montant"]],
+        body: transactions.map((t) => [
+          t.createdAt ? new Date(t.createdAt).toLocaleDateString() : "",
+          t.typeTransaction === "RECETTE" ? t("Revenue") : t("Expense"),
+          t.categorie || "",
+          t.description || "",
+          t.reference || "",
+          `${t.montant} FCFA`
+        ]),
+        startY: 20,
+      });
+      doc.save("transactions_comptables.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -145,10 +192,33 @@ export default function Transactions() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
-              <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
-                <Download size={16} />
-                {t("Export")}
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                  className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+                >
+                  <Download size={16} />
+                  {t("Export")}
+                </button>
+                {exportMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      {t("Export_Excel")}
+                    </button>
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      {t("Export_PDF")}
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => setShowModal(true)}

@@ -24,6 +24,20 @@ const resources = {
       "Dark": "Sombre",
       "Save_Preferences": "Sauvegarder les préférences",
       "Preferences_Saved": "Préférences sauvegardées avec succès !",
+      "Preferences_Error": "Erreur lors de la sauvegarde des préférences",
+      "Profile_Updated": "Profil mis à jour avec succès !",
+      "Error_Saving_Profile": "Erreur lors de la mise à jour du profil",
+      "Error_Saving_Preferences": "Erreur lors de la sauvegarde des préférences",
+      "Photo_Updated": "Photo de profil mise à jour !",
+      "Error_Uploading_Photo": "Erreur lors de l'envoi de la photo",
+      "Passwords_Do_Not_Match": "Les mots de passe ne correspondent pas",
+      "Password_Changed_Success": "Mot de passe modifié avec succès !",
+      "Error_Changing_Password": "Erreur lors du changement de mot de passe",
+      "Change_Password": "Changer le mot de passe",
+      "Old_Password": "Ancien mot de passe",
+      "New_Password": "Nouveau mot de passe",
+      "Confirm_New_Password": "Confirmer le nouveau mot de passe",
+      "Update_Password": "Mettre à jour le mot de passe",
       // Dashboard
       "Inventory_Desc": "Inventaire et approvisionnement",
       "Sales_Desc": "Factures et commandes",
@@ -491,7 +505,12 @@ const resources = {
       "Recommend_Change_Password": "Il est recommandé de changer de mot de passe tous les 3 mois.",
       "Edit_Password": "Modifier le mot de passe",
       "Connected_Devices": "Appareils connectés",
-      "Location_Active_Now": "Lomé, Togo • Actif maintenant"
+      "Location_Active_Now": "Lomé, Togo • Actif maintenant",
+      "Confirm_Revoke_Session": "Voulez-vous vraiment déconnecter cet appareil ?",
+      "Error_Revoking_Session": "Erreur lors de la déconnexion de l'appareil",
+      "Disconnect": "Déconnecter",
+      "Active_Now": "Actif maintenant",
+      "No_Active_Sessions": "Aucun autre appareil connecté"
     }
   },
   en: {
@@ -515,6 +534,20 @@ const resources = {
       "Dark": "Dark",
       "Save_Preferences": "Save Preferences",
       "Preferences_Saved": "Preferences successfully saved!",
+      "Preferences_Error": "Error saving preferences",
+      "Profile_Updated": "Profile updated successfully!",
+      "Error_Saving_Profile": "Error updating profile",
+      "Error_Saving_Preferences": "Error saving preferences",
+      "Photo_Updated": "Profile photo updated!",
+      "Error_Uploading_Photo": "Error uploading photo",
+      "Passwords_Do_Not_Match": "Passwords do not match",
+      "Password_Changed_Success": "Password changed successfully!",
+      "Error_Changing_Password": "Error changing password",
+      "Change_Password": "Change Password",
+      "Old_Password": "Old Password",
+      "New_Password": "New Password",
+      "Confirm_New_Password": "Confirm New Password",
+      "Update_Password": "Update Password",
       // Dashboard
       "Inventory_Desc": "Inventory and supply",
       "Sales_Desc": "Invoices and orders",
@@ -982,7 +1015,12 @@ const resources = {
       "Recommend_Change_Password": "It is recommended to change your password every 3 months.",
       "Edit_Password": "Edit password",
       "Connected_Devices": "Connected devices",
-      "Location_Active_Now": "Lomé, Togo • Active now"
+      "Location_Active_Now": "Lomé, Togo • Active now",
+      "Confirm_Revoke_Session": "Are you sure you want to disconnect this device?",
+      "Error_Revoking_Session": "Error while disconnecting the device",
+      "Disconnect": "Disconnect",
+      "Active_Now": "Active now",
+      "No_Active_Sessions": "No other connected devices"
     }
   }
 };

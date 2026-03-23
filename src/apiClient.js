@@ -38,6 +38,17 @@ export const getAllUsers = () => apiClient.get('/users');
 export const updateUser = (id, data) => apiClient.patch(`/users/${id}`, data);
 export const deleteUser = (id) => apiClient.delete(`/users/${id}`);
 
+// Profile & Settings
+export const getUserProfile = () => apiClient.get('/users/profile');
+export const updateUserProfile = (data) => apiClient.patch('/users/profile', data);
+export const updateUserPreferences = (data) => apiClient.patch('/users/preferences', data);
+export const changePassword = (data) => apiClient.post('/users/change-password', data);
+export const getUserSessions = () => apiClient.get('/users/sessions');
+export const revokeSession = (sessionId) => apiClient.delete(`/users/sessions/${sessionId}`);
+export const uploadProfilePhoto = (formData) => apiClient.post('/users/upload-photo', formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+});
+
 // CLIENTS
 export const createClient = (data) => apiClient.post('/clients', data);
 export const getAllClients = (magasinId) => apiClient.get('/clients', { params: { magasinId } });
@@ -97,6 +108,7 @@ export const getTransactionById = (id) => apiClient.get(`/comptabilite/transacti
 export const getDistribution = () => apiClient.get('/comptabilite/distribution');
 export const createRapport = (data) => apiClient.post('/comptabilite/rapports', data);
 export const getRapports = () => apiClient.get('/comptabilite/rapports');
+export const getFinancialStats = () => apiClient.get('/comptabilite/financial-stats');
 export const getRapportById = (id) => apiClient.get(`/comptabilite/rapports/${id}`);
 export const createBilan = (data) => apiClient.post('/comptabilite/bilans', data);
 export const getBilans = () => apiClient.get('/comptabilite/bilans');
@@ -106,6 +118,7 @@ export const getAuditLogs = () => apiClient.get('/comptabilite/audit/logs');
 export const getAuditStatus = () => apiClient.get('/comptabilite/audit/status');
 export const getAuditEquilibration = () => apiClient.get('/comptabilite/audit/equilibration');
 export const getAuditTrend = () => apiClient.get('/comptabilite/audit/trend');
+export const getAuditReport = () => apiClient.get('/comptabilite/audit/report');
 
 // RAPPORTS
 export const getProduitsRapport = () => apiClient.get('/rapports/produits');

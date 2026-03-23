@@ -1,13 +1,17 @@
-import { ShoppingCart, ArrowLeft, User, Plus, X } from "lucide-react";
+import { ShoppingCart, ArrowLeft, User, Plus, X, Download, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createVente, getAllClients, createClient } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Clients() {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [showAddClient, setShowAddClient] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [newClient, setNewClient] = useState({ nomClient: "", telephone: "", adresse: "" });
   const [addLoading, setAddLoading] = useState(false);
   const [clients, setClients] = useState([]);
@@ -16,7 +20,6 @@ export default function Clients() {
   useEffect(() => {
     getAllClients()
       .then((res) => {
-        // Le backend retourne { clients: [...] }
         if (res.data && Array.isArray(res.data.clients)) {
           setClients(res.data.clients);
         } else {
@@ -25,6 +28,47 @@ export default function Clients() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  // Export Excel
+  const handleExportExcel = () => {
+    const data = clients.map((c) => ({
+      Nom: c.nomClient,
+      Téléphone: c.telephone,
+      Adresse: c.adresse,
+      Commandes: c.nombreCommandes || 0,
+      "Total Dépensé": (c.totalDepense || 0) + " FCFA",
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Clients");
+    XLSX.writeFile(wb, "liste_clients.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    if (!clients.length) {
+      alert(t("No_Data_To_Export"));
+      return;
+    }
+    try {
+      const doc = new jsPDF();
+      doc.text(t("Customer_Database"), 14, 15);
+      autoTable(doc, {
+        head: [[t("Name"), t("Phone"), t("Address"), t("Orders"), t("Total_Spent")]],
+        body: clients.map((c) => [
+          c.nomClient,
+          c.telephone,
+          c.adresse,
+          c.nombreCommandes || 0,
+          `${(c.totalDepense || 0).toLocaleString()} FCFA`
+        ]),
+        startY: 20,
+      });
+      doc.save("liste_clients.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -95,11 +139,40 @@ export default function Clients() {
             </p>
           </div>
 
-          <div className="flex justify-end p-4">
+          <div className="flex justify-between items-center p-4">
+            <div className="relative">
+              <button 
+                onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+              >
+                <Download size={16} />
+                {t("Export")}
+              </button>
+              {exportMenuOpen && (
+                <div className="absolute left-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                  <button
+                    className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                    onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                  >
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    {t("Export_Excel")}
+                  </button>
+                  <button
+                    className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                    onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                  >
+                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                    {t("Export_PDF")}
+                  </button>
+                </div>
+              )}
+            </div>
+            
             <button
               onClick={() => setShowAddClient(true)}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
             >
+              <Plus size={16} />
               {t("Add_Customer")}
             </button>
           </div>
@@ -121,14 +194,28 @@ export default function Clients() {
                     <th className="text-left py-3">{t("Name")}</th>
                     <th className="text-left">{t("Phone")}</th>
                     <th className="text-left">{t("Address")}</th>
+                    <th className="text-right px-4">{t("Orders")}</th>
+                    <th className="text-right">{t("Total_Spent")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {clients.map((c) => (
-                    <tr key={c.idClient} className="border-b hover:bg-gray-50">
-                      <td className="py-3 font-medium">{c.nomClient}</td>
+                    <tr key={c.idClient} className="border-b hover:bg-gray-50 group">
+                      <td className="py-3 font-medium flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                          <User size={16} />
+                        </div>
+                        {c.nomClient}
+                      </td>
                       <td>{c.telephone}</td>
                       <td>{c.adresse}</td>
+                      <td className="text-right px-4 font-medium text-gray-600">{c.nombreCommandes || 0}</td>
+                      <td className="text-right font-bold text-green-700">
+                        <div className="flex items-center justify-end gap-1">
+                          <TrendingUp size={14} className="text-green-500" />
+                          {(c.totalDepense || 0).toLocaleString()} <span className="text-[10px] text-gray-400 font-normal">FCFA</span>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

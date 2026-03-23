@@ -12,10 +12,14 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAuditStatus, getAuditLogs, getAuditEquilibration, getAuditTrend } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Audit() {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     type: "Recette",
     categorie: "",
@@ -63,6 +67,44 @@ export default function Audit() {
       reference: "",
     });
   };
+
+  // Export Excel
+  const handleExportExcel = () => {
+    const data = (auditLogs || []).map((log) => ({
+      Date: log.createdAt ? new Date(log.createdAt).toLocaleString() : "",
+      Action: log.action,
+      Utilisateur: log.utilisateur?.nom || log.userId,
+      Details: log.details || "",
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "AuditLogs");
+    XLSX.writeFile(wb, "audit_logs.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    try {
+      const doc = new jsPDF();
+      doc.text(t("Audit_Logs") || "Audit Logs", 14, 15);
+      
+      const body = (auditLogs || []).map((log) => [
+        log.createdAt ? new Date(log.createdAt).toLocaleString() : "",
+        log.action || "",
+        log.utilisateur?.nom || log.userId || "",
+        log.details || ""
+      ]);
+
+      autoTable(doc, {
+        head: [[t("Date"), t("Action"), t("User"), t("Details") ]],
+        body: body,
+        startY: 20,
+      });
+      doc.save("audit_logs.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* HEADER */}
@@ -86,10 +128,33 @@ export default function Audit() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
-              <button className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50">
-                <Download size={16} />
-                {t("Export")}
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                  className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+                >
+                  <Download size={16} />
+                  {t("Export")}
+                </button>
+                {exportMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      {t("Export_Excel")}
+                    </button>
+                    <button
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                    >
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      {t("Export_PDF")}
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => setShowModal(true)}
