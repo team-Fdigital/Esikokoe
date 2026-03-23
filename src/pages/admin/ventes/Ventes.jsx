@@ -14,12 +14,17 @@ import { useState, useEffect } from "react";
 import { getAllVentes, createVente, getAllProduits } from "../../../apiClient";
 import { getVenteDetail } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+import { Download } from "lucide-react";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Ventes() {
   const { t } = useTranslation();
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [selectedSale, setSelectedSale] = useState(null);
 
   const [clientInfo, setClientInfo] = useState({
@@ -103,6 +108,49 @@ export default function Ventes() {
       })
     );
   }, [dateFilter, ventes]);
+
+  // Export Excel
+  const handleExportExcel = () => {
+    const data = filteredVentes.map((v) => ({
+      Facture: v.numeroFacture || v.id,
+      Date: v.date ? new Date(v.date).toLocaleString() : "",
+      Client: v.client,
+      Montant: v.montant + " FCFA",
+      Paiement: v.modePaiement || v.paiement,
+      Statut: v.statut || "Payé",
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Ventes");
+    XLSX.writeFile(wb, "historique_ventes.xlsx");
+  };
+
+  // Export PDF
+  const handleExportPDF = () => {
+    if (!filteredVentes.length) {
+      alert(t("No_Data_To_Export"));
+      return;
+    }
+    try {
+      const doc = new jsPDF();
+      doc.text(t("Sales_History"), 14, 15);
+      autoTable(doc, {
+        head: [[t("Invoice_No"), t("Date"), t("Customer"), t("Amount"), t("Payment"), t("Status")]],
+        body: filteredVentes.map((v) => [
+          v.numeroFacture || v.id,
+          v.date ? new Date(v.date).toLocaleString() : "",
+          v.client,
+          `${v.montant?.toLocaleString()} FCFA`,
+          v.modePaiement || v.paiement,
+          v.statut || t("Paid")
+        ]),
+        startY: 20,
+      });
+      doc.save("historique_ventes.pdf");
+    } catch (err) {
+      alert('Erreur export PDF: ' + err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -203,6 +251,34 @@ export default function Ventes() {
                   <Calendar size={16} />
                   {t("Filter_By_Date")}
                 </button>
+
+                <div className="relative">
+                  <button 
+                    onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                    className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+                  >
+                    <Download size={16} />
+                    {t("Export")}
+                  </button>
+                  {exportMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                      <button
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                        onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
+                      >
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                        {t("Export_Excel")}
+                      </button>
+                      <button
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                        onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
+                      >
+                        <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                        {t("Export_PDF")}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
