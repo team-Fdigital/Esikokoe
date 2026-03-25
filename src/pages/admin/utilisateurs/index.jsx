@@ -94,19 +94,19 @@ export default function Utilisateurs({ userRole, userStore }) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
-        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium">{t("Loading_Users")}</p>
+      <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm">
+        <Loader2 className="w-10 h-10 text-indigo-600 dark:text-indigo-400 animate-spin mb-4" />
+        <p className="text-gray-500 dark:text-slate-400 font-medium">{t("Loading_Users")}</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors">
         <div>
-          <h1 className="text-2xl font-bold border-b-2 border-indigo-500 pb-2 inline-block text-gray-800">{t("Users_Management")}</h1>
-          <p className="text-gray-500 text-sm mt-2">
+          <h1 className="text-2xl font-bold border-b-2 border-indigo-500 pb-2 inline-block text-gray-800 dark:text-slate-100">{t("Users_Management")}</h1>
+          <p className="text-gray-500 dark:text-slate-400 text-sm mt-2">
             {userRole === 'SUPERADMIN' 
               ? t("Users_Desc_Superadmin")
               : t("Users_Desc_Gerant")}
@@ -121,11 +121,11 @@ export default function Utilisateurs({ userRole, userStore }) {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-colors">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100 text-sm text-gray-500 uppercase tracking-wider">
+              <tr className="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800 text-sm text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 <th className="px-6 py-4 font-medium">{t("User")}</th>
                 <th className="px-6 py-4 font-medium">{t("Role_Column")}</th>
                 {userRole === 'SUPERADMIN' && <th className="px-6 py-4 font-medium">{t("Store_Column")}</th>}
@@ -135,15 +135,23 @@ export default function Utilisateurs({ userRole, userStore }) {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredUsers.map((user) => (
-                <tr key={user.idUtilisateur} className="hover:bg-gray-50/50 transition-colors">
+                <tr key={user.idUtilisateur} className="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
-                        {(user.nom || "?").charAt(0).toUpperCase()}
-                      </div>
+                      {user.photoUrl ? (
+                        <img 
+                          src={user.photoUrl} 
+                          alt={user.nom} 
+                          className="w-10 h-10 rounded-full object-cover border border-gray-100 dark:border-slate-700 shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold border border-indigo-200 dark:border-indigo-800/50">
+                          {(user.nom || "?").charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <div>
-                        <div className="font-medium text-gray-900">{user.nom}</div>
-                        <div className="text-xs text-gray-500">{user.email}</div>
+                        <div className="font-medium text-gray-900 dark:text-slate-100">{user.nom}</div>
+                        <div className="text-xs text-gray-500 dark:text-slate-400">{user.email}</div>
                       </div>
                     </div>
                   </td>
@@ -186,29 +194,29 @@ export default function Utilisateurs({ userRole, userStore }) {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-slide-up">
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-800">{formData.idUtilisateur ? t("Edit_User") : t("Add_User")}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-slide-up border dark:border-slate-800">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/30">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-slate-100">{formData.idUtilisateur ? t("Edit_User") : t("Add_User")}</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-slate-200 transition-colors">✕</button>
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Full_Name")}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Full_Name")}</label>
                 <input
                   type="text" required
                   value={formData.nom} onChange={e => setFormData({...formData, nom: e.target.value})}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-slate-100 focus:border-transparent outline-none transition-all"
                   placeholder={t("Ex_Name")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Email")}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Email")}</label>
                 <input
                   type="email" required
                   value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-slate-100 focus:border-transparent outline-none transition-all"
                   placeholder={t("Ex_Email")}
                 />
               </div>
@@ -217,10 +225,10 @@ export default function Utilisateurs({ userRole, userStore }) {
                 {userRole === 'SUPERADMIN' && (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">{t("Role_Column")}</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Role_Column")}</label>
                       <select
                         value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})}
-                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                        className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-slate-100 focus:border-transparent outline-none transition-all"
                       >
                         <option value="VENDEUR">{t("Seller")}</option>
                         <option value="GERANT">{t("Manager_Admin")}</option>
@@ -230,11 +238,11 @@ export default function Utilisateurs({ userRole, userStore }) {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">{t("Store_Column")}</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Store_Column")}</label>
                       <select
                         value={formData.magasinId || ''} onChange={e => setFormData({...formData, magasinId: e.target.value})}
                         disabled={formData.role === 'SUPERADMIN'}
-                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all disabled:opacity-50"
+                        className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-slate-100 focus:border-transparent outline-none transition-all disabled:opacity-50"
                       >
                         <option value="">{t("Select_Store")}</option>
                         {Object.entries(magasinsMap).map(([id, nom]) => (
@@ -247,7 +255,7 @@ export default function Utilisateurs({ userRole, userStore }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                   {t("Password")} {formData.idUtilisateur && <span className="text-xs font-normal text-gray-400">{t("Leave_Empty")}</span>}
                 </label>
                 <div className="relative">
@@ -255,14 +263,14 @@ export default function Utilisateurs({ userRole, userStore }) {
                   <input
                     type="password" required={!formData.idUtilisateur}
                     value={formData.motDePasse || ''} onChange={e => setFormData({...formData, motDePasse: e.target.value})}
-                    className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                    className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-slate-100 focus:border-transparent outline-none transition-all text-sm"
                     placeholder="••••••••"
                   />
                 </div>
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" disabled={actionLoading} onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
+                <button type="button" disabled={actionLoading} onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
                 <button type="submit" disabled={actionLoading} className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors shadow-md shadow-indigo-500/20 text-sm font-medium flex items-center gap-2">
                   {actionLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {formData.idUtilisateur ? t("Update") : t("Create")}

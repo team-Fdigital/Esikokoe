@@ -170,23 +170,23 @@ export default function Transactions() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
       {/* HEADER */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white dark:bg-slate-900 shadow-sm border-b dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
               <Link
-                to="/admin"
-                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
+                to="/admin/comptabilite"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 px-2 md:px-3 py-1.5 md:py-2 rounded-xl transition-all"
               >
                 <ArrowLeft size={16} />
                 {t("Back")}
               </Link>
 
-              <ChartColumn className="text-purple-600" size={22} />
+              <ChartColumn className="text-purple-600 dark:text-purple-400" size={22} />
 
-              <h1 className="text-lg md:text-xl font-semibold text-gray-900">
+              <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
                 {t("Accounting_Management")}
               </h1>
             </div>
@@ -195,25 +195,25 @@ export default function Transactions() {
               <div className="relative">
                 <button 
                   onClick={() => setExportMenuOpen(!exportMenuOpen)}
-                  className="flex items-center justify-center gap-1 md:gap-2 border px-3 md:px-4 py-1.5 md:py-2 rounded-md text-xs md:text-sm bg-white text-black hover:bg-gray-50"
+                  className="flex items-center justify-center gap-1 md:gap-2 border dark:border-slate-700 px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors font-bold shadow-sm"
                 >
                   <Download size={16} />
                   {t("Export")}
                 </button>
                 {exportMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 p-1 space-y-1">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl shadow-2xl z-20 p-2 animate-fade-in">
                     <button
-                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      className="w-full text-left px-3 py-2.5 text-xs hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg flex items-center gap-3 text-gray-700 dark:text-slate-200 transition-colors"
                       onClick={() => { handleExportExcel(); setExportMenuOpen(false); }}
                     >
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      <span className="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
                       {t("Export_Excel")}
                     </button>
                     <button
-                      className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 rounded flex items-center gap-2"
+                      className="w-full text-left px-3 py-2.5 text-xs hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg flex items-center gap-3 text-gray-700 dark:text-slate-200 transition-colors"
                       onClick={() => { handleExportPDF(); setExportMenuOpen(false); }}
                     >
-                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      <span className="w-2.5 h-2.5 bg-red-500 rounded-full"></span>
                       {t("Export_PDF")}
                     </button>
                   </div>
@@ -222,7 +222,7 @@ export default function Transactions() {
 
               <button
                 onClick={() => setShowModal(true)}
-                className="flex items-center justify-center gap-1 md:gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-md"
+                className="flex items-center justify-center gap-1 md:gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-xl shadow-lg shadow-purple-500/20 transition-all font-bold"
               >
                 <Plus size={16} />
                 <span className="hidden sm:inline">{t("New_Transaction")}</span>
@@ -270,84 +270,84 @@ export default function Transactions() {
         </div>
 
         {/* TABS */}
-        <div className="flex flex-wrap md:flex-nowrap gap-1 md:gap-2 bg-gray-100 p-1 md:p-1.5 rounded-md w-fit">
+        <div className="flex flex-wrap md:flex-nowrap gap-1 md:gap-2 bg-gray-100 dark:bg-slate-900/50 p-1 md:p-1.5 rounded-xl w-fit border dark:border-slate-800">
           <Link
             to="/admin/comptabilite/transactions"
-            className="px-2 md:px-3 py-1.5 bg-white rounded-md shadow text-xs md:text-sm font-semibold"
+            className="px-4 md:px-6 py-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm text-xs md:text-sm font-bold text-purple-600 dark:text-purple-400 border dark:border-slate-700 transition-all"
           >
             {t("Transactions")}
           </Link>
           <Link
             to="/admin/comptabilite/rapports"
-            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-4 md:px-6 py-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {t("Reports")}
           </Link>
           <Link
             to="/admin/comptabilite/bilan"
-            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-4 md:px-6 py-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {t("Balance_Sheet")}
           </Link>
           <Link
             to="/admin/comptabilite/audit"
-            className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="px-4 md:px-6 py-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {t("Audit")}
           </Link>
         </div>
 
         {/* TABLE */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border dark:border-slate-800 transition-colors overflow-hidden">
+          <div className="p-6 border-b dark:border-slate-800">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
               {t("Transactions_Journal")}
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
               {t("Transactions_History_Desc")}
             </p>
           </div>
 
           <div className="p-4 md:p-6 overflow-x-auto">
             <table className="w-full text-xs md:text-sm min-w-[700px]">
-              <thead className="border-b text-gray-500">
+              <thead className="border-b dark:border-slate-800 text-gray-500 dark:text-slate-400 bg-gray-50/50 dark:bg-slate-800/50">
                 <tr>
-                  <th className="text-left py-3">{t("Date")}</th>
-                  <th className="text-left">{t("Type")}</th>
-                  <th className="text-left">{t("Category")}</th>
-                  <th className="text-left">{t("Description")}</th>
-                  <th className="text-left">{t("Reference")}</th>
-                  <th className="text-right">{t("Amount")}</th>
+                  <th className="text-left py-4 px-4">{t("Date")}</th>
+                  <th className="text-left py-4">{t("Type")}</th>
+                  <th className="text-left py-4">{t("Category")}</th>
+                  <th className="text-left py-4">{t("Description")}</th>
+                  <th className="text-left py-4">{t("Reference")}</th>
+                  <th className="text-right py-4 px-4">{t("Amount")}</th>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className="divide-y dark:divide-slate-800">
                 {transactions.map((transaction, i) => (
-                  <tr key={i} className="border-b hover:bg-gray-50">
-                    <td className="py-3">{transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : ""}</td>
+                  <tr key={i} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td className="py-4 px-4 text-gray-700 dark:text-slate-300">{transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : ""}</td>
 
-                    <td>
+                    <td className="py-4">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${transaction.typeTransaction === "RECETTE"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${transaction.typeTransaction === "RECETTE"
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-900/40"
+                            : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-900/40"
                           }`}
                       >
                         {transaction.typeTransaction === "RECETTE" ? t("Revenue") : t("Expense")}
                       </span>
                     </td>
 
-                    <td>{transaction.categorie}</td>
-                    <td>{transaction.description}</td>
-                    <td>{transaction.reference}</td>
+                    <td className="py-4 font-bold text-gray-800 dark:text-slate-200">{transaction.categorie}</td>
+                    <td className="py-4 text-gray-600 dark:text-slate-400 max-w-[200px] truncate" title={transaction.description}>{transaction.description}</td>
+                    <td className="py-4 text-gray-500 dark:text-slate-500 font-mono text-[10px]">{transaction.reference}</td>
 
                     <td
-                      className={`text-right font-semibold ${transaction.typeTransaction === "RECETTE"
-                          ? "text-green-600"
-                          : "text-red-600"
+                      className={`py-4 px-4 text-right font-bold ${transaction.typeTransaction === "RECETTE"
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-red-600 dark:text-red-400"
                         }`}
                     >
-                      {transaction.montant} FCFA
+                      {transaction.montant.toLocaleString()} FCFA
                     </td>
                   </tr>
                 ))}
@@ -359,29 +359,29 @@ export default function Transactions() {
 
       {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-slide-up">
             {/* HEADER */}
-            <div className="sticky top-0 bg-white flex justify-between items-center p-4 border-b">
+            <div className="sticky top-0 bg-white dark:bg-slate-900 flex justify-between items-center p-6 border-b dark:border-slate-800 z-10 transition-colors">
               <div>
-                <h2 className="text-lg font-bold">{t("Add_Transaction")}</h2>
-                <p className="text-xs text-gray-600 mt-0.5">
+                <h2 className="text-lg font-bold text-gray-800 dark:text-white">{t("Add_Transaction")}</h2>
+                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
                   {t("Record_New_Entry_Exit")}
                 </p>
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600 flex-shrink-0"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
             {/* FORM */}
-            <div className="p-4 space-y-3">
+            <div className="p-6 space-y-4">
               {/* Type de transaction */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 mb-1.5 ml-1">
                   {t("Transaction_Type")}
                 </label>
                 <select
@@ -389,7 +389,7 @@ export default function Transactions() {
                   onChange={(e) => {
                     setFormData({ ...formData, type: e.target.value, categorie: "" });
                   }}
-                  className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 outline-none dark:text-slate-100 transition-all font-medium"
                 >
                   <option value="Recette">{t("Revenue")}</option>
                   <option value="Dépense">{t("Expense")}</option>
@@ -398,7 +398,7 @@ export default function Transactions() {
 
               {/* Catégorie */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 mb-1.5 ml-1">
                   {t("Category")}
                 </label>
                 <select
@@ -406,7 +406,7 @@ export default function Transactions() {
                   onChange={(e) =>
                     setFormData({ ...formData, categorie: e.target.value })
                   }
-                  className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 outline-none dark:text-slate-100 transition-all font-medium"
                 >
                   <option value="">{t("Select_Category")}</option>
                   {categoriesByType[formData.type]?.map((cat) => (
@@ -419,7 +419,7 @@ export default function Transactions() {
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 mb-1.5 ml-1">
                   {t("Description")}
                 </label>
                 <textarea
@@ -428,14 +428,14 @@ export default function Transactions() {
                     setFormData({ ...formData, description: e.target.value })
                   }
                   placeholder={t("Transaction_Description")}
-                  className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600 resize-none"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 outline-none dark:text-slate-100 transition-all resize-none shadow-sm"
                   rows="2"
                 />
               </div>
 
               {/* Montant */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 mb-1.5 ml-1">
                   {t("Amount_FCFA")}
                 </label>
                 <input
@@ -445,18 +445,18 @@ export default function Transactions() {
                     setFormData({ ...formData, montant: e.target.value })
                   }
                   placeholder="0"
-                  className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 outline-none dark:text-slate-100 transition-all font-bold text-purple-600 dark:text-purple-400 shadow-sm"
                 />
               </div>
 
-              {/* Sélection vente (affichée uniquement si aucune facture n'est sélectionnée et aucune facture n'existe) */}
+              {/* Sélection vente */}
               {!formData.reference && factures.length === 0 && (
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5">{t("Linked_Sale_Optional")}</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 mb-1.5 ml-1">{t("Linked_Sale_Optional")}</label>
                   <select
                     value={formData.venteId}
                     onChange={(e) => setFormData({ ...formData, venteId: e.target.value })}
-                    className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 outline-none dark:text-slate-100 transition-all font-medium"
                   >
                     <option value="">{t("Select_Sale")}</option>
                     {ventes.map((v) => (
@@ -468,13 +468,13 @@ export default function Transactions() {
                 </div>
               )}
 
-              {/* Sélection référence facture (optionnelle, uniquement liste déroulante) */}
+              {/* Sélection référence facture */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5">{t("Invoice_Reference_Optional")}</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 mb-1.5 ml-1">{t("Invoice_Reference_Optional")}</label>
                 <select
                   value={formData.reference}
                   onChange={(e) => setFormData({ ...formData, reference: e.target.value })}
-                  className="w-full px-3 py-1.5 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-600"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 outline-none dark:text-slate-100 transition-all font-medium"
                 >
                   <option value="">{t("None")}</option>
                   {factures.map((f) => (
@@ -487,11 +487,10 @@ export default function Transactions() {
             </div>
 
             {/* FOOTER */}
-            <div className="sticky bottom-0 bg-white flex gap-3 p-4 border-t">
-
+            <div className="sticky bottom-0 bg-white dark:bg-slate-900 p-6 border-t dark:border-slate-800 transition-colors">
               <button
                 onClick={handleAddTransaction}
-                className="flex-1 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg font-medium text-sm"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-xl py-3 font-bold shadow-lg shadow-purple-500/25 transition-all active:scale-[0.98]"
               >
                 {t("Add_Transaction_Button")}
               </button>
@@ -507,10 +506,10 @@ export default function Transactions() {
 
 function Stat({ label, value, color }) {
   return (
-    <div className="bg-white rounded-lg border p-6">
-      <p className="text-sm text-gray-600">{label}</p>
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-6 shadow-sm transition-all hover:shadow-md">
+      <p className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 mb-1">{label}</p>
       <p
-        className={`text-2xl font-bold ${color === "green" ? "text-green-600" : "text-red-600"
+        className={`text-2xl font-black ${color === "green" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
           }`}
       >
         {value}

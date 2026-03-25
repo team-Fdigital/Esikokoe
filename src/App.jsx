@@ -100,6 +100,19 @@ function AppContent() {
   const isAdminRoute = location.pathname.startsWith('/admin')
   const isLoginPage = location.pathname === '/admin/login'
 
+  // Restauration globale du thème à chaque navigation ou au rafraîchissement
+  useEffect(() => {
+    if (isLoginPage) {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      const storedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', storedTheme);
+      document.documentElement.classList.toggle('dark', storedTheme === 'dark');
+    }
+  }, [isLoginPage]);
+
+
   if (isAdminRoute && !isLoginPage && isLoading) {
     return <div style={{textAlign:'center',marginTop:'3rem'}}>Chargement...</div>
   }

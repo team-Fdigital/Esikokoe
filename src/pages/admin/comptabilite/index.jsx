@@ -7,8 +7,8 @@ export default function ComptabiliteIndex() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("Accounting")}</h1>
-        <p className="text-gray-600">{t("Manage_Transactions_Analysis")}</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t("Accounting")}</h1>
+        <p className="text-gray-600 dark:text-slate-400">{t("Manage_Transactions_Analysis")}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -45,11 +45,11 @@ function ComptabiliteModule({ icon, title, description, to }) {
   return (
     <Link
       to={to}
-      className="bg-white p-6 rounded-lg border shadow-sm hover:shadow-md hover:border-blue-300 transition cursor-pointer"
+      className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all cursor-pointer group"
     >
-      <div className="mb-4">{icon}</div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
+      <div className="mb-4 transform group-hover:scale-110 transition-transform">{icon}</div>
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{title}</h3>
+      <p className="text-gray-600 dark:text-slate-400 text-sm">{description}</p>
     </Link>
   );
 }

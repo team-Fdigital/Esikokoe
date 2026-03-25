@@ -111,12 +111,12 @@ export default function StockAction() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors">
         <div>
-          <h1 className="text-2xl font-bold border-b-2 border-emerald-500 pb-2 inline-block text-gray-800">
+          <h1 className="text-2xl font-bold border-b-2 border-emerald-500 pb-2 inline-block text-gray-800 dark:text-white">
             {t("Perform_Stocking_Distribution")}
           </h1>
-          <p className="text-gray-500 text-sm mt-2">
+          <p className="text-gray-500 dark:text-slate-400 text-sm mt-2">
             {t("Perform_Stocking_Distribution_Desc")}
           </p>
         </div>
@@ -141,41 +141,41 @@ export default function StockAction() {
       <div className="flex gap-1">
         <Link
           to="/admin/stocks/produits"
-          className="px-4 py-2 bg-white rounded-t-md text-sm font-medium text-black hover:bg-gray-50"
+          className="px-4 py-2 bg-white dark:bg-slate-900 rounded-t-xl text-sm font-bold text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
         >
           {t("Inventory_Tab")}
         </Link>
         <Link
           to="/admin/stocks/action"
-          className="px-4 py-2 bg-white rounded-t-md text-sm font-medium border-b-2 border-emerald-500 text-black hover:bg-gray-50"
+          className="px-4 py-2 bg-white dark:bg-slate-900 rounded-t-xl text-sm font-bold border-b-2 border-emerald-500 text-emerald-600 dark:text-emerald-400"
         >
           {t("Stock_Tab")}
         </Link>
         <Link
           to="/admin/stocks/alertes"
-          className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50 relative"
+          className="px-4 py-2 bg-white dark:bg-slate-900 rounded-t-xl text-sm font-bold text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
         >
           {t("Alerts_Tab")}
         </Link>
         <Link
           to="/admin/stocks/mouvements"
-          className="px-4 py-2 rounded-t-md text-sm font-medium bg-white text-black hover:bg-gray-50 border-b-2 border-transparent"
+          className="px-4 py-2 bg-white dark:bg-slate-900 rounded-t-xl text-sm font-bold text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
         >
           {t("Movements_Tab")}
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 dark:border-slate-800 p-6 transition-colors">
         {loading ? (
-          <div className="text-center py-20">{t("Loading")}</div>
+          <div className="text-center py-20 dark:text-slate-400">{t("Loading")}</div>
         ) : (
           <>
             <div className="mb-6 relative max-w-md">
-              <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+              <Search className="absolute left-3 top-3 text-gray-400 dark:text-slate-500" size={18} />
               <input
                 type="text"
                 placeholder={t("Search_Product_Material")}
-                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -183,7 +183,7 @@ export default function StockAction() {
 
             {/* Matériaux d'Achat */}
             <div className="mb-8">
-              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                 {t("Purchase")}
               </h2>
@@ -205,7 +205,7 @@ export default function StockAction() {
 
             {/* Produits de Vente */}
             <div>
-              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                 {t("Sale")}
               </h2>
@@ -230,15 +230,17 @@ export default function StockAction() {
 
       {/* MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-slide-up">
-            <div className={`px-6 py-4 border-b flex justify-between items-center ${currentAction === 'ENTREE' ? 'bg-green-50/80 border-green-100' : 'bg-red-50/80 border-red-100'}`}>
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-slide-up border dark:border-slate-800">
+            <div className={`px-6 py-4 border-b flex justify-between items-center ${currentAction === 'ENTREE' 
+              ? 'bg-green-50/80 dark:bg-green-900/20 border-green-100 dark:border-green-900/30' 
+              : 'bg-red-50/80 dark:bg-red-900/20 border-red-100 dark:border-red-900/30'}`}>
               <div className="flex items-center gap-2">
-                <div className={`p-1.5 rounded-lg ${currentAction === 'ENTREE' ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
+                <div className={`p-1.5 rounded-lg ${currentAction === 'ENTREE' ? 'bg-green-200 dark:bg-green-800 text-green-700 dark:text-green-200' : 'bg-red-200 dark:bg-red-800 text-red-700 dark:text-red-200'}`}>
                   {currentAction === 'ENTREE' ? <ArrowDown size={18} /> : <ArrowUp size={18} />}
                 </div>
                 <div>
-                  <h2 className={`text-lg font-bold ${currentAction === 'ENTREE' ? 'text-green-800' : 'text-red-800'}`}>
+                  <h2 className={`text-lg font-bold ${currentAction === 'ENTREE' ? 'text-green-800 dark:text-green-100' : 'text-red-800 dark:text-red-100'}`}>
                     {currentAction === "ENTREE" ? t("Stock_Inbound") : t("Distribution")}
                   </h2>
                 </div>
@@ -250,12 +252,12 @@ export default function StockAction() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Concerned_Product")}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Concerned_Product")}</label>
                 <select
                   required
                   value={formData.codeProduit}
                   onChange={(e) => setFormData({ ...formData, codeProduit: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                 >
                   <option value="">{t("Select_Product")}</option>
                   {produits.map(p => {
@@ -273,32 +275,32 @@ export default function StockAction() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                   {t("Quantity")}
                 </label>
                 <div className="relative">
-                  <input
-                    type="number" required min="1"
-                    max={currentAction === 'SORTIE' ? (produits.find(p => p.codeProduit === formData.codeProduit)?.stock || 0) : undefined}
-                    value={formData.quantite}
-                    onChange={(e) => setFormData({ ...formData, quantite: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all pl-12"
-                    placeholder="0"
-                  />
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">QTE</span>
+                    <input
+                      type="number" required min="1"
+                      max={currentAction === 'SORTIE' ? (produits.find(p => p.codeProduit === formData.codeProduit)?.stock || 0) : undefined}
+                      value={formData.quantite}
+                      onChange={(e) => setFormData({ ...formData, quantite: e.target.value })}
+                      className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all pl-12"
+                      placeholder="0"
+                    />
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 text-sm font-medium">QTE</span>
                 </div>
               </div>
 
               {currentAction === 'SORTIE' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                     {t("Destination_Store")}
                   </label>
                   <select
                     required
                     value={formData.idMagasin}
                     onChange={(e) => setFormData({ ...formData, idMagasin: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                   >
                     <option value="">{t("Select_Store")}</option>
                     {magasins.map(m => (
@@ -309,18 +311,18 @@ export default function StockAction() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Reason")}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Reason")}</label>
                 <input
                   type="text"
                   value={formData.motif}
                   onChange={(e) => setFormData({ ...formData, motif: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                   placeholder={t("Ex_Restock")}
                 />
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
                 <button
                   type="submit"
                   disabled={actionLoading}
@@ -341,16 +343,16 @@ export default function StockAction() {
 
 function ProductCard({ produit, onStockage, onDestockage, t }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col justify-between hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:shadow-md transition-all">
       <div>
         <div className="flex justify-between items-start mb-2">
-          <h3 className="font-bold text-gray-800 line-clamp-1 flex-1" title={produit.nomProduit}>{produit.nomProduit}</h3>
-          <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 ml-2">{produit.format}</span>
+          <h3 className="font-bold text-gray-800 dark:text-white line-clamp-1 flex-1" title={produit.nomProduit}>{produit.nomProduit}</h3>
+          <span className="text-xs text-gray-400 dark:text-slate-500 bg-gray-50 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-gray-100 dark:border-slate-700 ml-2">{produit.format}</span>
         </div>
         <div className="flex items-center gap-2 mb-4">
-          <Box size={14} className="text-gray-400" />
-          <span className="text-sm text-gray-600">{t("Stock_Colon")}</span>
-          <span className={`font-bold ml-auto ${produit.stock <= (produit.stockMinimum || 0) ? 'text-red-500' : 'text-green-600'}`}>
+          <Box size={14} className="text-gray-400 dark:text-slate-500" />
+          <span className="text-sm text-gray-600 dark:text-slate-400">{t("Stock_Colon")}</span>
+          <span className={`font-bold ml-auto ${produit.stock <= (produit.stockMinimum || 0) ? 'text-red-500 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
             {produit.stock || 0}
           </span>
         </div>
@@ -358,7 +360,7 @@ function ProductCard({ produit, onStockage, onDestockage, t }) {
       <div className="flex gap-2">
         <button
           onClick={onStockage}
-          className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
+          className="flex-1 bg-green-50 dark:bg-green-900/10 hover:bg-green-100 dark:hover:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-900/30 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
         >
           <ArrowDown size={14} /> {t("Inbound")}
         </button>
@@ -367,8 +369,8 @@ function ProductCard({ produit, onStockage, onDestockage, t }) {
           disabled={(produit.stock || 0) <= 0}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors border
             ${(produit.stock || 0) <= 0
-              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-              : 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
+              ? 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-600 border-gray-200 dark:border-slate-700 cursor-not-allowed'
+              : 'bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-900/30'
             }
           `}
           title={(produit.stock || 0) <= 0 ? t("Stock_Empty") : t("Distribute")}
