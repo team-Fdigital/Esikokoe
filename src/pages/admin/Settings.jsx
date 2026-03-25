@@ -32,39 +32,41 @@ function PasswordModal({ isOpen, onClose, t }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-        <div className="p-4 border-b flex justify-between items-center">
-          <h3 className="font-bold text-lg">{t('Change_Password')}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-slate-900 border dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div className="p-5 border-b dark:border-slate-800 flex justify-between items-center">
+          <h3 className="font-bold text-lg text-gray-900 dark:text-white">{t('Change_Password')}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+            <X size={20} />
+          </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div className="space-y-2">
-            <label className="text-sm font-medium">{t('Old_Password')}</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-slate-300">{t('Old_Password')}</label>
             <input 
               type="password" 
               required
-              className="w-full h-10 px-3 border rounded-md" 
+              className="w-full h-10 px-3 border dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               value={passwords.old}
               onChange={e => setPasswords({...passwords, old: e.target.value})}
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">{t('New_Password')}</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-slate-300">{t('New_Password')}</label>
             <input 
               type="password" 
               required
-              className="w-full h-10 px-3 border rounded-md" 
+              className="w-full h-10 px-3 border dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               value={passwords.new}
               onChange={e => setPasswords({...passwords, new: e.target.value})}
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">{t('Confirm_New_Password')}</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-slate-300">{t('Confirm_New_Password')}</label>
             <input 
               type="password" 
               required
-              className="w-full h-10 px-3 border rounded-md" 
+              className="w-full h-10 px-3 border dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               value={passwords.confirm}
               onChange={e => setPasswords({...passwords, confirm: e.target.value})}
             />
@@ -72,7 +74,7 @@ function PasswordModal({ isOpen, onClose, t }) {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/25 disabled:opacity-50"
           >
             {loading && <Loader2 size={16} className="animate-spin" />}
             {t('Update_Password')}
@@ -289,25 +291,87 @@ export default function Settings() {
                   </select>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <label className="text-sm font-medium text-gray-700 dark:text-slate-300 flex items-center gap-2">
                     <Palette size={16} /> {t('Appearance') || 'Apparence'}
                   </label>
-                  <select
-                    value={settings.theme}
-                    onChange={(e) => {
-                      const newTheme = e.target.value;
-                      setSettings({...settings, theme: newTheme});
-                      document.documentElement.setAttribute('data-theme', newTheme);
-                      if (newTheme === 'dark') document.documentElement.classList.add('dark');
-                      else document.documentElement.classList.remove('dark');
-                      localStorage.setItem('theme', newTheme);
-                    }}
-                    className="w-full md:w-1/2 h-10 px-3 py-2 border dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                  >
-                    <option value="light">{t('Light_Mode') || 'Mode Clair'}</option>
-                    <option value="dark">{t('Dark_Mode') || 'Mode Sombre'}</option>
-                  </select>
+                  <div className="grid grid-cols-2 gap-3 max-w-sm">
+                    {/* Carte Mode Clair */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettings({...settings, theme: 'light'});
+                        document.documentElement.setAttribute('data-theme', 'light');
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                      }}
+                      className={`relative flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer group
+                        ${settings.theme === 'light'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-lg shadow-blue-500/15'
+                          : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 hover:border-gray-300 dark:hover:border-slate-600'
+                        }`}
+                    >
+                      {/* Indicateur sélectionné */}
+                      {settings.theme === 'light' && (
+                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500"></span>
+                      )}
+                      {/* Icône Sun */}
+                      <div className={`p-3 rounded-xl transition-all duration-200
+                        ${settings.theme === 'light'
+                          ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-500'
+                          : 'bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-slate-500 group-hover:text-amber-400 group-hover:bg-amber-50 dark:group-hover:bg-amber-900/20'
+                        }`}
+                      >
+                        <Sun size={22} strokeWidth={1.8} />
+                      </div>
+                      <span className={`text-xs font-semibold transition-colors duration-200
+                        ${settings.theme === 'light'
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-gray-500 dark:text-slate-400'
+                        }`}
+                      >
+                        {t('Light_Mode') || 'Mode Clair'}
+                      </span>
+                    </button>
+
+                    {/* Carte Mode Sombre */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettings({...settings, theme: 'dark'});
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                      }}
+                      className={`relative flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer group
+                        ${settings.theme === 'dark'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-lg shadow-blue-500/15'
+                          : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 hover:border-gray-300 dark:hover:border-slate-600'
+                        }`}
+                    >
+                      {/* Indicateur sélectionné */}
+                      {settings.theme === 'dark' && (
+                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500"></span>
+                      )}
+                      {/* Icône Moon */}
+                      <div className={`p-3 rounded-xl transition-all duration-200
+                        ${settings.theme === 'dark'
+                          ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-500 dark:text-indigo-400'
+                          : 'bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-slate-500 group-hover:text-indigo-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20'
+                        }`}
+                      >
+                        <Moon size={22} strokeWidth={1.8} />
+                      </div>
+                      <span className={`text-xs font-semibold transition-colors duration-200
+                        ${settings.theme === 'dark'
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-gray-500 dark:text-slate-400'
+                        }`}
+                      >
+                        {t('Dark_Mode') || 'Mode Sombre'}
+                      </span>
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="pt-8">
