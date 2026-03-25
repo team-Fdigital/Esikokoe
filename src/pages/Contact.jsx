@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Phone, Mail, MapPin, MessageCircle, Truck, Zap, ChevronLeft, ChevronRight, Clock, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const generateParticles = () => [...Array(15)].map(() => ({
   left: `${Math.random() * 100}%`,
@@ -9,6 +10,7 @@ const generateParticles = () => [...Array(15)].map(() => ({
 }));
 
 const ContactSlider = () => {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
   const [particles] = useState(generateParticles());
@@ -17,65 +19,65 @@ const ContactSlider = () => {
   const slides = [
     {
       id: 1,
-      titre: 'Contact 24/7',
-      badge: 'Toujours Disponible',
+      titre: t("Contact_24_7", 'Contact 24/7'),
+      badge: t("Always_Available", 'Toujours Disponible'),
       icone: Phone,
       degrade: 'from-blue-600 to-cyan-600',
-      description: 'Notre équipe est disponible 24h/24 et 7j/7 pour répondre à tous vos besoins en eau pure.',
+      description: t("Contact_Team_Desc", 'Notre équipe est disponible 24h/24 et 7j/7 pour répondre à tous vos besoins en eau pure.'),
       image: '/eau.jpg',
       altImage: 'Contact 24/7',
       contacts: [
-        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: 'Ligne principale' },
-        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: 'Urgences' },
-        { type: 'mail', titre: 'Intercontinentaleau@gmail.com', sousTitre: 'Email principal' },
-        { type: 'location', titre: 'Hedranawoé, Lomé', sousTitre: 'Notre siège' }
+        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: t("Main_Line", 'Ligne principale') },
+        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: t("Emergencies", 'Urgences') },
+        { type: 'mail', titre: 'Intercontinentaleau@gmail.com', sousTitre: t("Main_Email", 'Email principal') },
+        { type: 'location', titre: 'Hedranawoé, Lomé', sousTitre: t("Our_HQ", 'Notre siège') }
       ]
     },
     {
       id: 2,
-      titre: 'Livraison Express',
-      badge: 'Rapide & Fiable',
+      titre: t("Express_Delivery", 'Livraison Express'),
+      badge: t("Fast_Reliable", 'Rapide & Fiable'),
       icone: Truck,
       degrade: 'from-green-600 to-emerald-600',
-      description: 'Livraison gratuite dans tout Lomé en moins de 2 heures.',
+      description: t("Free_Delivery_Lome_2h", 'Livraison gratuite dans tout Lomé en moins de 2 heures.'),
       image: '/assets/fontaine.jpg',
       altImage: 'Livraison Express',
       contacts: [
-        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: 'Commandes express' },
-        { type: 'mail', titre: 'Intercontinentaleau@gmail.com', sousTitre: 'Suivi livraison' },
-        { type: 'clock', titre: '2h maximum', sousTitre: 'Délai de livraison' },
-        { type: 'location', titre: 'Tout Lomé', sousTitre: 'Zone de livraison' }
+        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: t("Express_Orders", 'Commandes express') },
+        { type: 'mail', titre: 'Intercontinentaleau@gmail.com', sousTitre: t("Delivery_Tracking", 'Suivi livraison') },
+        { type: 'clock', titre: t("Max_2h", '2h maximum'), sousTitre: t("Delivery_Time", 'Délai de livraison') },
+        { type: 'location', titre: t("All_Lome", 'Tout Lomé'), sousTitre: t("Delivery_Zone", 'Zone de livraison') }
       ]
     },
     {
       id: 3,
-      titre: 'Témoignages Clients',
-      badge: 'Ils Nous Font Confiance',
+      titre: t("Client_Testimonials", 'Témoignages Clients'),
+      badge: t("They_Trust_Us", 'Ils Nous Font Confiance'),
       icone: MessageCircle,
       degrade: 'from-violet-600 to-pink-600',
-      description: 'Plus de 2,000 familles nous font confiance au quotidien.',
+      description: t("2k_Families_Trust", 'Plus de 2,000 familles nous font confiance au quotidien.'),
       image: '/assets/b75cl.jpg',
       altImage: 'Témoignages Clients',
       temoignages: [
-        { etoiles: 5, texte: 'Service excellent, eau toujours fraîche !', auteur: 'Marie K.' },
-        { etoiles: 5, texte: 'Livraison rapide et équipe très professionnelle.', auteur: 'Jean-Paul M.' },
-        { etoiles: 5, texte: 'Meilleure eau de Lomé !', auteur: 'Fatou S.' }
+        { etoiles: 5, texte: t("Excellent_Service_Fresh", 'Service excellent, eau toujours fraîche !'), auteur: 'Marie K.' },
+        { etoiles: 5, texte: t("Fast_Delivery_Pro", 'Livraison rapide et équipe très professionnelle.'), auteur: 'Jean-Paul M.' },
+        { etoiles: 5, texte: t("Best_Water_Lome", 'Meilleure eau de Lomé !'), auteur: 'Fatou S.' }
       ]
     },
     {
       id: 4,
-      titre: "Service d'Urgence",
-      badge: 'Intervention Rapide',
+      titre: t("Emergency_Service", "Service d'Urgence"),
+      badge: t("Fast_Intervention", 'Intervention Rapide'),
       icone: Zap,
       degrade: 'from-red-600 to-orange-600',
-      description: 'Besoin d\'eau en urgence ? Intervention rapide 24/7.',
+      description: t("Need_Water_Emergency", 'Besoin d\'eau en urgence ? Intervention rapide 24/7.'),
       image: '/assets/b35cl.jpg',
       altImage: 'Service d\'Urgence',
       contacts: [
-        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: 'Urgences 24/7' },
-        { type: 'mail', titre: 'Intercontinentaleau@gmail.com', sousTitre: 'Email urgence' },
-        { type: 'clock', titre: '30 min', sousTitre: 'Temps de réponse' },
-        { type: 'location', titre: 'Partout à Lomé', sousTitre: 'Zone d\'intervention' }
+        { type: 'phone', titre: '+228 91 29 99 99', sousTitre: t("Emergencies_24_7", 'Urgences 24/7') },
+        { type: 'mail', titre: 'Intercontinentaleau@gmail.com', sousTitre: t("Emergency_Email", 'Email urgence') },
+        { type: 'clock', titre: t("30_Min", '30 min'), sousTitre: t("Response_Time", 'Temps de réponse') },
+        { type: 'location', titre: t("Everywhere_Lome", 'Partout à Lomé'), sousTitre: t("Intervention_Zone", 'Zone d\'intervention') }
       ]
     }
   ];
@@ -193,7 +195,7 @@ const ContactSlider = () => {
                             className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 rounded-md bg-gradient-to-r ${slide.degrade} hover:opacity-90 text-white text-base px-6 py-3`}
                           >
                             <Phone className="w-5 h-5 mr-2" />
-                            Appeler maintenant
+                            {t("Call_Now", "Appeler maintenant")}
                           </a>
                           <a
                             href="mailto:Intercontinentaleau@gmail.com?subject=Demande%20de%20contact"
@@ -202,7 +204,7 @@ const ContactSlider = () => {
                             className="inline-flex items-center font-medium border border-input hover:bg-accent text-lg px-8 py-4 rounded-md bg-transparent hover:text-accent-foreground transition-all"
                           >
                             <Mail className="w-5 h-5 mr-2" />
-                            Envoyer un e-mail
+                            {t("Send_Email", "Envoyer un e-mail")}
                           </a>
                         </div>
                       </div>
@@ -224,14 +226,13 @@ const ContactSlider = () => {
                           <div className={`absolute inset-0 bg-gradient-to-t ${slide.degrade} opacity-20`}></div>
                         </div>
 
-                        {/* Bouton flottant image */}
                         <div className="absolute -bottom-6 -right-6 bg-white rounded-3xl shadow-2xl p-3 animate-bounce lg:w-40">
                           <div className="flex items-center space-x-2">
                             <div className={`p-2 rounded-lg bg-gradient-to-r ${slide.degrade}`}>
                               <Phone className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                              <p className="text-xs font-bold text-gray-900">Appelez</p>
+                              <p className="text-xs font-bold text-gray-900">{t("Call", "Appelez")}</p>
                               <p className="text-xs text-gray-500">24/7</p>
                             </div>
                           </div>

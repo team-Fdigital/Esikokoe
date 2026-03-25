@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ChevronLeft, ChevronRight, Calendar, Target, Heart, Users } from 'lucide-react'
 import useReveal from '../hooks/useReveal'
+import { useTranslation } from 'react-i18next'
 
 export default function About() {
+  const { t } = useTranslation()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [autoPlay, setAutoPlay] = useState(true)
   const autoPlayRef = useRef(null)
@@ -13,12 +15,12 @@ export default function About() {
   const slides = [
     {
       id: 1,
-      title: 'Notre Histoire',
-      badge: 'Depuis 2010',
-      description: 'Fondée en 2010, Intercontinental Eau s\'est imposée comme le leader de la production d\'eau pure au Togo. Notre engagement envers la qualité et l\'innovation nous a permis de servir des milliers de familles.',
+      title: t("About_History_Title", 'Notre Histoire'),
+      badge: t("About_Since_2010", 'Depuis 2010'),
+      description: t("About_History_Desc", 'Fondée en 2010, Intercontinental Eau s\'est imposée comme le leader de la production d\'eau pure au Togo. Notre engagement envers la qualité et l\'innovation nous a permis de servir des milliers de familles.'),
       stats: [
-        { value: '2+', label: 'Années d\'expérience' },
-        { value: '100K+', label: 'Clients servis' }
+        { value: '2+', label: t("About_Years_Exp", "Années d'expérience") },
+        { value: '100K+', label: t("About_Clients_Served", 'Clients servis') }
       ],
       gradient: 'from-blue-600 to-indigo-600',
       bgGradient: 'from-blue-600 to-indigo-600',
@@ -27,12 +29,12 @@ export default function About() {
     },
     {
       id: 2,
-      title: 'Notre Mission',
-      badge: 'Eau Pure pour Tous',
-      description: 'Fournir une eau pure, saine et accessible à tous les Togolais. Nous nous engageons à maintenir les plus hauts standards de qualité tout en respectant l\'environnement.',
+      title: t("About_Mission_Title", 'Notre Mission'),
+      badge: t("About_Mission_Badge", 'Eau Pure pour Tous'),
+      description: t("About_Mission_Desc", 'Fournir une eau pure, saine et accessible à tous les Togolais. Nous nous engageons à maintenir les plus hauts standards de qualité tout en respectant l\'environnement.'),
       stats: [
-        { value: '100%', label: 'Qualité garantie' },
-        { value: '24/7', label: 'Service client' }
+        { value: '100%', label: t("About_Quality_Guaranteed", 'Qualité garantie') },
+        { value: '24/7', label: t("About_Customer_Service", 'Service client') }
       ],
       gradient: 'from-green-600 to-teal-600',
       bgGradient: 'from-green-600 to-teal-600',
@@ -41,12 +43,12 @@ export default function About() {
     },
     {
       id: 3,
-      title: 'Nos Valeurs',
-      badge: 'Excellence & Intégrité',
-      description: 'La qualité, la transparence et le respect de nos clients sont au cœur de nos préoccupations. Chaque goutte d\'eau est testée et certifiée selon les normes internationales.',
+      title: t("About_Values_Title", 'Nos Valeurs'),
+      badge: t("About_Values_Badge", 'Excellence & Intégrité'),
+      description: t("About_Values_Desc", 'La qualité, la transparence et le respect de nos clients sont au cœur de nos préoccupations. Chaque goutte d\'eau est testée et certifiée selon les normes internationales.'),
       stats: [
-        { value: 'ISO', label: 'Certifié' },
-        { value: '0', label: 'Compromis qualité' }
+        { value: 'ISO', label: t("About_Certified", 'Certifié') },
+        { value: '0', label: t("About_Quality_Compromise", 'Compromis qualité') }
       ],
       gradient: 'from-purple-600 to-pink-600',
       bgGradient: 'from-purple-600 to-pink-600',
@@ -55,12 +57,12 @@ export default function About() {
     },
     {
       id: 4,
-      title: 'Notre Équipe',
-      badge: 'Professionnels Dévoués',
-      description: 'Une équipe de 50+ professionnels passionnés travaille chaque jour pour vous offrir le meilleur service. De la production à la livraison, nous sommes là pour vous.',
+      title: t("About_Team_Title", 'Notre Équipe'),
+      badge: t("About_Team_Badge", 'Professionnels Dévoués'),
+      description: t("About_Team_Desc", 'Une équipe de 50+ professionnels passionnés travaille chaque jour pour vous offrir le meilleur service. De la production à la livraison, nous sommes là pour vous.'),
       stats: [
-        { value: '10+', label: 'Employés' },
-        { value: '5', label: 'Livreurs' }
+        { value: '10+', label: t("About_Employees", 'Employés') },
+        { value: '5', label: t("About_Delivery_Staff", 'Livreurs') }
       ],
       gradient: 'from-orange-600 to-red-600',
       bgGradient: 'from-orange-600 to-red-600',
@@ -167,7 +169,7 @@ export default function About() {
 
                           <button className={`inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-11 rounded-md bg-gradient-to-r ${slide.gradient} hover:opacity-90 text-white text-lg px-8 py-4`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-droplets w-5 h-5 mr-2"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path></svg>
-                            En Savoir Plus
+                            {t("About_Know_More", "En Savoir Plus")}
                           </button>
                         </div>
 
@@ -232,9 +234,9 @@ export default function About() {
 
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-16">
-            <span className="text-blue-600 font-semibold tracking-wider uppercase text-sm mb-3 block">Origines</span>
+            <span className="text-blue-600 font-semibold tracking-wider uppercase text-sm mb-3 block">{t("About_Origins", "Origines")}</span>
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900">
-              Notre Histoire
+              {t("About_Our_History_Main", "Notre Histoire")}
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-cyan-400 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -246,9 +248,7 @@ export default function About() {
                 <div className="absolute -top-4 -left-4 text-blue-200">
                   <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
                 </div>
-                <p className="text-xl leading-relaxed text-gray-800 font-medium relative z-10 italic">
-                  Fondée au cœur du Togo, <strong className="text-blue-700">Intercontinental Eau</strong> est née d'une vision simple mais ambitieuse : fournir à tous les Togolais un accès à une eau pure, saine et abordable.
-                </p>
+                <p className="text-xl leading-relaxed text-gray-800 font-medium relative z-10 italic" dangerouslySetInnerHTML={{ __html: t("About_Story_P1", "Fondée au cœur du Togo, <strong className=\"text-blue-700\">Intercontinental Eau</strong> est née d'une vision simple mais ambitieuse : fournir à tous les Togolais un accès à une eau pure, saine et abordable.") }} />
               </div>
             </div>
 
@@ -265,10 +265,10 @@ export default function About() {
                       <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
                         <Target size={18} />
                       </div>
-                      <h4 className="font-semibold text-gray-900">Notre Engagement</h4>
+                      <h4 className="font-semibold text-gray-900">{t("About_Commitment_Title", "Notre Engagement")}</h4>
                     </div>
                     <p className="text-gray-600 leading-relaxed">
-                      Depuis nos débuts, nous nous sommes engagés à respecter les plus hauts standards de qualité dans la production de nos sachets d'eau et bonbonnes de 22 litres. Notre équipe passionnée travaille chaque jour pour garantir que chaque goutte d'eau qui porte notre nom répond aux exigences les plus strictes de pureté et de goût.
+                      {t("About_Commitment_Desc", "Depuis nos débuts, nous nous sommes engagés à respecter les plus hauts standards de qualité dans la production de nos sachets d'eau et bonbonnes de 22 litres. Notre équipe passionnée travaille chaque jour pour garantir que chaque goutte d'eau qui porte notre nom répond aux exigences les plus strictes de pureté et de goût.")}
                     </p>
                   </div>
                 </div>
@@ -281,10 +281,10 @@ export default function About() {
                       <div className="p-2 bg-cyan-100 text-cyan-600 rounded-lg">
                         <Heart size={18} />
                       </div>
-                      <h4 className="font-semibold text-gray-900">Aujourd'hui</h4>
+                      <h4 className="font-semibold text-gray-900">{t("About_Today_Title", "Aujourd'hui")}</h4>
                     </div>
                     <p className="text-gray-600 leading-relaxed">
-                      Aujourd'hui, nous sommes fiers d'être reconnus comme l'un des leaders du marché togolais de l'eau embouteillée, tout en restant fidèles à nos valeurs d'excellence et de service client.
+                      {t("About_Today_Desc", "Aujourd'hui, nous sommes fiers d'être reconnus comme l'un des leaders du marché togolais de l'eau embouteillée, tout en restant fidèles à nos valeurs d'excellence et de service client.")}
                     </p>
                   </div>
                 </div>
@@ -298,35 +298,35 @@ export default function About() {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-800">
-            Notre Mission & Nos Valeurs
+            {t("About_Mission_Values_Main", "Notre Mission & Nos Valeurs")}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 icon: 'droplets',
-                title: 'Pureté',
-                description: 'Nous garantissons une eau d\'une pureté exceptionnelle grâce à nos processus de filtration avancés.',
+                title: t("About_Purity", 'Pureté'),
+                description: t("About_Purity_Desc", 'Nous garantissons une eau d\'une pureté exceptionnelle grâce à nos processus de filtration avancés.'),
                 bgColor: 'bg-blue-100',
                 textColor: 'text-blue-600'
               },
               {
                 icon: 'award',
-                title: 'Qualité',
-                description: 'Chaque produit est soumis à des contrôles qualité rigoureux pour votre satisfaction.',
+                title: t("About_Quality", 'Qualité'),
+                description: t("About_Quality_Desc", 'Chaque produit est soumis à des contrôles qualité rigoureux pour votre satisfaction.'),
                 bgColor: 'bg-green-100',
                 textColor: 'text-green-600'
               },
               {
                 icon: 'users',
-                title: 'Service',
-                description: 'Notre équipe dévouée est à votre service pour répondre à tous vos besoins en eau.',
+                title: t("About_Service", 'Service'),
+                description: t("About_Service_Desc", 'Notre équipe dévouée est à votre service pour répondre à tous vos besoins en eau.'),
                 bgColor: 'bg-cyan-100',
                 textColor: 'text-cyan-600'
               },
               {
                 icon: 'leaf',
-                title: 'Durabilité',
-                description: 'Nous nous engageons pour un avenir durable avec des pratiques respectueuses de l\'environnement.',
+                title: t("About_Sustainability", 'Durabilité'),
+                description: t("About_Sustainability_Desc", 'Nous nous engageons pour un avenir durable avec des pratiques respectueuses de l\'environnement.'),
                 bgColor: 'bg-emerald-100',
                 textColor: 'text-emerald-600'
               }
@@ -364,31 +364,31 @@ export default function About() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-12 text-gray-800">
-              Nos Engagements
+              {t("About_Commitments_Main", "Nos Engagements")}
             </h2>
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               <div className="p-6">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
-                  Qualité Certifiée
+                  {t("About_Certified_Quality_Badge", "Qualité Certifiée")}
                 </div>
                 <p className="text-gray-600">
-                  Nos produits respectent toutes les normes internationales de qualité et de sécurité alimentaire.
+                  {t("About_Certified_Quality_Desc", "Nos produits respectent toutes les normes internationales de qualité et de sécurité alimentaire.")}
                 </p>
               </div>
               <div className="p-6">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold mb-4 bg-green-100 text-green-800 hover:bg-green-100">
-                  Livraison Rapide
+                  {t("About_Fast_Delivery_Badge", "Livraison Rapide")}
                 </div>
                 <p className="text-gray-600">
-                  Service de livraison efficace dans tout le Togo pour répondre à vos besoins rapidement.
+                  {t("About_Fast_Delivery_Desc", "Service de livraison efficace dans tout le Togo pour répondre à vos besoins rapidement.")}
                 </p>
               </div>
               <div className="p-6">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold mb-4 bg-cyan-100 text-cyan-800 hover:bg-cyan-100">
-                  Prix Compétitifs
+                  {t("About_Competitive_Prices_Badge", "Prix Compétitifs")}
                 </div>
                 <p className="text-gray-600">
-                  Des tarifs accessibles pour rendre l'eau pure disponible à tous les Togolais.
+                  {t("About_Competitive_Prices_Desc", "Des tarifs accessibles pour rendre l'eau pure disponible à tous les Togolais.")}
                 </p>
               </div>
             </div>
