@@ -26,11 +26,7 @@ export default function NavBar() {
 
   return (
     <>
-<<<<<<< HEAD
       <header className="site-header fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b shadow-sm">
-=======
-      <header className="bg-white fixed top-0 inset-x-0 z-50 border-b border-gray-200">
->>>>>>> 445d6f89bdd2999165e1d58996fc93ef9627e7cb
         <div className="container-wide h-14 flex items-center justify-between">
 
           {/* Logo */}
@@ -50,7 +46,6 @@ export default function NavBar() {
           </nav>
 
           {/* Right */}
-<<<<<<< HEAD
           <div className="flex items-center gap-1 md:gap-2">
             <button
               onClick={toggleLanguage}
@@ -61,11 +56,6 @@ export default function NavBar() {
               <span className="hidden sm:inline uppercase">{i18n.language}</span>
             </button>
             <ThemeToggle />
-
-=======
-          <div className="flex items-center gap-2">
-            
->>>>>>> 445d6f89bdd2999165e1d58996fc93ef9627e7cb
             {/* Desktop Admin */}
             <Link
               to="/admin/login"

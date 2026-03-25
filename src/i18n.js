@@ -519,7 +519,7 @@ const resources = {
       "Minutes_Short": "min",
       "Hours_Short": "h",
       "Days_Short": "j",
-      "No_Active_Sessions": "Aucun autre appareil connecté"
+      "No_Active_Sessions": "Aucun autre appareil connecté",
       // Frontend (Public)
       "Home_Nav": "Accueil",
       "About_Nav": "À propos",
@@ -1299,7 +1299,7 @@ const resources = {
       "Minutes_Short": "min",
       "Hours_Short": "h",
       "Days_Short": "d",
-      "No_Active_Sessions": "No other connected devices"
+      "No_Active_Sessions": "No other connected devices",
       // Frontend (Public)
       "Home_Nav": "Home",
       "About_Nav": "About Us",
