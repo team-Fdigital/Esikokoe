@@ -168,12 +168,27 @@ export default function Settings() {
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-    if (diffInMins < 1) return t('Just_Now') || 'À l\'instant';
-    if (diffInMins < 60) return `${t('There_Is') || 'Il y a'} ${diffInMins} min`;
-    if (diffInHours < 24) return `${t('There_Is') || 'Il y a'} ${diffInHours} h`;
-    if (diffInDays < 7) return `${t('There_Is') || 'Il y a'} ${diffInDays} j`;
+    const isEn = i18n.language === 'en';
+    let value = '';
+    let unit = '';
+
+    if (diffInMins < 1) return t('Just_Now');
     
-    return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    if (diffInMins < 60) {
+      value = diffInMins;
+      unit = t('Minutes_Short');
+    } else if (diffInHours < 24) {
+      value = diffInHours;
+      unit = t('Hours_Short');
+    } else if (diffInDays < 7) {
+      value = diffInDays;
+      unit = t('Days_Short');
+    } else {
+      return date.toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { day: '2-digit', month: 'short' });
+    }
+
+    if (isEn) return `${value} ${unit} ${t('Ago')}`;
+    return `${t('Ago')} ${value} ${unit}`;
   };
 
   const handleSave = async () => {

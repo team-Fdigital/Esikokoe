@@ -510,6 +510,12 @@ const resources = {
       "Error_Revoking_Session": "Erreur lors de la déconnexion de l'appareil",
       "Disconnect": "Déconnecter",
       "Active_Now": "Actif maintenant",
+      "Last_Active": "Dernière activité :",
+      "Just_Now": "À l'instant",
+      "Ago": "il y a",
+      "Minutes_Short": "min",
+      "Hours_Short": "h",
+      "Days_Short": "j",
       "No_Active_Sessions": "Aucun autre appareil connecté"
     }
   },
@@ -1020,6 +1026,12 @@ const resources = {
       "Error_Revoking_Session": "Error while disconnecting the device",
       "Disconnect": "Disconnect",
       "Active_Now": "Active now",
+      "Last_Active": "Last active:",
+      "Just_Now": "Just now",
+      "Ago": "ago",
+      "Minutes_Short": "min",
+      "Hours_Short": "h",
+      "Days_Short": "d",
       "No_Active_Sessions": "No other connected devices"
     }
   }
