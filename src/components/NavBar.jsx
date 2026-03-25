@@ -19,7 +19,7 @@ export default function NavBar() {
 
   return (
     <>
-      <header className="site-header fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b">
+      <header className="bg-white fixed top-0 inset-x-0 z-50 border-b border-gray-200">
         <div className="container-wide h-14 flex items-center justify-between">
 
           {/* Logo */}
@@ -40,8 +40,7 @@ export default function NavBar() {
 
           {/* Right */}
           <div className="flex items-center gap-2">
-            <ThemeToggle />
-
+            
             {/* Desktop Admin */}
             <Link
               to="/admin/login"
@@ -54,7 +53,7 @@ export default function NavBar() {
             {/* Burger Button */}
             <button
               onClick={toggleMenu}
-              className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors z-50 text-gray-700 dark:text-gray-200"
+              className="md:hidden p-2 rounded-md hover:bg-gray-100 transition-colors z-50 text-gray-700"
               aria-label="Menu"
             >
               <Menu size={28} />
@@ -76,11 +75,11 @@ export default function NavBar() {
 
         {/* Drawer Content */}
         <div
-          className={`absolute top-0 left-0 h-full w-[80%] max-w-sm bg-white shadow-2xl transition-transform duration-300 ease-in-out transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+          className={`absolute top-0 left-0 h-full w-[80%] max-w-sm bg-white border-r border-gray-100 shadow-2xl transition-transform duration-300 ease-in-out transform ${isOpen ? "translate-x-0" : "-translate-x-full"
             }`}
         >
           {/* Drawer Header */}
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100">
             <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
               <img src="/logo.svg" alt="Logo" className="h-8 w-8 object-contain" />
               <span className="font-bold text-xs text-gray-800 uppercase tracking-tight">
@@ -99,28 +98,28 @@ export default function NavBar() {
           <nav className="flex flex-col p-4 gap-1">
             <Link
               to="/"
-              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
+              className={`flex items-center px-4 py-3 rounded-lg font-bold ${pathname === "/" ? "bg-blue-50 text-blue-600" : "text-gray-700 hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
               Accueil
             </Link>
             <Link
               to="/about"
-              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/about" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
+              className={`flex items-center px-4 py-3 rounded-lg font-bold ${pathname === "/about" ? "bg-blue-50 text-blue-600" : "text-gray-700 hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
               À propos
             </Link>
             <Link
               to="/products"
-              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/products" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
+              className={`flex items-center px-4 py-3 rounded-lg font-bold ${pathname === "/products" ? "bg-blue-50 text-blue-600" : "text-gray-700 hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
               Produits
             </Link>
             <Link
               to="/contact"
-              className={`flex items-center px-4 py-3 rounded-lg font-bold text-gray-700 ${pathname === "/contact" ? "bg-red-50 text-red-600" : "hover:bg-gray-100"}`}
+              className={`flex items-center px-4 py-3 rounded-lg font-bold ${pathname === "/contact" ? "bg-blue-50 text-blue-600" : "text-gray-700 hover:bg-gray-100"}`}
               onClick={closeMenu}
             >
               Contact

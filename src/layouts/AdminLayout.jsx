@@ -16,13 +16,13 @@ export default function AdminLayout({ userEmail, userRole, userStore }) {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen bg-gray-50 flex-col">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950 flex-col transition-colors duration-300">
       {/* Top bar for mobile */}
-      <div className="md:hidden flex items-center justify-between bg-white border-b px-4 h-14 sticky top-0 z-50">
-        <span className="font-bold text-gray-800">Admin</span>
+      <div className="md:hidden flex items-center justify-between bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-4 h-14 sticky top-0 z-50">
+        <span className="font-bold text-gray-800 dark:text-slate-100">Admin</span>
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="p-2 text-gray-600 hover:bg-gray-100 rounded-md"
+          className="p-2 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-md transition-colors"
         >
           <Menu size={24} />
         </button>

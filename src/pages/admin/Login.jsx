@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Lock, Mail, AlertCircle, Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,12 @@ export default function Login({ onLoginSucceeded }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+
+  // Forcer le mode clair sur la page de connexion
+  useEffect(() => {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.setAttribute('data-theme', 'light');
+  }, []);
 
   // Validation avancée du mot de passe
   const passwordChecks = [

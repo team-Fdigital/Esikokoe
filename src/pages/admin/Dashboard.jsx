@@ -90,11 +90,12 @@ export default function Dashboard() {
   return (
     <div className="w-full space-y-8">
       {/* Filtre magasin pour Admin - Placé en haut pour visibilité */}
+      {/* Filtre magasin pour Admin - Placé en haut pour visibilité */}
       {isAdmin && (
-        <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-800">Vue d'ensemble</h2>
+        <div className="flex justify-between items-center mb-6 bg-white dark:bg-slate-900 p-4 rounded-xl border dark:border-slate-800 shadow-sm transition-colors">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-slate-100">Vue d'ensemble</h2>
           <select 
-            className="px-4 py-2 border border-gray-200 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium text-gray-700"
+            className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium text-gray-700 dark:text-slate-200"
             value={selectedMagasin}
             onChange={(e) => setSelectedMagasin(e.target.value)}
           >
@@ -174,13 +175,13 @@ function QuickAccessCard({ icon, title, subtitle, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="flex flex-col items-center text-center bg-white rounded-xl border shadow-sm p-4 gap-2 min-h-[100px] cursor-pointer hover:shadow-md hover:border-blue-300 transition"
+      className="flex flex-col items-center text-center bg-white dark:bg-slate-900 rounded-xl border dark:border-slate-800 shadow-sm p-4 gap-2 min-h-[100px] cursor-pointer hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-300 group"
     >
       <div className="flex flex-col items-center gap-2 w-full">
-        <div>{icon}</div>
-        <div className="font-semibold text-sm leading-tight truncate w-full">{title}</div>
+        <div className="p-2 rounded-lg bg-gray-50 dark:bg-slate-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">{icon}</div>
+        <div className="font-semibold text-sm leading-tight truncate w-full text-gray-900 dark:text-slate-100">{title}</div>
       </div>
-      <div className="text-gray-500 text-[11px] truncate w-full opacity-80">{subtitle}</div>
+      <div className="text-gray-500 dark:text-slate-400 text-[11px] truncate w-full opacity-80">{subtitle}</div>
     </div>
   );
 }
