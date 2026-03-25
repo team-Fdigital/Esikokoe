@@ -159,6 +159,23 @@ export default function Settings() {
     return `${os} - ${browser}`;
   };
 
+  const formatLastActive = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now - date;
+    const diffInMins = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInMins < 1) return t('Just_Now') || 'À l\'instant';
+    if (diffInMins < 60) return `${t('There_Is') || 'Il y a'} ${diffInMins} min`;
+    if (diffInHours < 24) return `${t('There_Is') || 'Il y a'} ${diffInHours} h`;
+    if (diffInDays < 7) return `${t('There_Is') || 'Il y a'} ${diffInDays} j`;
+    
+    return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -343,7 +360,9 @@ export default function Settings() {
                                 {session.current ? (
                                   <span className="text-green-600 font-medium ml-1">{t('Active_Now')}</span>
                                 ) : (
-                                  <span className="ml-1">{new Date(session.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                                  <span className="ml-1 text-gray-500">
+                                    {t('Last_Active')} {formatLastActive(session.lastActive)}
+                                  </span>
                                 )}
                               </p>
                             </div>
