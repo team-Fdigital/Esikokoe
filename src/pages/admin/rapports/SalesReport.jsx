@@ -49,32 +49,35 @@ export default function SalesReport() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
       {/* HEADER */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white dark:bg-slate-900 border-b dark:border-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
               <Link
                 to="/admin"
-                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-md"
+                className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 px-2 md:px-3 py-1.5 md:py-2 rounded-xl transition-all"
               >
                 <ArrowLeft size={16} />
                 {t("Back")}
               </Link>
 
-              <TrendingUp className="text-orange-500" size={24} />
+              <TrendingUp className="text-orange-500 dark:text-orange-400" size={24} />
 
-              <h1 className="text-lg md:text-xl font-semibold text-gray-900">
+              <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
                 {t("Reports_And_Analysis")}
               </h1>
             </div>
 
             <div className="flex items-center gap-2 md:gap-3">
-              <select className="border rounded-md px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm">
+              <select className="bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm text-gray-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-orange-500/20 font-bold transition-all">
                 <option value="Ce mois">{t("This_Month")}</option>
               </select>
-              <button className="flex items-center justify-center gap-1 md:gap-2 border px-2 md:px-3 py-1.5 md:py-2 rounded-md text-xs md:text-sm text-gray-800 bg-white hover:bg-gray-50" onClick={handleExportPDF}>
+              <button 
+                className="flex items-center justify-center gap-1 md:gap-2 border dark:border-slate-700 px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors font-bold shadow-sm" 
+                onClick={handleExportPDF}
+              >
                 <Download size={16} />
                 <span className="hidden sm:inline">{t("Export_PDF")}</span>
                 <span className="inline sm:hidden">{t("PDF")}</span>
@@ -87,28 +90,28 @@ export default function SalesReport() {
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-4 md:space-y-6">
         {/* TABS */}
-        <div className="flex flex-wrap md:flex-nowrap gap-1 border-b">
+        <div className="flex flex-wrap md:flex-nowrap gap-1 md:gap-2 bg-gray-100 dark:bg-slate-900/50 p-1 md:p-1.5 rounded-xl w-fit border dark:border-slate-800">
           <Link
             to="/admin/rapports/sales"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium border-b-2 border-orange-500 text-orange-600 hover:bg-orange-50"
+            className="px-4 md:px-6 py-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm text-xs md:text-sm font-bold text-orange-600 dark:text-orange-400 border dark:border-slate-700 transition-all"
           >
             {t("Sales")}
           </Link>
           <Link
             to="/admin/rapports/products"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-4 md:px-6 py-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {t("Products")}
           </Link>
           <Link
             to="/admin/rapports/clients"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-4 md:px-6 py-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {t("Clients")}
           </Link>
           <Link
             to="/admin/rapports/financial"
-            className="px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-600 border-b-2 border-transparent hover:bg-gray-50"
+            className="px-4 md:px-6 py-2 text-xs md:text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {t("Financial")}
           </Link>
@@ -147,26 +150,35 @@ export default function SalesReport() {
         </div>
 
         {/* EVOLUTION SECTION */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-4 md:p-6 border-b">
-            <h2 className="text-lg md:text-xl font-semibold">{t("Sales_Evolution")}</h2>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">{t("Comparison_Last_3_Months")}</p>
+        <div className="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden transition-colors">
+          <div className="p-6 md:p-8 border-b dark:border-slate-800">
+            <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">{t("Sales_Evolution")}</h2>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">{t("Comparison_Last_3_Months")}</p>
           </div>
 
-          <div className="p-4 md:p-6 space-y-3 md:space-y-4">
+          <div className="p-6 md:p-8 space-y-4 md:space-y-5">
             {evolution.map((item, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4 p-3 md:p-4 border rounded-lg hover:bg-gray-50">
-                <div>
-                  <h3 className="font-semibold text-gray-900">{item.mois}</h3>
-                  <p className="text-xs md:text-sm text-gray-500">{item.nombreCommandes} {t("Orders_Lower")} • {item.nombreClients} {t("Clients_Lower")}</p>
+              <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6 p-4 md:p-6 bg-gray-50 dark:bg-slate-800/50 border dark:border-slate-700/50 rounded-2xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-all group">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white dark:bg-slate-700 rounded-xl flex items-center justify-center shadow-sm text-orange-500 dark:text-orange-400 font-black text-xs">
+                    {item.mois.substring(0, 3).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors uppercase tracking-tight">{item.mois}</h3>
+                    <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 font-medium">
+                      <span className="text-gray-900 dark:text-slate-200">{item.nombreCommandes}</span> {t("Orders_Lower")} • <span className="text-gray-900 dark:text-slate-200">{item.nombreClients}</span> {t("Clients_Lower")}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 self-start sm:self-auto">
-                  <span className="font-bold text-gray-900">{item.chiffreAffaires?.toLocaleString()} FCFA</span>
-                  {item.isCurrent && (
-                    <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">
-                      {t("Current_Month")}
-                    </span>
-                  )}
+                <div className="flex items-center gap-4 self-end sm:self-auto">
+                  <div className="text-right">
+                    <span className="block font-black text-gray-900 dark:text-white text-lg">{item.chiffreAffaires?.toLocaleString()} FCFA</span>
+                    {item.isCurrent && (
+                      <span className="inline-flex items-center px-2 py-0.5 mt-1 rounded-full text-[10px] font-black bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 uppercase tracking-wider">
+                        {t("Current_Month")}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -178,20 +190,22 @@ export default function SalesReport() {
 }
 
 function StatCard({ title, value, trend, icon }) {
-  const isGreen = trend.includes("+");
+  const isPositive = trend.includes("+");
 
   return (
-    <div className="bg-white border rounded-lg p-4 md:p-6">
-      <div className="flex justify-between items-start mb-3 md:mb-4">
-        <div>
-          <p className="text-xs md:text-sm text-gray-600 font-medium">{title}</p>
-          <p className="text-xl md:text-2xl font-bold text-gray-900 mt-1 md:mt-2">{value}</p>
+    <div className="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+      <div className="flex justify-between items-start mb-4">
+        <div className="p-3 bg-gray-50 dark:bg-slate-800 rounded-xl">
+          {icon}
         </div>
-        <div className="w-5 h-5 md:w-7 md:h-7">{icon}</div>
+        <p className={`text-[10px] font-black uppercase tracking-widest ${isPositive ? "text-green-600 dark:text-green-400" : "text-orange-600 dark:text-orange-400"}`}>
+          {trend}
+        </p>
       </div>
-      <p className={`text-xs md:text-sm font-medium ${isGreen ? "text-green-600" : "text-orange-600"}`}>
-        {trend}
-      </p>
+      <div>
+        <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">{title}</p>
+        <p className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">{value}</p>
+      </div>
     </div>
   );
 }

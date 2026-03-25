@@ -82,10 +82,10 @@ export default function Magasins({ userRole }) {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors">
         <div>
-          <h1 className="text-2xl font-bold border-b-2 border-blue-500 pb-2 inline-block text-gray-800">{t("Stores_Management")}</h1>
-          <p className="text-gray-500 text-sm mt-2">{t("Stores_Desc")}</p>
+          <h1 className="text-2xl font-bold border-b-2 border-blue-500 pb-2 inline-block text-gray-800 dark:text-white">{t("Stores_Management")}</h1>
+          <p className="text-gray-500 dark:text-slate-400 text-sm mt-2">{t("Stores_Desc")}</p>
         </div>
         {userRole === 'SUPERADMIN' && (
           <button
@@ -101,9 +101,9 @@ export default function Magasins({ userRole }) {
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {magasins.map((magasin) => (
-          <div key={magasin.idMagasin} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow group">
+          <div key={magasin.idMagasin} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 hover:shadow-md transition-all group">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
                 <Store size={24} />
               </div>
               {userRole === 'SUPERADMIN' && (
@@ -117,73 +117,73 @@ export default function Magasins({ userRole }) {
                 </div>
               )}
             </div>
-            <h3 className="text-lg font-bold text-gray-800 mb-2 truncate" title={magasin.nom}>{magasin.nom}</h3>
-            <div className="space-y-2 text-sm text-gray-600">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 truncate" title={magasin.nom}>{magasin.nom}</h3>
+            <div className="space-y-2 text-sm text-gray-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
-                <MapPin size={14} className="text-gray-400" />
+                <MapPin size={14} className="text-gray-400 dark:text-slate-500" />
                 <span>{magasin.adresse}</span>
               </div>
             </div>
           </div>
         ))}
         {magasins.length === 0 && (
-            <div className="col-span-full text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-                <p className="text-gray-400">{t("No_Stores_Found")}</p>
+            <div className="col-span-full text-center py-20 bg-gray-50 dark:bg-slate-900/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-slate-800">
+                <p className="text-gray-400 dark:text-slate-500">{t("No_Stores_Found")}</p>
             </div>
         )}
       </div>
 
       {/* Modal Form */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-slide-up">
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-800">{formData.idMagasin ? t("Edit_Store") : t("Add_Store")}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-slide-up border dark:border-slate-800">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">{formData.idMagasin ? t("Edit_Store") : t("Add_Store")}</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-slate-200">✕</button>
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Store_Name")}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Store_Name")}</label>
                 <input
                    type="text" required
                   value={formData.nom} onChange={e => setFormData({...formData, nom: e.target.value})}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   placeholder={t("Ex_Main_Store")}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("City")}</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("City")}</label>
                   <input
                     type="text" required
                     value={formData.ville} onChange={e => setFormData({...formData, ville: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                     placeholder={t("Ex_City")}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("Phone")}</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Phone")}</label>
                   <input
                     type="text"
                     value={formData.telephone} onChange={e => setFormData({...formData, telephone: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                     placeholder={t("Ex_Phone")}
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Full_Address")}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">{t("Full_Address")}</label>
                 <textarea
                   required rows={2}
                   value={formData.adresse} onChange={e => setFormData({...formData, adresse: e.target.value})}
-                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
+                  className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
                   placeholder={t("Neighborhood_Street")}
                 />
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-sm font-medium">{t("Cancel")}</button>
                 <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors shadow-md shadow-blue-500/20 text-sm font-medium">
                   {formData.idMagasin ? t("Update") : t("Create")}
                 </button>
