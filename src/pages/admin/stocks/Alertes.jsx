@@ -1,25 +1,42 @@
 import { Package, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCriticalStocks } from "../../../apiClient";
+import { getCriticalStocks, getAllMagasins } from "../../../apiClient";
 import { useTranslation } from "react-i18next";
+
 
 export default function Alertes() {
   const { t } = useTranslation();
   const [alertes, setAlertes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [magasins, setMagasins] = useState([]);
+  const [selectedMagasin, setSelectedMagasin] = useState("");
 
   useEffect(() => {
-    getCriticalStocks()
+    getAllMagasins().then(res => {
+      const fetchMagasins = res.data.magasins || (Array.isArray(res.data) ? res.data : []);
+      setMagasins(fetchMagasins);
+      if (fetchMagasins.length > 0 && !selectedMagasin) {
+        setSelectedMagasin(fetchMagasins[0].idMagasin);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!selectedMagasin) return;
+    setLoading(true);
+    getCriticalStocks(selectedMagasin)
       .then((res) => {
         if (res.data && Array.isArray(res.data)) {
           setAlertes(res.data);
+        } else if (res.data && Array.isArray(res.data.produitsEnAlerte)) {
+          setAlertes(res.data.produitsEnAlerte);
         } else {
           setAlertes([]);
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedMagasin]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
@@ -48,6 +65,22 @@ export default function Alertes() {
 
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 space-y-6">
+        {/* Sélecteur de magasin */}
+        {magasins.length > 0 && (
+          <div className="mb-4 flex items-center gap-2">
+            <label htmlFor="magasin-select" className="font-medium text-gray-700 dark:text-slate-200">Magasin :</label>
+            <select
+              id="magasin-select"
+              className="px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium text-gray-700 dark:text-slate-200"
+              value={selectedMagasin}
+              onChange={e => setSelectedMagasin(e.target.value)}
+            >
+              {magasins.map(m => (
+                <option key={m.idMagasin} value={m.idMagasin}>{m.nom}</option>
+              ))}
+            </select>
+          </div>
+        )}
         {/* TABS */}
         <div className="flex gap-1">
           <Link
