@@ -26,13 +26,8 @@ export default function NavBar() {
 
   return (
     <>
-<<<<<<< HEAD
-      <header className="site-header fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b shadow-sm">
-=======
       <header className="bg-white fixed top-0 inset-x-0 z-50 border-b border-gray-200">
->>>>>>> 445d6f89bdd2999165e1d58996fc93ef9627e7cb
         <div className="container-wide h-14 flex items-center justify-between">
-
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <img src="/logo.svg" alt="Logo" className="h-10 w-10 object-contain" />
@@ -40,7 +35,6 @@ export default function NavBar() {
               EAU CONTINENTALE
             </span>
           </Link>
-
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-6 text-sm font-medium">
             <Link to="/" className={`nav-link ${active("/")}`}>{t("Home_Nav", "Accueil")}</Link>
@@ -48,10 +42,8 @@ export default function NavBar() {
             <Link to="/products" className={`nav-link ${active("/products")}`}>{t("Products_Nav", "Produits")}</Link>
             <Link to="/contact" className={`nav-link ${active("/contact")}`}>{t("Contact_Nav", "Contact")}</Link>
           </nav>
-
           {/* Right */}
-<<<<<<< HEAD
-          <div className="flex items-center gap-1 md:gap-2">
+          <div className="flex items-center gap-2">
             <button
               onClick={toggleLanguage}
               className="p-1.5 md:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-200 flex items-center gap-1 text-xs font-semibold"
@@ -61,11 +53,6 @@ export default function NavBar() {
               <span className="hidden sm:inline uppercase">{i18n.language}</span>
             </button>
             <ThemeToggle />
-
-=======
-          <div className="flex items-center gap-2">
-            
->>>>>>> 445d6f89bdd2999165e1d58996fc93ef9627e7cb
             {/* Desktop Admin */}
             <Link
               to="/admin/login"
@@ -74,7 +61,6 @@ export default function NavBar() {
               <LogIn size={16} />
               {t("Admin_Nav", "Admin")}
             </Link>
-
             {/* Burger Button */}
             <button
               onClick={toggleMenu}
