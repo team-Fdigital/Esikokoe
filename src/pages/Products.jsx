@@ -10,6 +10,7 @@ export default function Products() {
   const [autoPlay, setAutoPlay] = useState(true)
   const autoPlayRef = useRef(null)
   const [likedProducts, setLikedProducts] = useState({})
+  const [likesCount, setLikesCount] = useState({})
   const revealRef = useRef(null)
 
   useReveal(revealRef)
@@ -156,8 +157,20 @@ export default function Products() {
   const toggleLike = (productId) => {
     setLikedProducts(prev => ({
       ...prev,
-      [productId]: !prev[productId]
+      [productId]: true
     }))
+
+    setLikesCount(prev => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + 1
+    }))
+    
+    setTimeout(() => {
+      setLikedProducts(prev => ({
+        ...prev,
+        [productId]: false
+      }))
+    }, 1000)
   }
 
   return (
@@ -248,7 +261,7 @@ export default function Products() {
                                 {/* Likes */}
                                 <div className="flex items-center space-x-2 text-gray-500">
                                   <Heart className="w-4 h-4" />
-                                  <span>{slide.likes} {t("Prod_Likes_Text", "personnes aiment ce produit")}</span>
+                                  <span>{likesCount[slide.id] || 0} {t("Prod_Likes_Text", "personnes aiment ce produit")}</span>
                                 </div>
 
                                 {/* CTA Button */}
