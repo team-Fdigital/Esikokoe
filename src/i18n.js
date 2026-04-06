@@ -533,7 +533,7 @@ const resources = {
       "Bottles_22L": "Bonbonnes 22L",
       "Enterprise_Pack": "Pack Entreprise",
       "Subscription": "Abonnement",
-      "All_Rights_Reserved": "© 2024 Intercontinental Eau. Tous droits réservés. | Eau pure du Togo",
+      "All_Rights_Reserved": "© 2026 Intercontinental Eau. Tous droits réservés. | Eau pure du Togo",
       "Pure_Water": "Eau Pure",
       "Of_Togo": "du Togo",
       "Premium_Quality": "Qualité Premium",

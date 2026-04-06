@@ -68,7 +68,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-800 pt-6 text-center text-sm text-gray-500">
-          {t("All_Rights_Reserved", "© 2024 Intercontinental Eau. Tous droits réservés. | Eau pure du Togo")}
+          {t("All_Rights_Reserved", "© 2026 Intercontinental Eau. Tous droits réservés. | Eau pure du Togo")}
         </div>
       </div>
     </footer>
