@@ -664,7 +664,7 @@ const resources = {
       // Products Page
       "Prod_Sachets_Title": "Sachets d'Eau Pure",
       "Prod_Sachets_Badge": "Populaire",
-      "Prod_Sachets_Format": "Format Pratique",
+      "Prod_Sachets_Format": "Pack de 30 sachets",
       "Prod_Sachets_Desc": "Nos sachets d'eau pure de 500ml sont parfaits pour tous vos déplacements. Conditionnés dans un emballage hygiénique et pratique.",
       "Prod_Sachets_F1": "500ml",
       "Prod_Sachets_F2": "Hygiénique",
@@ -744,7 +744,7 @@ const resources = {
       "Prod_Sachets_F2_Main": "Emballage hygiénique et résistant",
       "Prod_Sachets_F3_Main": "Contrôle qualité rigoureux",
       "Prod_Unit_Price": "Prix unitaire",
-      "Prod_Sachets_Info": "• Remise dégressive à partir de 50 sachets<br />• Livraison gratuite dès 100 sachets",
+      "Prod_Sachets_Info": "• Pack de 30 sachets de 500ml<br />• Livraison disponible",
       "Prod_Order_Now_Main": "Commander maintenant",
 
       "Prod_22L_Title_Main": "Bonbonnes 22L",
@@ -753,7 +753,7 @@ const resources = {
       "Prod_22L_F1_Main": "22 litres d'eau pure et fraîche",
       "Prod_22L_F2_Main": "Livraison à domicile disponible",
       "Prod_22L_F3_Main": "Bonbonne réutilisable et écologique",
-      "Prod_22L_Info": "• Consigne bonbonne: 2,000 FCFA (remboursable)<br />• Livraison gratuite dès 5 bonbonnes",
+      "Prod_22L_Info": "• Consigne bonbonne: 4,000 FCFA<br />• Livraison disponible",
 
       "Prod_Why_Title": "Pourquoi Choisir <span className=\"text-blue-600\">Intercontinental Eau</span> ?",
       "Prod_Why_Purity": "Pureté Garantie",
@@ -1444,7 +1444,7 @@ const resources = {
       // Products Page
       "Prod_Sachets_Title": "Pure Water Sachets",
       "Prod_Sachets_Badge": "Popular",
-      "Prod_Sachets_Format": "Practical Format",
+      "Prod_Sachets_Format": "Pack of 30 sachets",
       "Prod_Sachets_Desc": "Our 500ml pure water sachets are perfect for when you're on the go. Packaged in a hygienic and practical wrapper.",
       "Prod_Sachets_F1": "500ml",
       "Prod_Sachets_F2": "Hygienic",
@@ -1524,7 +1524,7 @@ const resources = {
       "Prod_Sachets_F2_Main": "Hygienic and resistant packaging",
       "Prod_Sachets_F3_Main": "Rigorous quality control",
       "Prod_Unit_Price": "Unit price",
-      "Prod_Sachets_Info": "• Degressive discount from 50 sachets<br />• Free delivery from 100 sachets",
+      "Prod_Sachets_Info": "• Pack of 30 500ml sachets<br />• Delivery available",
       "Prod_Order_Now_Main": "Order now",
 
       "Prod_22L_Title_Main": "22L Bottles",
@@ -1533,7 +1533,7 @@ const resources = {
       "Prod_22L_F1_Main": "22 liters of pure, fresh water",
       "Prod_22L_F2_Main": "Home delivery available",
       "Prod_22L_F3_Main": "Reusable and eco-friendly bottle",
-      "Prod_22L_Info": "• Bottle deposit: 2,000 FCFA (refundable)<br />• Free delivery from 5 bottles",
+      "Prod_22L_Info": "• Bottle deposit: 4,000 FCFA<br />• Delivery available",
 
       "Prod_Why_Title": "Why Choose <span className=\"text-blue-600\">Intercontinental Eau</span>?",
       "Prod_Why_Purity": "Guaranteed Purity",

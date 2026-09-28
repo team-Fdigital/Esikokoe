@@ -2,7 +2,7 @@ Instructions pour les images d'assets
 
 - Les composants utilisent actuellement des images publiques Unsplash en exemple.
 - Pour remplacer par vos propres images :
-  1. Placez vos images dans `public/assets/` (ex : `public/assets/hero.jpg`, `public/assets/sachet-500ml.jpg`).
+  1. Placez vos images dans `public/assets/` (ex : `public/assets/hero.png`, `public/assets/sachet-500ml.png`).
   2. Mettez à jour les références d'URL dans :
      - `src/pages/Home.jsx` (hero)
      - `src/data/products.js` (champ `image` pour chaque produit)

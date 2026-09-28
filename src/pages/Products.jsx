@@ -19,9 +19,9 @@ export default function Products() {
       id: 1,
       title: t("Prod_Sachets_Title", 'Sachets d\'Eau Pure'),
       badge: t("Prod_Sachets_Badge", 'Populaire'),
-      price: '300 FCFA',
+      price: '250 FCFA',
       originalPrice: '',
-      format: t("Prod_Sachets_Format", 'Format Pratique'),
+      format: t("Prod_Sachets_Format", 'Pack de 30 sachets'),
       description: t("Prod_Sachets_Desc", 'Nos sachets d\'eau pure de 500ml sont parfaits pour tous vos déplacements. Conditionnés dans un emballage hygiénique et pratique.'),
       volume: '500ml',
       features: [t("Prod_Sachets_F1", '500ml'), t("Prod_Sachets_F2", 'Hygiénique'), t("Prod_Sachets_F3", 'Portable'), t("Prod_Sachets_F4", 'Économique')],
@@ -31,14 +31,14 @@ export default function Products() {
       gradient: 'from-blue-500 to-cyan-500',
       bgGradient: 'from-blue-600 to-cyan-600',
       icon: Droplets,
-      image: '/eau.jpg'
+      image: '/assets/sachet.png'
     },
     {
       id: 2,
       title: t("Prod_22L_Title", 'Bonbonnes 22L'),
-      badge: t("Prod_22L_Badge", 'Économisez 500 FCFA'),
-      price: '2,300 FCFA',
-      originalPrice: '2,800 FCFA',
+      badge: t("Prod_22L_Badge", 'Tarif réel'),
+      price: '2,200 FCFA',
+      originalPrice: '',
       format: t("Prod_22L_Format", 'Format Familial'),
       description: t("Prod_22L_Desc", 'Nos bonbonnes de 22 litres sont idéales pour les familles et les bureaux. Eau pure et fraîche pour toute la semaine.'),
       volume: '22 Litres',
@@ -49,80 +49,62 @@ export default function Products() {
       gradient: 'from-green-500 to-emerald-500',
       bgGradient: 'from-green-600 to-emerald-600',
       icon: Package,
-      image: '/eau.jpg'
+      image: '/assets/bonbonne.png'
     },
     {
       id: 3,
-      title: t("Prod_Enterprise_Title", 'Pack Entreprise'),
-      badge: t("Prod_Enterprise_Badge", 'Nouveau'),
-      price: 'Sur devis',
+      title: 'Bouteilles 50cl',
+      badge: 'Carton de 16 bouteilles',
+      price: '1,600 FCFA',
       originalPrice: '',
-      format: t("Prod_Enterprise_Format", 'Solution Professionnelle'),
-      description: t("Prod_Enterprise_Desc", 'Pack spécialement conçu pour les entreprises. Livraison régulière et tarifs préférentiels pour vos équipes.'),
-      volume: t("Prod_Enterprise_Volume", 'Sur devis'),
-      features: [t("Prod_Enterprise_F1", 'Livraison régulière'), t("Prod_Enterprise_F2", 'Tarifs préférentiels'), t("Prod_Enterprise_F3", 'Service dédié'), t("Prod_Enterprise_F4", 'Facturation mensuelle')],
+      format: 'Carton de 16 bouteilles',
+      description: 'Bouteilles de 50cl, conditionnées par carton de 16 bouteilles.',
+      volume: '50cl',
+      features: ['50cl', 'Carton de 16', 'Eau pure', 'Pratique'],
       likes: '456',
       rating: '4.9',
       reviews: '2,340',
       gradient: 'from-purple-500 to-pink-500',
       bgGradient: 'from-purple-600 to-pink-600',
       icon: Building,
-      image: '/eau.jpg'
+      image: '/assets/b35cl.png'
     },
     {
       id: 4,
-      title: t("Prod_Sub_Title", 'Abonnement Mensuel'),
-      badge: t("Prod_Sub_Badge", '2 mois gratuits'),
-      price: '8,000 FCFA/mois',
-      originalPrice: '10,000 FCFA/mois',
-      format: t("Prod_Sub_Format", 'Service Premium'),
-      description: t("Prod_Sub_Desc", 'Abonnez-vous et recevez votre eau pure chaque semaine. Service premium avec livraison garantie et prix avantageux.'),
-      volume: t("Prod_Sub_Volume", 'Mensuel'),
-      features: [t("Prod_Sub_F1", 'Livraison hebdomadaire'), t("Prod_Sub_F2", 'Prix fixe'), t("Prod_Sub_F3", 'Sans engagement'), t("Prod_Sub_F4", 'Service prioritaire')],
+      title: 'Bouteilles 1L',
+      badge: 'Carton de 16 bouteilles',
+      price: '2,400 FCFA',
+      originalPrice: '',
+      format: 'Carton de 16 bouteilles',
+      description: 'Bouteilles de 1L, conditionnées par carton de 16 bouteilles.',
+      volume: '1L',
+      features: ['1L', 'Carton de 16', 'Eau pure', 'Format familial'],
       likes: '2,100',
       rating: '4.9',
       reviews: '2,340',
       gradient: 'from-orange-500 to-red-500',
       bgGradient: 'from-orange-600 to-red-600',
       icon: Calendar,
-      image: '/eau.jpg'
+      image: '/assets/b35cl.png'
     },
     {
       id: 5,
-      title: t("Prod_75cl_Title", 'Bouteille 75cl'),
-      badge: t("Prod_75cl_Badge", 'Populaire'),
-      price: '250 FCFA',
-      originalPrice: '300 FCFA',
-      format: t("Prod_75cl_Format", 'Format Individuel'),
-      description: t("Prod_75cl_Desc", 'Notre bouteille de 75cl est idéale pour rester hydraté tout au long de la journée. Un format élégant pour le bureau ou le sport.'),
-      volume: '75cl',
-      features: [t("Prod_75cl_F1", '75cl'), t("Prod_75cl_F2", 'Bouchon sport'), t("Prod_75cl_F3", 'Recyclable'), t("Prod_75cl_F4", 'Format idéal')],
+      title: 'Bouteilles 1,5L',
+      badge: 'Carton de 16 bouteilles',
+      price: '2,650 FCFA',
+      originalPrice: '',
+      format: 'Carton de 16 bouteilles',
+      description: 'Bouteilles de 1,5L, conditionnées par carton de 16 bouteilles.',
+      volume: '1,5L',
+      features: ['1,5L', 'Carton de 16', 'Eau pure', 'Grande contenance'],
       likes: '1,540',
       rating: '4.9',
       reviews: '1,820',
       gradient: 'from-blue-400 to-indigo-500',
       bgGradient: 'from-blue-500 to-indigo-600',
       icon: Droplets,
-      image: '/assets/b75cl.jpg'
+      image: '/assets/b35cl.png'
     },
-    {
-      id: 6,
-      title: t("Prod_35cl_Title", 'Bouteille 35cl'),
-      badge: t("Prod_35cl_Badge", 'Pratique'),
-      price: '150 FCFA',
-      originalPrice: '200 FCFA',
-      format: t("Prod_35cl_Format", 'Petit Format'),
-      description: t("Prod_35cl_Desc", 'La petite bouteille de 35cl se glisse partout. Parfaite pour les enfants ou les événements.'),
-      volume: '35cl',
-      features: [t("Prod_35cl_F1", '35cl'), t("Prod_35cl_F2", 'Compacte'), t("Prod_35cl_F3", 'Légère'), t("Prod_35cl_F4", 'Pratique')],
-      likes: '920',
-      rating: '4.8',
-      reviews: '1,150',
-      gradient: 'from-cyan-400 to-blue-500',
-      bgGradient: 'from-cyan-500 to-blue-600',
-      icon: Droplets,
-      image: '/assets/b35cl.jpg'
-    }
   ]
 
   useEffect(() => {
@@ -345,11 +327,11 @@ export default function Products() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 -mr-32 -mt-32"></div>
 
           <div className="w-full md:w-1/2 relative z-10">
-            <div className="relative transition-all duration-700">
+            <div className="relative transition-all duration-700 flex justify-center items-center">
               <img
-                src="/assets/fontaineb.jpg"
+                src="/assets/fontaine.png"
                 alt="Fontaine à Eau Dispenser"
-                className="w-full h-auto max-h-[500px] object-contain rounded-2xl"
+                className="w-full max-w-[640px] h-auto max-h-[620px] object-contain rounded-2xl drop-shadow-[0_25px_45px_rgba(59,130,246,0.25)] scale-[1.08]"
                 loading="lazy"
                 decoding="async"
               />
@@ -387,6 +369,17 @@ export default function Products() {
               </div>
             </div>
 
+            <div className="grid sm:grid-cols-2 gap-3 pt-2">
+              <div className="rounded-lg bg-blue-50 px-4 py-3">
+                <p className="text-sm text-gray-600">Fontaine 1ère classe</p>
+                <p className="text-xl font-bold text-blue-700">85 000 FCFA</p>
+              </div>
+              <div className="rounded-lg bg-blue-50 px-4 py-3">
+                <p className="text-sm text-gray-600">Fontaine 2ème classe</p>
+                <p className="text-xl font-bold text-blue-700">70 000 FCFA</p>
+              </div>
+            </div>
+
             <div className="pt-6">
               <Link
                 to="/contact"
@@ -418,7 +411,7 @@ export default function Products() {
               <div className="relative h-[500px] bg-gradient-to-br from-blue-100 via-cyan-50 to-blue-200 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-cyan-400/10"></div>
                 <img
-                  src="/eau.jpg"
+                  src="/assets/sachet.png"
                   alt="Sachets d'eau Intercontinental Eau"
                   className="w-80 h-80 object-contain animate-float relative z-10"
                   loading="lazy"
@@ -469,11 +462,11 @@ export default function Products() {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-gray-500">{t("Prod_Unit_Price", "Prix unitaire")}</span>
                     <div className="text-right">
-                      <span className="text-3xl font-bold text-gray-800">300</span>
+                      <span className="text-3xl font-bold text-gray-800">250</span>
                       <span className="text-lg text-gray-600 ml-1">FCFA</span>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500 mb-4" dangerouslySetInnerHTML={{ __html: t("Prod_Sachets_Info", "• Remise dégressive à partir de 50 sachets<br />• Livraison gratuite dès 100 sachets") }} />
+                  <div className="text-sm text-gray-500 mb-4" dangerouslySetInnerHTML={{ __html: t("Prod_Sachets_Info", "• Pack de 30 sachets de 500ml<br />• Livraison disponible") }} />
                 </div>
 
                 <a href="/contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 w-full bg-blue-600 hover:bg-blue-700 text-lg py-4 button-ripple group font-bold text-white">
@@ -488,7 +481,7 @@ export default function Products() {
               <div className="relative h-[500px] bg-gradient-to-br from-green-100 via-emerald-50 to-green-200 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-emerald-400/10"></div>
                 <img
-                  src="/eau.jpg"
+                  src="/assets/bonbonne.png"
                   alt="Bonbonnes 22L Intercontinental Eau"
                   className="w-60 h-96 object-contain animate-float relative z-10"
                   style={{ animationDelay: '2s' }}
@@ -540,11 +533,11 @@ export default function Products() {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-gray-500">{t("Prod_Unit_Price", "Prix unitaire")}</span>
                     <div className="text-right">
-                      <span className="text-3xl font-bold text-gray-800">2,300</span>
+                      <span className="text-3xl font-bold text-gray-800">2,200</span>
                       <span className="text-lg text-gray-600 ml-1">FCFA</span>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500 mb-4" dangerouslySetInnerHTML={{ __html: t("Prod_22L_Info", "• Consigne bonbonne: 2,000 FCFA (remboursable)<br />• Livraison gratuite dès 5 bonbonnes") }} />
+                  <div className="text-sm text-gray-500 mb-4" dangerouslySetInnerHTML={{ __html: t("Prod_22L_Info", "• Consigne bonbonne: 4,000 FCFA<br />• Livraison disponible") }} />
                 </div>
 
                 <a href="/contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 w-full bg-green-600 hover:bg-green-700 text-lg py-4 button-ripple group font-bold text-white">

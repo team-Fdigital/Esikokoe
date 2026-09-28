@@ -25,7 +25,7 @@ export default function About() {
       gradient: 'from-blue-600 to-indigo-600',
       bgGradient: 'from-blue-600 to-indigo-600',
       icon: Calendar,
-      image: '/eau.jpg'
+      image: '/eau.png'
     },
     {
       id: 2,
@@ -39,7 +39,7 @@ export default function About() {
       gradient: 'from-green-600 to-teal-600',
       bgGradient: 'from-green-600 to-teal-600',
       icon: Target,
-      image: '/eau.jpg'
+      image: '/eau.png'
     },
     {
       id: 3,
@@ -53,7 +53,7 @@ export default function About() {
       gradient: 'from-purple-600 to-pink-600',
       bgGradient: 'from-purple-600 to-pink-600',
       icon: Heart,
-      image: '/eau.jpg'
+      image: '/eau.png'
     },
     {
       id: 4,
@@ -67,7 +67,7 @@ export default function About() {
       gradient: 'from-orange-600 to-red-600',
       bgGradient: 'from-orange-600 to-red-600',
       icon: Users,
-      image: '/eau.jpg'
+      image: '/eau.png'
     }
   ]
 

@@ -24,7 +24,7 @@ const ContactSlider = () => {
       icone: Phone,
       degrade: 'from-blue-600 to-cyan-600',
       description: t("Contact_Team_Desc", 'Notre équipe est disponible 24h/24 et 7j/7 pour répondre à tous vos besoins en eau pure.'),
-      image: '/eau.jpg',
+      image: '/eau.png',
       altImage: 'Contact 24/7',
       contacts: [
         { type: 'phone', titre: '+228 91 29 99 99', sousTitre: t("Main_Line", 'Ligne principale') },
@@ -40,7 +40,7 @@ const ContactSlider = () => {
       icone: Truck,
       degrade: 'from-green-600 to-emerald-600',
       description: t("Free_Delivery_Lome_2h", 'Livraison gratuite dans tout Lomé en moins de 2 heures.'),
-      image: '/assets/fontaine.jpg',
+      image: '/assets/b35cl.png',
       altImage: 'Livraison Express',
       contacts: [
         { type: 'phone', titre: '+228 91 29 99 99', sousTitre: t("Express_Orders", 'Commandes express') },
@@ -56,7 +56,7 @@ const ContactSlider = () => {
       icone: MessageCircle,
       degrade: 'from-violet-600 to-pink-600',
       description: t("2k_Families_Trust", 'Plus de 2,000 familles nous font confiance au quotidien.'),
-      image: '/assets/b75cl.jpg',
+      image: '/assets/b35cl.png',
       altImage: 'Témoignages Clients',
       temoignages: [
         { etoiles: 5, texte: t("Excellent_Service_Fresh", 'Service excellent, eau toujours fraîche !'), auteur: 'Marie K.' },
